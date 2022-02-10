@@ -198,18 +198,18 @@ Upon the completion of a Sprint (during the Sprint Planning period), a card will
 
 There are various formats that a card's Story Points will go under after the completion of Sprint. They range from the following:
 
-- `1SP (was 1SP, ...)` - 1SP planned this sprint, 1 left over from last sprint
-- `2SP + 1 retro` - Additional 2 story points required and updated after release
-- `1SP (0SP accomplished)` - Card not worked on during sprint
+- `1SP (was 1SP, ...)` - 1SP planned this sprint, 1 left over from last sprint.
+- `2SP + 1 retro` - Additional 2 story points required and updated after release.
+- `1SP (0SP accomplished)` - Card not worked on during sprint.
 
 #### Card Story Points Counting
 
 At the end of a Sprint, all cards present on the Sprint board (minus the "Monitoring" cards) are counted. The cards are counted by the following:
 
-1. Total points released into Sprint
-2. Unplanned points released into Sprint - Total and Achieved
-3. Completed points all in total
-4. Leftover amount of points
+1. Total points released into Sprint.
+2. Unplanned points released into Sprint - Total and Achieved.
+3. Completed points all in total.
+4. Leftover amount of points.
 
 These metrics are then recorded into the "Sprint Summary Card" at the beginning of the Sprint board using this syntax:
 
@@ -217,8 +217,20 @@ These metrics are then recorded into the "Sprint Summary Card" at the beginning 
 
 # Glossary
 
+Card
+: This refers to a Trello Card. An example card had been created here to understand its parts.
+
+Definition of Done
+: A set of requirements that describe what the end product and terminal state of the card to the the Owner and the major contributors.
+
+Discovery
+: Time allotted for coming up with a complete set of cards through research, meeting with other members, or other means. Once a card is sufficiently flesh out, the card can then be placed into the "Ready for Sprint" queue on the DISCOVERY board.
+
 Sprint
-: Sprint
+: A two-week cycle that includes the use of Trello Cards to record work done during that allotted time frame and various meetings to help meet the requirements of said cards.
 
 Owner
-: Owner
+: A team member assigned to a Trello card. They are responsible to promoting their card during planning and for facilitating it through the Sprint process.
+
+Story Point
+: An arbitray amount of work that the Owner and major contributors think a card will take to complete.
