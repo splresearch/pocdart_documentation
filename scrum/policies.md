@@ -213,7 +213,7 @@ At the end of a Sprint, all cards present on the Sprint board (minus the "Monito
 
 These metrics are then recorded into the "Sprint Summary Card" at the beginning of the Sprint board using this syntax:
 
-[SP Calculation Syntax](/Sprint_Calculation_Record_Syntax.png)
+[SP Calculation Syntax](https://github.com/splresearch/pocdart_documentation/blob/OOSBg1bz-scrum-documenation/scrum/Sprint_Calculation_Record_Syntax.png?raw=true)
 
 # Glossary
 
