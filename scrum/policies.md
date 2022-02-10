@@ -15,6 +15,8 @@ If you have questions about what a term may mean, please refer to the [Glossary]
     - [Data Engineer Workshop:](#data-engineer-workshop)
     - [Post-mortem:](#post-mortem)
     - [Discovery Block:](#discovery-block)
+    - [Sprint Retrospective:](#sprint-retrospective)
+    - [Sprint Planning:](#sprint-planning)
   - [Trello Cards:](#trello-cards)
 - [Glossary](#glossary)
 
@@ -30,7 +32,7 @@ If you have questions about what a term may mean, please refer to the [Glossary]
 
 || Monday | Tuesday | Wednesday | Thursday | Friday
 |---|---|---|---|---|---|
-| Week 1 | Data Engineer Workshop, Huddle, Post-mortem, Discovery Block | Sprint Retrospective and Planning Meeting | Huddle | Huddle | Huddle, Discovery Block |
+| Week 1 | Data Engineer Workshop, Huddle, Post-mortem, Discovery Block | Sprint Retrospective, Sprint Planning | Huddle | Huddle | Huddle, Discovery Block |
 | Week 2 | Data Engineer Workshop, Huddle, Discovery Block | Huddle | Huddle | Huddle | Huddle, Discovery Block |
 
 ## Meeting Types:
@@ -70,6 +72,24 @@ During this time, one should meet and discuss with other team members about any 
 
 The purpose of the block is to do research or complete any other prerequisite for a particular card(s) so that they may be put into the "READY FOR SPRINT" column.
 
+### Sprint Retrospective:
+
+This occurs on the same day as Sprint Planning.
+
+This portion of the meeting usually includes the presentation of completed cards by either Owners or major contributors of a card and the counting of Story Points.
+
+There are also discussions of what went well during the Sprint, what parts could be improved upon, and other retrospective bits of information
+
+Following a Sprint Retrospective, there is a break before moving on to the Sprint Planning phase of the meeting.
+
+### Sprint Planning:
+
+This always occurs after a Sprint Retrospective.
+
+This portion of the meeting includes the allocating of total Story Points for next Sprint and transferring over of priority cards respective to their Owners.
+
+This is also where team members will alert other team members of any expected PTO that will be taken during planned Sprint.
+
 ## Trello Cards:
 
 Trello is used to visualize and help facilitate our workflow through the use of its "cards".
@@ -87,5 +107,6 @@ Before releasing any cards, each one must fulfill each of the following requirem
 
 Sprint
 : Sprint
+
 Owner
 : Owner
