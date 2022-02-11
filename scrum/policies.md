@@ -47,7 +47,9 @@ If you have questions about what a term may mean, please refer to the [Glossary]
 
 ## Meeting Types
 
-As seen in above table, there are various types of meetings in every Sprint:
+As seen in above table, there are various types of meetings in every Sprint.
+
+The core meeting types include [Daily Sprint Huddle](#daily-sprint-huddle), [Post-mortem](#post-mortem), [Discovery Block](#discovery-block), [Sprint Retrospective](#sprint-retrospective), and [Sprint Planning](#sprint-planning).
 
 ### Daily Sprint Huddle
 
@@ -233,4 +235,4 @@ Owner
 : A team member assigned to a Trello card. They are responsible to promoting their card during planning and for facilitating it through the Sprint process.
 
 Story Point
-: An arbitray amount of work that the Owner and major contributors think a card will take to complete.
+: An arbitrary amount of work that the Owner and major contributors think a card will take to complete.
