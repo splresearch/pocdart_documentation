@@ -43,7 +43,7 @@ If you have questions about what a term may mean, please refer to the [Glossary]
 || Monday | Tuesday (Beginning of new Cycle) | Wednesday | Thursday | Friday
 |---|---|---|---|---|---|
 | Week 1 | Data Engineer Workshop, Huddle, Post-mortem, Discovery Block | Sprint Retrospective, Sprint Planning | Huddle | Huddle | Huddle, Discovery Block |
-| Week 2 | Data Engineer Workshop, Huddle, Discovery Block | Huddle | Huddle | Huddle | Huddle, Discovery Block |
+| Week 2 | Data Engineer Workshop, Huddle, Post-mortem, Discovery Block | Huddle | Huddle | Huddle | Huddle, Discovery Block |
 
 ## Meeting Types
 
@@ -61,7 +61,7 @@ The next portion is checking the status of the Sprint board. Each card that is n
 
 ### Data Engineer Workshop
 
-This is a meeting between all of the Data Engineers, ranging about an hour before a Huddle.
+This is a meeting between the Data Engineers, ranging about an hour before a Huddle.
 
 In this meeting, the general conversation pertains around discussing what work is left on the Sprint board, who can help with completing the unfinished cards, how those cards can be accomplished, and general statuses of the Data Engineers.
 
@@ -88,7 +88,7 @@ The purpose of the block is to do research or complete any other prerequisite fo
 
 This occurs on the same day as Sprint Planning.
 
-There are also discussions of what went well during the Sprint, what parts could be improved upon, and other retrospective bits of information
+There are also discussions of what went well during the Sprint, what parts could be improved upon, and other retrospective bits of information.
 
 Following a Sprint Retrospective, there is a break before moving on to the Sprint Planning phase of the meeting.
 
@@ -112,7 +112,7 @@ Trello is used to visualize and help facilitate our workflow through the use of 
 
 ### Trello Cards Before Sprint
 
-Upon meeting all of the requirements for new work (listed below), a Trello Card can made on the "DISCOVERY" board.
+Upon meeting all of the requirements for new work (listed below), a Trello Card may be created on the "DISCOVERY" board.
 
 #### Determinants for Work
 
@@ -159,7 +159,7 @@ There are various labels or tags that should be applied to cards to indicate the
   - A feature that an end-user has requested.
   - There is a specific format for User Stories: "As a *[type of user (or users)]*, I want *[this action]*, so that I *[get this benefit]*"
 - **Internal Work**
-  - A feature requested from internal users.
+  - A feature intiated internally from users. Examples such as server migrations, process improvement, etc.
 - **Change**
   - A small change to something - used mostly as a "papertrail" to keep track of a small change.
 - **PoCRI/PROM**
@@ -170,7 +170,7 @@ There are various labels or tags that should be applied to cards to indicate the
 
 #### Assigning Story Points
 
-The format of assigning Story Points follows a Fibonacci sequence. There must not be any 8+ Story Point cards, however. If there are, the card should be split up into subcards until subsequent card reach below eight points.
+The format of assigning Story Points follows a Fibonacci sequence; those numbers include [1, 2, 3, 5, 8]. There must not be card with any Story Point over 8, however. If there are, the card should be split up into subcards until subsequent card reach eight or below in points.
 
 There must be a clear and unanimous agreement among the card Owner and major contributors for how many Story Points should be assigned to a card.
 
@@ -183,18 +183,18 @@ Generally, the format for assigning story points is within the title of the card
 
 A Card is considered completed and "Ready for Sprint" once the following have been achieved:
 
-1. There must some *Owner* assigned to the card.
+1. There must an *Owner* assigned to the card.
 2. There must some *Description* of the problem or desired result from the card.
 3. *To-do* lists, contained tasks with appropriately assigned people.
 4. Range of *dates* for when the card could be placed into the Sprint board.
-5. A clear *Definition of Done* that indicated when a card is completed at the end of a Sprint.
+5. A clear *Definition of Done* that indicates when a card is completed at the end of a Sprint.
 6. Number of *Story Points* needed to complete the Definition of Done (unless it is an UNPLANNED card).
 
-If all requirements are met, the card can be moved into the "Ready for Sprint" column on the "DISCOVERY" board and be advocated for putting into desired Sprint.
+If all requirements are met, the card can be moved into the "Ready for Sprint" column on the "DISCOVERY" board and be advocated into the desired Sprint.
 
 ### Trello Cards After Sprint
 
-Upon the completion of a Sprint (during the Sprint Planning period), a card will have its Story Points counted. The Story Points will either be adjusted and put back into the next Sprint or written off should the card be finished.
+Upon the completion of a Sprint (during the Sprint Planning period), a card will have its Story Points counted. The Story Points will either be adjusted and put back into the next Sprint or the card itself should put into either "Archive" if finished or "Monitoring" otherwise.
 
 #### Card Story Points Adjustment Syntax
 
@@ -223,16 +223,16 @@ Card
 : This refers to a Trello Card. An example card had been created here to understand its parts.
 
 Definition of Done
-: A set of requirements that describe what the end product and terminal state of the card to the the Owner and the major contributors.
+: A set of requirements that describe what the end product and terminal state of the card to the Owner and the major contributors.
 
 Discovery
-: Time allotted for coming up with a complete set of cards through research, meeting with other members, or other means. Once a card is sufficiently flesh out, the card can then be placed into the "Ready for Sprint" queue on the DISCOVERY board.
+: Time allotted for coming up with a complete set of cards through research, meeting with other members, or other means. Once a card is sufficiently fleshed out, the card can then be placed into the "Ready for Sprint" queue on the DISCOVERY board.
 
 Sprint
-: A two-week cycle that includes the use of Trello Cards to record work done during that allotted time frame and various meetings to help meet the requirements of said cards.
+: A two-week cycle that includes the use of Trello Cards to record work completed during that allotted time frame and various meetings to help meet the requirements of said cards.
 
 Owner
-: A team member assigned to a Trello card. They are responsible to promoting their card during planning and for facilitating it through the Sprint process.
+: A team member assigned to a Trello card. They are responsible for promoting their card during planning and for facilitating it through the Sprint process.
 
 Story Point
 : An arbitrary amount of work that the Owner and major contributors think a card will take to complete.
