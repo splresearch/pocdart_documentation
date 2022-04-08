@@ -179,6 +179,10 @@ Generally, the format for assigning story points is within the title of the card
 - `XSP` - Yet to be determined
 - `1SP` - 1 Story point
 
+In addition, as of 4/5/22, there is now a [card size power-up module](https://trello.com/b/mPW9C7y6/sprint-now/power-up/5cd476e1efce1d2e0cbe53a8) that will be used to keep track of Story Points. In a card after selecting the `Card Size` option on the right, a pop-up window will appear with three different text boxes. In each of those, one may enter the card's size (total amount of Story Points allocated to card), the number of points spent on the card, and the number of remaining - which will fill out on its own should the other two slots be filled. Once done, one can save those changes with the green `Save` button at the bottom of the pop-up window or delete the card size, spent points, and remaining points from the card with the red `Delete` button.
+
+If one would like to read more about the card size module, please check out the `Card Size Power-up Module` file in this repository.
+
 #### Finishing Creation of Card
 
 A Card is considered completed and "Ready for Sprint" once the following have been achieved:
