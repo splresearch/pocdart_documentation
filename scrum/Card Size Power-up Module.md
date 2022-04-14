@@ -16,11 +16,7 @@ End-of-Sprint calculations
 
 There are a few problems currently that should be kept in mind when working with this module.
 
-Because there are only three buckets to determine the size of a card, there is no built-in way to keep track of retro points for a given card, if applicable.
-Could be solved with a Trello custom field that holds the amassed retro points. (Alex, Matt, and Duncan are leaning towards this solution)
-This means that the total amount spent on a card is still there in case for reference and could be pulled by a burndown chart for additional Sprint analysis.
-Could be solved with recording the retro points in comment section of a card.
-Could be solved with dropping of retro points as a separate metric to track and including them in the card size.
+Because there are only three buckets to determine the size of a card, there is no built-in way to keep track of retro points for a given card. To help alleviate this issue, should a card be recycled another Sprint - a custom field named "Total" should be created. Inside of that field, the total amount of Story Points allocated to the life of a given card should be stored.
 
 # Configuration
 
