@@ -205,7 +205,7 @@ Upon the completion of a Sprint (during the Sprint Planning period), a card will
 There are various formats that a card's Story Points will go under after the completion of Sprint. They range from the following:
 
 - `1SP (was 1SP, ...)` - 1SP planned this sprint, 1 left over from last sprint.
-- `2SP + 1 retro` - Additional 2 story points required and updated after release.
+- `2SP + 1 retro` - Additional 1 story points required and updated after release with 2 Story Points.
   - Should there be retro points added, a custom field "Total" should be made to keep track of the total amount of Story Points allocated to the card until it is completed.
 - `1SP (0SP accomplished)` - Card not worked on during sprint.
 
