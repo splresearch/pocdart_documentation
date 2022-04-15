@@ -206,7 +206,7 @@ There are various formats that a card's Story Points will go under after the com
 
 - `1SP (was 1SP, ...)` - 1SP planned this sprint, 1 left over from last sprint.
 - `2SP + 1 retro` - Additional 2 story points required and updated after release.
-  - Should there be retro points added, a custom field "Total" should be made to keep track of the total amount of Story Points allocated to the card until it is completed.
+  - Should there be retro points added, a custom field "Total" should be made to keep track of the total amount of Story Points allocated to the card until it is completed. [See here for location](https://github.com/splresearch/pocdart_documentation/blob/qYdsdKEV--sprint-card-size/scrum/Custom_Fields_location.png?raw=true).
 - `1SP (0SP accomplished)` - Card not worked on during sprint.
 
 #### Card Story Points Counting
