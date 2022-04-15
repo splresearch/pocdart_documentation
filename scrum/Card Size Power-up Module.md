@@ -16,7 +16,7 @@ End-of-Sprint calculations
 
 There are a few problems currently that should be kept in mind when working with this module.
 
-Because there are only three buckets to determine the size of a card, there is no built-in way to keep track of retro points for a given card. To help alleviate this issue, should a card be recycled another Sprint - a custom field named "Total" should be created. Inside of that field, the total amount of Story Points allocated to the life of a given card should be stored.
+Because there are only three buckets to determine the size of a card, there is no built-in way to keep track of retro points for a given card. To help alleviate this issue, should a card be recycled into another Sprint - a custom field named "Total" should be created. Inside of that field, the total amount of Story Points allocated a given card's lifetime should be stored.
 
 # Configuration
 
