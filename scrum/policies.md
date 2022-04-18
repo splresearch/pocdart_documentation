@@ -205,7 +205,8 @@ Upon the completion of a Sprint (during the Sprint Planning period), a card will
 There are various formats that a card's Story Points will go under after the completion of Sprint. They range from the following:
 
 - `1SP (was 1SP, ...)` - 1SP planned this sprint, 1 left over from last sprint.
-- `2SP + 1 retro` - Additional 2 story points required and updated after release.
+- `2SP + 1 retro` - Additional 1 story points required and updated after release with 2 Story Points.
+  - Should there be retro points added, a custom field "Total" should be made to keep track of the total amount of Story Points allocated to the card until it is completed.
 - `1SP (0SP accomplished)` - Card not worked on during sprint.
 
 #### Card Story Points Counting
@@ -225,6 +226,9 @@ These metrics are then recorded into the "Sprint Summary Card" at the beginning 
 
 Card
 : This refers to a Trello Card. An example card had been created here to understand its parts.
+
+Custom Field
+: When opening a card, there are modules that can be activated for that card. One of them allows for a new field that can contain any information the card owner requires. Usually, this is used to keep track of a card's 'total' Story Points. [See here for location](https://github.com/splresearch/pocdart_documentation/blob/qYdsdKEV--sprint-card-size/scrum/Custom_Fields_location.png?raw=true)
 
 Definition of Done
 : A set of requirements that describe what the end product and terminal state of the card to the Owner and the major contributors.
