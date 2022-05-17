@@ -176,6 +176,8 @@ There must be a clear and unanimous agreement among the card Owner and major con
 
 Generally, the format for assigning story points is within the title of the card at the very beginning with either `XSP` to indicate an unknown number of points or some other agreed upon number like `2SP` for two Story Points.
 
+There is one expection to the rule, however: Unplanned work cards are allowed to have `0SP` (or zero story points) allocated to them should a given card's work be too insignificant of one story point.
+
 - `XSP` - Yet to be determined
 - `1SP` - 1 Story point
 
