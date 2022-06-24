@@ -18,6 +18,7 @@ If you have questions about what a term may mean, please refer to the [Glossary]
     - [Sprint Retrospective](#sprint-retrospective)
       - [Sprint Celebration of Work](#sprint-celebration-of-work)
     - [Sprint Planning](#sprint-planning)
+    - [Additional Rules and Notes](#additional-rules-and-notes)
   - [Trello Cards](#trello-cards)
     - [Trello Cards Before Sprint](#trello-cards-before-sprint)
       - [Determinants for Work](#determinants-for-work)
@@ -69,10 +70,15 @@ In this meeting, the general conversation pertains around discussing what work i
 
 This is usually done in conjunction with a Huddle.
 
-In this section, unplanned work cards are reexplained and a group discussion begins with how to answer the two following questions:
+In this section, unplanned and retro work cards are reexplained and a group discussion begins with how to answer the two following questions for unplanned cards:
 
 1. How can the cause for this unplanned work be prevented in future?
 2. What monitoring can be setup to detect this issue as fast as possible?
+
+For retro cards, a group discussion will revolve around the following questions:
+
+1. What obstructions were encountered during work on this card?
+2. What actions can be taken to prevent similar obstacles from occurring in the future with similar work?
 
 Once both are answered for all completed Post-mortem cards, the cards are either retired for the Sprint or put into "Monitoring".
 
@@ -105,6 +111,12 @@ This always occurs after a Sprint Retrospective.
 This portion of the meeting includes the allocating of total Story Points for next Sprint and transferring over of priority cards respective to their Owners.
 
 This is also where team members will alert other team members of any expected PTO that will be taken during planned Sprint.
+
+### Additional Rules and Notes
+
+- **Read-only Fridays**
+  - Regular deployments should not happen on Fridays, if it can be helped.
+  - This is to ensure that no team members spend their weekends fixing bugs on workflows.
 
 ## Trello Cards
 
@@ -167,6 +179,9 @@ There are various labels or tags that should be applied to cards to indicate the
 - **UNPLANNED**
 - **SWARM**
   - Requires that all involved should be working on it – All hands on deck.
+- **RETRO**
+  - A card created from leftover points on a previous sprint's card
+  - Requires a postmortem
 
 #### Assigning Story Points
 
