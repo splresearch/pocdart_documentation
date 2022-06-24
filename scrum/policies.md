@@ -27,7 +27,7 @@ If you have questions about what a term may mean, please refer to the [Glossary]
       - [Assigning Story Points](#assigning-story-points)
       - [Finishing Creation of Card](#finishing-creation-of-card)
     - [Trello Cards After Sprint](#trello-cards-after-sprint)
-      - [Card Story Points Adjustment Syntax](#card-story-points-adjustment-syntax)
+      - [Card Story Points Adjustment (Retro)](#card-story-points-adjustment-retro)
       - [Card Story Points Counting](#card-story-points-counting)
 - [Glossary](#glossary)
 
@@ -79,6 +79,7 @@ For retro cards, a group discussion will revolve around the following questions:
 
 1. What obstructions were encountered during work on this card?
 2. What actions can be taken to prevent similar obstacles from occurring in the future with similar work?
+3. How can our discovery process be improved to better calculate an equivalent card?
 
 Once both are answered for all completed Post-mortem cards, the cards are either retired for the Sprint or put into "Monitoring".
 
@@ -132,7 +133,7 @@ The determinants for new work are as follows:
 
 1. Identifiable and accessible business owner
 2. Commitment from business owner
-3. Strength of reqs on first contact / before the work is released
+3. Strength of requirements on first contact / before the work is released
 4. Value to department (political/infrastructure) vs. amount of development + maintenance + implementation work required
 
 #### Card Templates
@@ -189,12 +190,7 @@ The format of assigning Story Points follows a Fibonacci sequence; those numbers
 
 There must be a clear and unanimous agreement among the card Owner and major contributors for how many Story Points should be assigned to a card.
 
-Generally, the format for assigning story points is within the title of the card at the very beginning with either `XSP` to indicate an unknown number of points or some other agreed upon number like `2SP` for two Story Points.
-
-There is one expection to the rule, however: Unplanned work cards are allowed to have `0SP` (or zero story points) allocated to them should a given card's work be too insignificant of one story point.
-
-- `XSP` - Yet to be determined
-- `1SP` - 1 Story point
+Generally, the format for assigning story points using the [card size power-up module](https://trello.com/b/mPW9C7y6/sprint-now/power-up/5cd476e1efce1d2e0cbe53a8) in the "Size" section within a given card.
 
 In addition, as of 4/5/22, there is now a [card size power-up module](https://trello.com/b/mPW9C7y6/sprint-now/power-up/5cd476e1efce1d2e0cbe53a8) that will be used to keep track of Story Points. In a card after selecting the `Card Size` option on the right, a pop-up window will appear with three different text boxes. In each of those, one may enter the card's size (total amount of Story Points allocated to card), the number of points spent on the card, and the number of remaining - which will fill out on its own should the other two slots be filled. Once done, one can save those changes with the green `Save` button at the bottom of the pop-up window or delete the card size, spent points, and remaining points from the card with the red `Delete` button.
 
@@ -204,12 +200,12 @@ If one would like to read more about the card size module, please check out the 
 
 A Card is considered completed and "Ready for Sprint" once the following have been achieved:
 
-1. There must an *Owner* assigned to the card.
-2. There must some *Description* of the problem or desired result from the card.
-3. *To-do* lists, contained tasks with appropriately assigned people.
-4. Range of *dates* for when the card could be placed into the Sprint board.
-5. A clear *Definition of Done* that indicates when a card is completed at the end of a Sprint.
-6. Number of *Story Points* needed to complete the Definition of Done (unless it is an UNPLANNED card).
+1. There must an **Owner** assigned to the card.
+2. There must some **Description** of the problem or desired result from the card.
+3. **To-do** lists, contained tasks with appropriately assigned people.
+4. Range of **dates** for when the card could be placed into the Sprint board.
+5. A clear **Definition of Done** that indicates when a card is completed at the end of a Sprint.
+6. Number of **Story Points** needed to complete the Definition of Done (unless it is an UNPLANNED card).
 
 If all requirements are met, the card can be moved into the "Ready for Sprint" column on the "DISCOVERY" board and be advocated into the desired Sprint.
 
@@ -217,14 +213,8 @@ If all requirements are met, the card can be moved into the "Ready for Sprint" c
 
 Upon the completion of a Sprint (during the Sprint Planning period), a card will have its Story Points counted. The Story Points will either be adjusted and put back into the next Sprint or the card itself should put into either "Archive" if finished or "Monitoring" otherwise.
 
-#### Card Story Points Adjustment Syntax
-
-There are various formats that a card's Story Points will go under after the completion of Sprint. They range from the following:
-
-- `1SP (was 1SP, ...)` - 1SP planned this sprint, 1 left over from last sprint.
-- `2SP + 1 retro` - Additional 1 story points required and updated after release with 2 Story Points.
-  - Should there be retro points added, a custom field "Total" should be made to keep track of the total amount of Story Points allocated to the card until it is completed.
-- `1SP (0SP accomplished)` - Card not worked on during sprint.
+#### Card Story Points Adjustment (Retro)
+During a Sprint Retrospective, cards that are incomplete with respect to the Definition of Done must be copied and assigned a **RETRO** label with remaining points assigned to the "Size". The original card is then archived.
 
 #### Card Story Points Counting
 
