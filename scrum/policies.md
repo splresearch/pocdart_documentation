@@ -234,7 +234,7 @@ At the end of a Sprint, all cards present on the Sprint board (minus the "Monito
 
 These metrics are then recorded into the "Sprint Summary Card" at the beginning of the Sprint board using this syntax:
 
-[SP Calculation Syntax](https://github.com/splresearch/pocdart_documentation/blob/OOSBg1bz-scrum-documenation/main/Sprint_Calculation_Record_Syntax.png?raw=true)
+[SP Calculation Syntax](https://github.com/splresearch/pocdart_documentation/blob/jde-feedback/scrum/Sprint_Calculation_Record_Syntax.png)
 
 # Glossary
 
@@ -245,7 +245,7 @@ Card
 : This refers to a Trello Card.
 
 Custom Field
-: When opening a card, there are modules that can be activated for that card. One of them allows for a new field that can contain any information the card owner requires. Usually, this is used to keep track of a card's 'total' Story Points. [See here for location](https://github.com/splresearch/pocdart_documentation/blob/qYdsdKEV--sprint-card-size/main/Custom_Fields_location.png?raw=true)
+: When opening a card, there are modules that can be activated for that card. One of them allows for a new field that can contain any information the card owner requires. Usually, this is used to keep track of a card's 'total' Story Points. [See here for location](https://github.com/splresearch/pocdart_documentation/blob/jde-feedback/scrum/Custom_Fields_location.png)
 
 Definition of Done
 : A set of requirements that describe what the end product and terminal state of the card to the Owner and the major contributors.
