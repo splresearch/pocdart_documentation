@@ -136,22 +136,28 @@ The determinants for new work are as follows:
 3. Strength of requirements on first contact / before the work is released
 4. Value to department (political/infrastructure) vs. amount of development + maintenance + implementation work required
 
+These determinants for new work are established to protect our team from non-specific request coming from external stakeholders.
+
 #### Card Templates
 
-Trello cards must only be created from the following templates located on the left-most column "TEMPLATES":
+Trello cards should only be created from the following templates located on the right-most column "TEMPLATES":
 
 - UNPLANNED work template
 - User Story - New PoCDART project
 - Change Requests
+- Change Requests - mnemonic changes
+  - A change specifically for an end user's change of an established mnemonic
 - Internal Work
-- XSP New Measure or Alteration of Measurement
+- New Measure or Alteration of Measurement
+  - A newly requested measure or change of a measurement by end user.
 - User Story
 - Business Project
 - Business Project- MOBILITY Study Visits
 - Business Project- Recurring PROM Meetings
-- 1SP Software Maintenance
+- Software Maintenance
+  - Monthly updating of various DMAR architecture.
 - Drupal UAT Checklist
-- 1SP Change Requests - mnemonic changes
+  - User Acceptance Testing checklist to test some change made to Drupal-backed DMAR core site.
 - Discovery: Validation
 
 #### Card Labels
@@ -178,6 +184,7 @@ There are various labels or tags that should be applied to cards to indicate the
 - **PoCRI/PROM**
   - Relating to PoCRI/PROM.
 - **UNPLANNED**
+  - Unexpected Work associated with card with relatively high importance on completing
 - **SWARM**
   - Requires that all involved should be working on it – All hands on deck.
 - **RETRO**
@@ -211,7 +218,7 @@ If all requirements are met, the card can be moved into the "Ready for Sprint" c
 
 ### Trello Cards After Sprint
 
-Upon the completion of a Sprint (during the Sprint Planning period), a card will have its Story Points counted. The Story Points will either be adjusted and put back into the next Sprint or the card itself should put into either "Archive" if finished or "Monitoring" otherwise.
+Upon the completion of a Sprint (during the Sprint Planning period), a card will have its Story Points counted. The Story Points will either be adjusted and put back into the next Sprint or the card itself should be archived if finished or into the "Monitoring" column otherwise.
 
 #### Card Story Points Adjustment (Retro)
 During a Sprint Retrospective, cards that are incomplete with respect to the Definition of Done must be copied and assigned a **RETRO** label with remaining points assigned to the "Size". The original card is then archived.
@@ -227,15 +234,18 @@ At the end of a Sprint, all cards present on the Sprint board (minus the "Monito
 
 These metrics are then recorded into the "Sprint Summary Card" at the beginning of the Sprint board using this syntax:
 
-[SP Calculation Syntax](https://github.com/splresearch/pocdart_documentation/blob/OOSBg1bz-scrum-documenation/scrum/Sprint_Calculation_Record_Syntax.png?raw=true)
+[SP Calculation Syntax](https://github.com/splresearch/pocdart_documentation/blob/jde-feedback/scrum/Sprint_Calculation_Record_Syntax.png)
 
 # Glossary
 
+Business Owner
+: The business owner (or "stakeholder") is whoever wants the work done. They develop requirements for features the end users (mainly providers) need.
+
 Card
-: This refers to a Trello Card. An example card had been created here to understand its parts.
+: This refers to a Trello Card.
 
 Custom Field
-: When opening a card, there are modules that can be activated for that card. One of them allows for a new field that can contain any information the card owner requires. Usually, this is used to keep track of a card's 'total' Story Points. [See here for location](https://github.com/splresearch/pocdart_documentation/blob/qYdsdKEV--sprint-card-size/scrum/Custom_Fields_location.png?raw=true)
+: When opening a card, there are modules that can be activated for that card. One of them allows for a new field that can contain any information the card owner requires. Usually, this is used to keep track of a card's 'total' Story Points. [See here for location](https://github.com/splresearch/pocdart_documentation/blob/jde-feedback/scrum/Custom_Fields_location.png)
 
 Definition of Done
 : A set of requirements that describe what the end product and terminal state of the card to the Owner and the major contributors.
