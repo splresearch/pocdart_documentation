@@ -56,7 +56,8 @@ The core meeting types include [Daily Sprint Huddle](#daily-sprint-huddle), [Pos
 
 This is one of the backbones of the Scrum process. Standing up is recommended for this process but not obligated in remote-work settings.
 
-These meetings begin with discussing any open tickets in the `dmar-support` channel, exceptional errors in the `dart_error_reports` channel, and anything else outstanding in Slack that the rest of the team should be made aware of.
+These meetings begin with discussing any open tickets in the `dmar-support` channel, exceptional errors in the `dart_error_reports` channel, any Pull Requests that are outstanding, and anything else outstanding in Slack that the rest of the team should be made aware of.
+If nothing is present in the `dmar_support` channel, then it is optimal to confirm that nothing has been received in case of a MailClark-related error or something else.
 
 The next portion is checking the status of the Sprint board. Each card that is not in either the "To-Do", "Done", or "Monitoring" columns are gone over by their respective Owners. Each Owner or major contributor will give the status of said card. If required, there can be follow-up meetings about certain cards should they demand enough attention from those involved.
 
