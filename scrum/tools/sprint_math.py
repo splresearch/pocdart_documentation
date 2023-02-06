@@ -2,6 +2,8 @@ import json
 import requests
 import pandas as pd
 import re
+import statistics
+import math
 
 # API key and token and board id should be stored in config, away from posting on GitHub
 with open("config.json") as config_file:
@@ -28,6 +30,15 @@ def request_call(url, have_headers):
     )
 
     return json.loads(response)
+
+def validate_user_input(user_input):
+    while True:
+        try:
+            user_input = int(user_input)
+            break
+        except:
+            user_input = input("Invalid input; enter a number: ")
+    return user_input
 
 class Card:
     def __init__(self, card_id, card_name, labels, list_id):
@@ -58,9 +69,19 @@ class Card:
         # Parse request for matching list
         self.list_name = next(list_obj for list_obj in response_data if list_obj["id"] == list_id)["name"]
 
-total_done_list = 0
-sp_unplanned_total = 0
-sp_planned_partial_completed = 0
+# INPUTS
+# ======
+# From card size module
+total_done_list = 0 # card size > list > done + post-mortem
+sp_unplanned_total = 0 # card size > label > unplanned
+
+sp_planned_partial_completed = 0 # count, spent on planned cards that are not in the done list
+
+sp_unplanned_remaining = 0 # count, remaining
+sp_unplanned_partial_completed = 0 # count, spent on unplanned cards that are not in the done list
+
+sp_retro_completed = 0 # count - any additional points spent above planned card size on cards in done
+sp_retro_leftover = 0 # total retro newly created in other lists
 
 # Request to get every card off of the sprint board
 url = "https://api.trello.com/1/boards/" + config_var["board_id"] + "/cards"
@@ -71,7 +92,6 @@ for card in response_data:
     labels_list = card["labels"]
     card_labels = [subitem["name"] for subitem in labels_list]
     # Check to ignore monitoring cards and counting and template card in count
-    # IDS NEED TO BE MOVED TO CONFIG
     if "Monitoring" in card_labels or card["id"] == config_var["sprint_calc_card"] or config_var["unplanned_template_card"] == "":
         continue
 
@@ -83,18 +103,69 @@ for card in response_data:
 
     # Handle if in done list
     if "Done" in card.list_name:
-        total_done_list += card.size["size"]
+        total_done_list += card.size["spent"]
+        if "RETRO" in card.labels:
+            sp_retro_completed += card.size["spent"]
     
     # Handle if still on other parts of the board
-    if "Done" not in card.labels:
+    if "Done" not in card.list_name:
+        if "UNPLANNED" in card.labels:
+            if card.size["spent"] > 0:
+                sp_unplanned_partial_completed += card.size["spent"]
+            elif card.size["spent"] == 0:
+                sp_unplanned_remaining += card.size["remaining"]
+        elif "RETRO" in card.labels:
+            sp_retro_leftover += card.size["remaining"]
         # If partially completed
-        if card.size["remaining"] > 0:
+        elif card.size["remaining"] > 0:
             sp_planned_partial_completed += card.size["remaining"]
 
-while True:
-    user_planned_total = input("How much was planned in the previous Sprint? ") # from summary card
-    try: 
-        user_planned_total = int(user_planned_total)
-        break
-    except ValueError:
-        print("Please give a valid number.")
+sp_planned_total = input("How much was planned for this Sprint? ") # from summary card
+sp_planned_total = validate_user_input(sp_planned_total)
+
+# Calculations
+# ============
+# unplanned points completed = total unplanned - remaining
+# intermediary to calculate sp_planned_completed
+sp_unplanned_donelist = sp_unplanned_total - sp_unplanned_remaining - sp_unplanned_partial_completed
+# planned points completed = total completed + partial done on any other lists + additional spent above planned/total in done - unplanned completed
+# (note: total_completed does not reflect "sp_retro_completed" (i.e. additional SP spent above planned size))
+sp_planned_completed = total_donelist + sp_planned_partial_completed - sp_unplanned_donelist
+# unplanned left over 
+sp_planned_leftover = sp_planned_total - sp_planned_completed
+# Total unplanned completed
+sp_unplanned_completed = sp_unplanned_donelist + sp_unplanned_partial_completed
+# Total retro: indicates problem in discovery
+sp_retro_total = sp_retro_completed + sp_retro_leftover
+
+def get_long_sprint_controls(defaults = [10, 10, 0, 0, 10], variables = ["last Sprint days", "next Sprint days", "total days missed last Sprint", "total days planned missed next Sprint", "members working this coming Sprint"]):
+    sprint_controls = []
+    for i in range(len(defaults)):
+        default = defaults[i]
+        var = variables[i]
+        user_input = input("Enter number of " + var + " (default: " + str(default) + "): ")
+        if user_input == "":
+            sprint_controls.append(default)
+        else:
+            sprint_controls.append(validate_user_input(user_input))
+    return sprint_controls
+
+# Next sprint target
+def calc_planned_next_sprint():
+  #' calculate target planned points for next sprint
+  avg_unplanned = statistics.mean([6, 8, 9, 6, 15, 14])
+  # control for long sprints / vacation
+  sprint_days_last, sprint_days_next, total_days_missed_last, total_days_to_be_missed, n_members = get_long_sprint_controls()
+  length_adjustment = sprint_days_last / sprint_days_next
+  pto_adjustment = (total_days_to_be_missed - total_days_missed_last) / n_members
+  
+  sp_next_sprint = math.ceil((sp_planned_completed + sp_unplanned_completed - avg_unplanned) / length_adjustment - pto_adjustment)
+                             # calculate total story 
+                                                    # points we can complete
+                                                                             # adjust for expected unplanned work
+                                                                                              # adjust for non-standard sprint duration
+                                                                                                                  # adjust for pto
+    
+  return(sp_next_sprint)
+sp_next_sprint = calc_planned_next_sprint()
+
