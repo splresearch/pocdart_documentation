@@ -169,3 +169,25 @@ def calc_planned_next_sprint():
   return(sp_next_sprint)
 sp_next_sprint = calc_planned_next_sprint()
 
+# OUTPUT
+# ======
+def output_current():
+    print("SP: Planned  " + str(sp_planned_total) + "(T)," + str(sp_planned_completed) + "(A) (+" + str(sp_retro_completed) + "retro completed)\n")
+    print("SP: Unplanned " + str(sp_unplanned_total) + "(T), " + str(sp_unplanned_completed) + "(A)\n")
+    print(str(sp_planned_leftover - sp_retro_completed) + "(L.O.);" + str(sp_retro_leftover) + "Retro into next sprint\n")
+    print("SP: Target for next sprint:" + str(sp_next_sprint))
+    print()
+
+def output_proposal():
+    # adjust sp_planned_completed
+    sp_planned_completed <- total_done_list + sp_planned_partial_completed - sp_unplanned_donelist
+  
+    print("SP Planned   :" + str(sp_planned_total) + "(T)," + str(sp_planned_completed) + "(A)" + str(sp_planned_leftover) + "(LO)")
+    print("SP Unplanned :" + str(sp_unplanned_total) + "(T)," + str(sp_unplanned_completed) + "(A)" + str(sp_unplanned_remaining) + "(LO)")
+    print("SP Retro     :" + str(sp_retro_total) + "(T)," + str(sp_retro_completed) + "(A)" + str(sp_retro_leftover) + "(LO)")
+    print("======================")
+    print("SP: Target for next sprint:" + str(sp_next_sprint))
+  
+output_current()
+print("`````````````````````````````````````````````````````````\n")
+output_proposal()
