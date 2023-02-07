@@ -4,8 +4,6 @@ import math
 import re
 import requests
 
-import pdb
-
 # API key and token and board id should be stored in config, away from posting on GitHub
 with open("config.json") as config_file:
     config_var = json.load(config_file)
@@ -150,8 +148,6 @@ sp_planned_leftover = sp_planned_total - sp_planned_completed
 sp_unplanned_completed = sp_unplanned_donelist + sp_unplanned_partial_completed
 # Total retro: indicates problem in discovery
 sp_retro_total = sp_retro_completed + sp_retro_leftover
-
-pdb.set_trace()
 
 def get_long_sprint_controls(defaults=[10, 10, 0, 0, 10]):
     variables = ["last Sprint days", "next Sprint days", "total days missed last Sprint",
