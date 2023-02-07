@@ -154,7 +154,7 @@ sp_unplanned_completed = sp_unplanned_donelist + sp_unplanned_partial_completed
 sp_retro_total = sp_retro_completed + sp_retro_leftover
 
 
-def get_long_sprint_controls(defaults=[10, 10, 0, 0, 10]):
+def get_long_sprint_controls(defaults=[10, 10, 0, 0, 9]):
     variables = ["last Sprint days", "next Sprint days", "total days missed last Sprint",
                  "total days planned missed next Sprint", "members working this coming Sprint"]
 
