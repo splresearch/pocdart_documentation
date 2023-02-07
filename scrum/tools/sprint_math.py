@@ -4,7 +4,8 @@ import math
 import re
 import requests
 
-# API key and token and board id should be stored in config, away from posting on GitHub
+# API key and token and board id should be stored in config, away from
+# posting on GitHub
 with open("config.json") as config_file:
     config_var = json.load(config_file)
 
@@ -37,7 +38,7 @@ def validate_user_input(user_input):
         try:
             user_input = int(user_input)
             break
-        except:
+        except BaseException:
             user_input = input("Invalid input; enter a number: ")
     return user_input
 
@@ -57,7 +58,9 @@ class Card:
         plugin_data = request_call(url=url, have_headers=False)
 
         # Parse request for card size
-        values = re.findall(r'"size":(\d+),\s*"spent":(\d+)', plugin_data[0]['value'])
+        values = re.findall(
+            r'"size":(\d+),\s*"spent":(\d+)',
+            plugin_data[0]['value'])
         self.size = {
             "size": int(values[0][0]),
             "spent": int(values[0][1]),
@@ -99,7 +102,8 @@ for card in sprint_cards:
     labels_list = card["labels"]
     card_labels = [subitem["name"] for subitem in labels_list]
     # Check to ignore monitoring cards and counting and template card in count
-    if "Monitoring" in card_labels or card["id"] == config_var["sprint_calc_card"] or card["id"] == config_var["unplanned_template_card"]:
+    if "Monitoring" in card_labels or card["id"] == config_var[
+            "sprint_calc_card"] or card["id"] == config_var["unplanned_template_card"]:
         continue
 
     new_card = Card(card_id=card["id"], card_name=card["name"],
@@ -149,6 +153,7 @@ sp_unplanned_completed = sp_unplanned_donelist + sp_unplanned_partial_completed
 # Total retro: indicates problem in discovery
 sp_retro_total = sp_retro_completed + sp_retro_leftover
 
+
 def get_long_sprint_controls(defaults=[10, 10, 0, 0, 10]):
     variables = ["last Sprint days", "next Sprint days", "total days missed last Sprint",
                  "total days planned missed next Sprint", "members working this coming Sprint"]
@@ -164,6 +169,7 @@ def get_long_sprint_controls(defaults=[10, 10, 0, 0, 10]):
         else:
             sprint_controls.append(validate_user_input(user_input))
     return sprint_controls
+
 
 def calc_planned_next_sprint():
     # ' calculate target planned points for next sprint
@@ -183,6 +189,7 @@ def calc_planned_next_sprint():
     # adjust for pto
 
     return sp_next_sprint
+
 
 sp_next_sprint = calc_planned_next_sprint()
 
