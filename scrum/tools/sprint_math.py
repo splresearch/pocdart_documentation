@@ -4,6 +4,8 @@ import math
 import re
 import requests
 
+import pdb
+
 # API key and token and board id should be stored in config, away from posting on GitHub
 with open("config.json") as config_file:
     config_var = json.load(config_file)
@@ -29,7 +31,7 @@ def request_call(url, have_headers):
         headers=headers
     )
 
-    return json.loads(response)
+    return response.json()
 
 
 def validate_user_input(user_input):
@@ -54,26 +56,20 @@ class Card:
     def fetch_card_size(self):
         # Request pluginData using id
         url = "https://api.trello.com/1/cards/" + self.id + "/pluginData"
-        response_data = request_call(url=url, have_headers=False)
+        plugin_data = request_call(url=url, have_headers=False)
 
         # Parse request for card size
-        values = re.findall(r'"size":(\d+),\s*"spent":(\d+)', response_data)
+        values = re.findall(r'"size":(\d+),\s*"spent":(\d+)', plugin_data[0]['value'])
         self.size = {
             "size": int(values[0][0]),
             "spent": int(values[0][1]),
             "remaining": int(values[0][0]) - int(values[0][1])
         }
 
-    def fetch_list(self, list_id):
-        # Request list data using board id
-
-        url = "https://api.trello.com/1/boards/" + \
-            config_var["board_id"] + "/lists"
-        response_data = request_call(url=url, have_headers=True)
-
+    def fetch_list_name(self, list_id):
         # Parse request for matching list
         self.list_name = next(
-            list_obj for list_obj in response_data if list_obj["id"] == list_id)["name"]
+            list_obj for list_obj in sprint_lists if list_obj["id"] in list_id)["name"]
 
 
 # INPUTS
@@ -95,41 +91,44 @@ sp_retro_leftover = 0  # total retro newly created in other lists
 
 # Request to get every card off of the sprint board
 url = "https://api.trello.com/1/boards/" + config_var["board_id"] + "/cards"
-response_data = request_call(url=url, have_headers=False)
+sprint_cards = request_call(url=url, have_headers=False)
+# Request list data using board id
+url = "https://api.trello.com/1/boards/" + config_var["board_id"] + "/lists"
+sprint_lists = request_call(url=url, have_headers=True)
 
 # Parse request in for loop
-for card in response_data:
+for card in sprint_cards:
     labels_list = card["labels"]
     card_labels = [subitem["name"] for subitem in labels_list]
     # Check to ignore monitoring cards and counting and template card in count
-    if "Monitoring" in card_labels or card["id"] == config_var["sprint_calc_card"] or config_var["unplanned_template_card"] == "":
+    if "Monitoring" in card_labels or card["id"] == config_var["sprint_calc_card"] or card["id"] == config_var["unplanned_template_card"]:
         continue
 
     new_card = Card(card_id=card["id"], card_name=card["name"],
                     labels=card_labels, list_id=card["idList"])
 
     # Handle if unplanned
-    if "UNPLANNED" in card.labels:
-        sp_unplanned_total += card.size["size"]
+    if "UNPLANNED" in new_card.labels:
+        sp_unplanned_total += new_card.size["size"]
 
     # Handle if in done list
-    if "Done" in card.list_name:
-        total_done_list += card.size["spent"]
-        if "RETRO" in card.labels:
-            sp_retro_completed += card.size["spent"]
+    if "Done" in new_card.list_name:
+        total_done_list += new_card.size["spent"]
+        if "RETRO" in new_card.labels:
+            sp_retro_completed += new_card.size["spent"]
 
     # Handle if still on other parts of the board
-    if "Done" not in card.list_name:
-        if "UNPLANNED" in card.labels:
-            if card.size["spent"] > 0:
-                sp_unplanned_partial_completed += card.size["spent"]
-            elif card.size["spent"] == 0:
-                sp_unplanned_remaining += card.size["remaining"]
-        elif "RETRO" in card.labels:
-            sp_retro_leftover += card.size["remaining"]
+    if "Done" not in new_card.list_name:
+        if "UNPLANNED" in new_card.labels:
+            if new_card.size["spent"] > 0:
+                sp_unplanned_partial_completed += new_card.size["spent"]
+            elif new_card.size["spent"] == 0:
+                sp_unplanned_remaining += new_card.size["remaining"]
+        elif "RETRO" in new_card.labels:
+            sp_retro_leftover += new_card.size["remaining"]
         # If partially completed
-        elif card.size["remaining"] > 0:
-            sp_planned_partial_completed += card.size["remaining"]
+        elif new_card.size["spent"] > 0:
+            sp_planned_partial_completed += new_card.size["spent"]
 
 sp_planned_total = input(
     "How much was planned for this Sprint? ")  # from summary card
@@ -143,7 +142,7 @@ sp_unplanned_donelist = sp_unplanned_total - \
     sp_unplanned_remaining - sp_unplanned_partial_completed
 # planned points completed = total completed + partial done on any other lists + additional spent above planned/total in done - unplanned completed
 # (note: total_completed does not reflect "sp_retro_completed" (i.e. additional SP spent above planned size))
-sp_planned_completed = total_donelist + \
+sp_planned_completed = total_done_list + \
     sp_planned_partial_completed - sp_unplanned_donelist
 # unplanned left over
 sp_planned_leftover = sp_planned_total - sp_planned_completed
@@ -152,6 +151,7 @@ sp_unplanned_completed = sp_unplanned_donelist + sp_unplanned_partial_completed
 # Total retro: indicates problem in discovery
 sp_retro_total = sp_retro_completed + sp_retro_leftover
 
+pdb.set_trace()
 
 def get_long_sprint_controls(defaults=[10, 10, 0, 0, 10]):
     variables = ["last Sprint days", "next Sprint days", "total days missed last Sprint",
@@ -168,9 +168,6 @@ def get_long_sprint_controls(defaults=[10, 10, 0, 0, 10]):
         else:
             sprint_controls.append(validate_user_input(user_input))
     return sprint_controls
-
-# Next sprint target
-
 
 def calc_planned_next_sprint():
     # ' calculate target planned points for next sprint
@@ -191,7 +188,6 @@ def calc_planned_next_sprint():
 
     return sp_next_sprint
 
-
 sp_next_sprint = calc_planned_next_sprint()
 
 # OUTPUT
@@ -199,13 +195,13 @@ sp_next_sprint = calc_planned_next_sprint()
 
 
 def output_current():
-    print("SP: Planned  " + str(sp_planned_total) + "(T)," + str(sp_planned_completed) +
-          "(A) (+" + str(sp_retro_completed) + "retro completed)\n")
+    print("SP: Planned  " + str(sp_planned_total) + "(T), " + str(sp_planned_completed) +
+          "(A) (+" + str(sp_retro_completed) + " retro completed)\n")
     print("SP: Unplanned " + str(sp_unplanned_total) +
           "(T), " + str(sp_unplanned_completed) + "(A)\n")
-    print(str(sp_planned_leftover - sp_retro_completed) + "(L.O.);" +
-          str(sp_retro_leftover) + "Retro into next sprint\n")
-    print("SP: Target for next sprint:" + str(sp_next_sprint))
+    print(str(sp_planned_leftover - sp_retro_completed) + "(L.O.); " +
+          str(sp_retro_leftover) + " Retro into next sprint\n")
+    print("SP: Target for next sprint: " + str(sp_next_sprint))
     print()
 
 
@@ -214,14 +210,14 @@ def output_proposal():
     sp_planned_completed < - total_done_list + \
         sp_planned_partial_completed - sp_unplanned_donelist
 
-    print("SP Planned   :" + str(sp_planned_total) + "(T)," +
-          str(sp_planned_completed) + "(A)" + str(sp_planned_leftover) + "(LO)")
-    print("SP Unplanned :" + str(sp_unplanned_total) + "(T)," +
-          str(sp_unplanned_completed) + "(A)" + str(sp_unplanned_remaining) + "(LO)")
-    print("SP Retro     :" + str(sp_retro_total) + "(T)," +
-          str(sp_retro_completed) + "(A)" + str(sp_retro_leftover) + "(LO)")
+    print("SP Planned   : " + str(sp_planned_total) + "(T), " +
+          str(sp_planned_completed) + "(A) " + str(sp_planned_leftover) + "(LO)")
+    print("SP Unplanned :" + str(sp_unplanned_total) + "(T), " +
+          str(sp_unplanned_completed) + "(A) " + str(sp_unplanned_remaining) + "(LO)")
+    print("SP Retro     :" + str(sp_retro_total) + "(T), " +
+          str(sp_retro_completed) + "(A) " + str(sp_retro_leftover) + "(LO)")
     print("======================")
-    print("SP: Target for next sprint:" + str(sp_next_sprint))
+    print("SP: Target for next sprint: " + str(sp_next_sprint))
 
 
 output_current()
