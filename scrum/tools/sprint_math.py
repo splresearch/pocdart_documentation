@@ -57,15 +57,23 @@ class Card:
         url = "https://api.trello.com/1/cards/" + self.id + "/pluginData"
         plugin_data = request_call(url=url, have_headers=False)
 
-        # Parse request for card size
-        values = re.findall(
-            r'"size":(\d+),\s*"spent":(\d+)',
-            plugin_data[0]['value'])
-        self.size = {
-            "size": int(values[0][0]),
-            "spent": int(values[0][1]),
-            "remaining": int(values[0][0]) - int(values[0][1])
-        }
+        if (not plugin_data):
+            print("This card, " + self.name + ", has not been estimated, assigned values of 0")
+            self.size = {
+                "size": 0,
+                "spent": 0,
+                "remaining": 0
+            }
+        else:
+            # Parse request for card size
+            values = re.findall(
+                r'"size":(\d+),\s*"spent":(\d+)',
+                plugin_data[0]['value'])
+            self.size = {
+                "size": int(values[0][0]),
+                "spent": int(values[0][1]),
+                "remaining": int(values[0][0]) - int(values[0][1])
+            }
 
     def fetch_list_name(self, list_id):
         # Parse request for matching list
@@ -105,7 +113,8 @@ for card in sprint_cards:
     if "Monitoring" in card_labels or card["id"] == config_var["unplanned_template_card"]:
         continue
     elif card["id"] == config_var["sprint_calc_card"]:
-        unplanned_past_sprints = re.findall(r"unplanned: (\d+)", card["desc"], re.IGNORECASE)
+        unplanned_past_sprints = re.findall(r"unplanned: \*{2}(\d+)", card["desc"], re.IGNORECASE)
+        unplanned_past_sprints = [int(i) for i in unplanned_past_sprints]
         continue
 
     new_card = Card(card_id=card["id"], card_name=card["name"],
