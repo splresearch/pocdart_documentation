@@ -102,8 +102,10 @@ for card in sprint_cards:
     labels_list = card["labels"]
     card_labels = [subitem["name"] for subitem in labels_list]
     # Check to ignore monitoring cards and counting and template card in count
-    if "Monitoring" in card_labels or card["id"] == config_var[
-            "sprint_calc_card"] or card["id"] == config_var["unplanned_template_card"]:
+    if "Monitoring" in card_labels or card["id"] == config_var["unplanned_template_card"]:
+        continue
+    elif card["id"] == config_var["sprint_calc_card"]:
+        unplanned_past_sprints = re.findall(r"unplanned: (\d+)", card["desc"], re.IGNORECASE)
         continue
 
     new_card = Card(card_id=card["id"], card_name=card["name"],
@@ -173,7 +175,7 @@ def get_long_sprint_controls(defaults=[10, 10, 0, 0, 9]):
 
 def calc_planned_next_sprint():
     # ' calculate target planned points for next sprint
-    avg_unplanned = statistics.mean([6, 8, 9, 6, 15, 14])
+    avg_unplanned = statistics.median(unplanned_past_sprints)
     # control for long sprints / vacation
     sprint_days_last, sprint_days_next, total_days_missed_last, total_days_to_be_missed, n_members = get_long_sprint_controls()
     length_adjustment = sprint_days_last / sprint_days_next
