@@ -59,9 +59,7 @@ class Card:
 
         if not plugin_data:
             print(
-                "This card, " +
-                self.name +
-                ", has not been estimated, assigned values of 0")
+                f"This card, {self.name}, has not been estimated, assigned values of 0")
             self.size = {
                 "size": 0,
                 "spent": 0,
@@ -101,13 +99,12 @@ sp_unplanned_partial_completed = 0
 sp_retro_completed = 0
 sp_retro_leftover = 0  # total retro newly created in other lists
 
+board_id = config_var["board_id"]
 # Request to get every card off of the sprint board
-cards_url = "https://api.trello.com/1/boards/" + \
-    config_var["board_id"] + "/cards"
+cards_url = f"https://api.trello.com/1/boards/{board_id}/cards"
 sprint_cards = request_call(url=cards_url, have_headers=False)
 # Request list data using board id
-lists_url = "https://api.trello.com/1/boards/" + \
-    config_var["board_id"] + "/lists"
+lists_url = f"https://api.trello.com/1/boards/{board_id}/lists"
 sprint_lists = request_call(url=lists_url, have_headers=True)
 
 # Parse request in for loop
@@ -172,15 +169,19 @@ sp_retro_total = sp_retro_completed + sp_retro_leftover
 
 
 def get_long_sprint_controls(defaults=[10, 10, 0, 0, 9]):
-    variables = ["last Sprint days", "next Sprint days", "total days missed last Sprint",
-                 "total days planned missed next Sprint", "members working this coming Sprint"]
+    variables = [
+        "last Sprint days",
+        "next Sprint days",
+        "total days missed last Sprint",
+        "total days planned missed next Sprint",
+        "members working this coming Sprint"]
 
     sprint_controls = []
     for i in range(len(defaults)):
         default = defaults[i]
         var = variables[i]
-        user_input = input("Enter number of " + var +
-                           " (default: " + str(default) + "): ")
+        user_input = input(
+            f"Enter number of {var} (default: {str(default)}): ")
         if user_input == "":
             sprint_controls.append(default)
         else:
@@ -208,14 +209,12 @@ sp_next_sprint = calc_planned_next_sprint()
 
 
 def output_current():
-    print("SP: Planned  " + str(sp_planned_total) + "(T), " + str(sp_planned_completed) +
-          "(A) (+" + str(sp_retro_completed) + " retro completed)\n")
-    print("SP: Unplanned " + str(sp_unplanned_total) +
-          "(T), " + str(sp_unplanned_completed) + "(A)\n")
-    print(str(sp_planned_leftover - sp_retro_completed) + "(L.O.); " +
-          str(sp_retro_leftover) + " Retro into next sprint\n")
-    print("SP: Target for next sprint: " + str(sp_next_sprint))
-    print()
+    print(
+        f"SP: Planned {str(sp_planned_total)}(T), {str(sp_planned_completed)}(A) (+{str(sp_retro_completed)} retro completed)\n")
+    print(
+        f"SP: Unplanned {str(sp_unplanned_total)}(T), {str(sp_unplanned_completed)}(A)\n")
+    print(f"{str(sp_planned_leftover - sp_retro_completed)}(L.O.); {str(sp_retro_leftover)} Retro into next sprint\n")
+    print(f"SP: Target for next sprint: {str(sp_next_sprint)}\n")
 
 
 def output_proposal():
@@ -223,12 +222,12 @@ def output_proposal():
     sp_planned_completed < - total_done_list + \
         sp_planned_partial_completed - sp_unplanned_done_list
 
-    print("SP Planned   : " + str(sp_planned_total) + "(T), " +
-          str(sp_planned_completed) + "(A) " + str(sp_planned_leftover) + "(LO)")
-    print("SP Unplanned :" + str(sp_unplanned_total) + "(T), " +
-          str(sp_unplanned_completed) + "(A) " + str(sp_unplanned_remaining) + "(LO)")
-    print("SP Retro     :" + str(sp_retro_total) + "(T), " +
-          str(sp_retro_completed) + "(A) " + str(sp_retro_leftover) + "(LO)")
+    print(
+        f"SP Planned   : {str(sp_planned_total)}(T), {str(sp_planned_completed)}(A) {str(sp_planned_leftover)}(LO)")
+    print(
+        f"SP Unplanned   : {str(sp_unplanned_total)}(T), {str(sp_unplanned_completed)}(A) {str(sp_unplanned_remaining)}(LO)")
+    print(
+        f"SP Retro   : {str(sp_retro_total)}(T), {str(sp_retro_completed)}(A) {str(sp_retro_leftover)}(LO)")
     print("======================")
     print("SP: Target for next sprint: " + str(sp_next_sprint))
 
