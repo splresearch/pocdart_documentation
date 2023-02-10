@@ -38,7 +38,7 @@ def validate_user_input(user_input):
         try:
             user_input = int(user_input)
             break
-        except BaseException:
+        except ValueError:
             user_input = input("Invalid input; enter a number: ")
     return user_input
 
@@ -57,8 +57,11 @@ class Card:
         url = "https://api.trello.com/1/cards/" + self.id + "/pluginData"
         plugin_data = request_call(url=url, have_headers=False)
 
-        if (not plugin_data):
-            print("This card, " + self.name + ", has not been estimated, assigned values of 0")
+        if not plugin_data:
+            print(
+                "This card, " +
+                self.name +
+                ", has not been estimated, assigned values of 0")
             self.size = {
                 "size": 0,
                 "spent": 0,
@@ -99,11 +102,13 @@ sp_retro_completed = 0
 sp_retro_leftover = 0  # total retro newly created in other lists
 
 # Request to get every card off of the sprint board
-url = "https://api.trello.com/1/boards/" + config_var["board_id"] + "/cards"
-sprint_cards = request_call(url=url, have_headers=False)
+cards_url = "https://api.trello.com/1/boards/" + \
+    config_var["board_id"] + "/cards"
+sprint_cards = request_call(url=cards_url, have_headers=False)
 # Request list data using board id
-url = "https://api.trello.com/1/boards/" + config_var["board_id"] + "/lists"
-sprint_lists = request_call(url=url, have_headers=True)
+lists_url = "https://api.trello.com/1/boards/" + \
+    config_var["board_id"] + "/lists"
+sprint_lists = request_call(url=lists_url, have_headers=True)
 
 # Parse request in for loop
 for card in sprint_cards:
@@ -112,8 +117,9 @@ for card in sprint_cards:
     # Check to ignore monitoring cards and counting and template card in count
     if "Monitoring" in card_labels or card["id"] == config_var["unplanned_template_card"]:
         continue
-    elif card["id"] == config_var["sprint_calc_card"]:
-        unplanned_past_sprints = re.findall(r"unplanned: \*{2}(\d+)", card["desc"], re.IGNORECASE)
+    if card["id"] == config_var["sprint_calc_card"]:
+        unplanned_past_sprints = re.findall(
+            r"unplanned: \*{2}(\d+)", card["desc"], re.IGNORECASE)
         unplanned_past_sprints = [int(i) for i in unplanned_past_sprints]
         continue
 
@@ -147,20 +153,20 @@ sp_planned_total = input(
     "How much was planned for this Sprint? ")  # from summary card
 sp_planned_total = validate_user_input(sp_planned_total)
 
-# Calculations
+# CALCULATIONS
 # ============
 # unplanned points completed = total unplanned - remaining
 # intermediary to calculate sp_planned_completed
-sp_unplanned_donelist = sp_unplanned_total - \
+sp_unplanned_done_list = sp_unplanned_total - \
     sp_unplanned_remaining - sp_unplanned_partial_completed
 # planned points completed = total completed + partial done on any other lists + additional spent above planned/total in done - unplanned completed
 # (note: total_completed does not reflect "sp_retro_completed" (i.e. additional SP spent above planned size))
 sp_planned_completed = total_done_list + \
-    sp_planned_partial_completed - sp_unplanned_donelist
+    sp_planned_partial_completed - sp_unplanned_done_list
 # unplanned left over
 sp_planned_leftover = sp_planned_total - sp_planned_completed
 # Total unplanned completed
-sp_unplanned_completed = sp_unplanned_donelist + sp_unplanned_partial_completed
+sp_unplanned_completed = sp_unplanned_done_list + sp_unplanned_partial_completed
 # Total retro: indicates problem in discovery
 sp_retro_total = sp_retro_completed + sp_retro_leftover
 
@@ -191,15 +197,8 @@ def calc_planned_next_sprint():
     pto_adjustment = (total_days_to_be_missed -
                       total_days_missed_last) / n_members
 
-    sp_next_sprint = math.ceil((sp_planned_completed + sp_unplanned_completed -
-                               avg_unplanned) / length_adjustment - pto_adjustment)
-    # calculate total story
-    # points we can complete
-    # adjust for expected unplanned work
-    # adjust for non-standard sprint duration
-    # adjust for pto
-
-    return sp_next_sprint
+    return math.ceil((sp_planned_completed + sp_unplanned_completed -
+                      avg_unplanned) / length_adjustment - pto_adjustment)
 
 
 sp_next_sprint = calc_planned_next_sprint()
@@ -222,7 +221,7 @@ def output_current():
 def output_proposal():
     # adjust sp_planned_completed
     sp_planned_completed < - total_done_list + \
-        sp_planned_partial_completed - sp_unplanned_donelist
+        sp_planned_partial_completed - sp_unplanned_done_list
 
     print("SP Planned   : " + str(sp_planned_total) + "(T), " +
           str(sp_planned_completed) + "(A) " + str(sp_planned_leftover) + "(LO)")
