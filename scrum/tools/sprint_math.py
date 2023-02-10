@@ -11,6 +11,15 @@ with open("config.json") as config_file:
 
 
 def request_call(url, have_headers):
+    """Makes a GET request to the specified board using the requests library.
+
+    Args:
+        url: str, the URL to make the GET request to.
+        have_headers: bool, specifies if the request should include headers.
+
+    Returns:
+        dict, the JSON response from the API.
+    """
     if have_headers:
         headers = {
             "Accept": "application/json"
@@ -34,6 +43,14 @@ def request_call(url, have_headers):
 
 
 def validate_user_input(user_input):
+    """Validates the user input to ensure it is a valid integer.
+
+    Args:
+        user_input: str, the input provided by the user.
+
+    Returns:
+        int, the validated user input as an integer.
+    """
     while True:
         try:
             user_input = int(user_input)
@@ -44,6 +61,19 @@ def validate_user_input(user_input):
 
 
 class Card:
+    """Representation of a Trello card.
+
+    Attributes:
+        id: str, the ID of the card.
+        name: str, the name of the card.
+        labels: list, the labels associated with the card.
+        size: dict, the size of the card and the amount of time spent/remaining on it.
+        list_name: str, the name of the list the card is associated with.
+
+    Methods:
+        fetch_card_size: Retrieves the size of the card.
+        fetch_list_name: Retrieves the name of the list the card is associated with.
+    """
     def __init__(self, card_id, card_name, labels, list_id):
         self.id = card_id
         self.name = card_name
@@ -53,7 +83,7 @@ class Card:
         self.fetch_list_name(list_id)
 
     def fetch_card_size(self):
-        # Request pluginData using id
+        """Retrieves the size of the card."""
         url = "https://api.trello.com/1/cards/" + self.id + "/pluginData"
         plugin_data = request_call(url=url, have_headers=False)
 
@@ -77,7 +107,11 @@ class Card:
             }
 
     def fetch_list_name(self, list_id):
-        # Parse request for matching list
+        """Retrieves the name of the list the card is associated with.
+
+        Args:
+            list_id: str, the ID of the list to retrieve the name for.
+        """
         self.list_name = next(
             list_obj for list_obj in sprint_lists if list_obj["id"] in list_id)["name"]
 
@@ -169,6 +203,16 @@ sp_retro_total = sp_retro_completed + sp_retro_leftover
 
 
 def get_long_sprint_controls(defaults=[10, 10, 0, 0, 9]):
+    """Prompts the user to enter values for sprint control variables.
+
+    Args:
+        defaults: A list of default values for each sprint control variable.
+
+    Returns:
+        A list of values entered by the user, with default values used if no input
+        was provided.
+
+    """
     variables = [
         "last Sprint days",
         "next Sprint days",
@@ -190,6 +234,11 @@ def get_long_sprint_controls(defaults=[10, 10, 0, 0, 9]):
 
 
 def calc_planned_next_sprint():
+    """Calculates the target planned points for the next sprint.
+
+    Returns:
+        int: The calculated target planned points for the next sprint.
+    """
     # ' calculate target planned points for next sprint
     avg_unplanned = statistics.median(unplanned_past_sprints)
     # control for long sprints / vacation
@@ -209,6 +258,9 @@ sp_next_sprint = calc_planned_next_sprint()
 
 
 def output_current():
+    """
+    Prints out the current status of the sprint.
+    """
     print(
         f"SP: Planned {str(sp_planned_total)}(T), {str(sp_planned_completed)}(A) (+{str(sp_retro_completed)} retro completed)\n")
     print(
@@ -218,6 +270,9 @@ def output_current():
 
 
 def output_proposal():
+    """
+    Outputs the proposal for SP (Story Points) for the next sprint.
+    """
     # adjust sp_planned_completed
     sp_planned_completed < - total_done_list + \
         sp_planned_partial_completed - sp_unplanned_done_list
