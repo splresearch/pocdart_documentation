@@ -9,7 +9,10 @@ import requests
 with open("config.json") as config_file:
     config_var = json.load(config_file)
 
+    
 
+# HELPER FUNCTIONS
+# ======
 def request_call(url, have_headers):
     """Makes a GET request to the specified board using the requests library.
 
@@ -60,6 +63,9 @@ def validate_user_input(user_input):
     return user_input
 
 
+
+# CARD CLASS
+# ======
 class Card:
     """Representation of a Trello card.
 
@@ -87,6 +93,7 @@ class Card:
         url = "https://api.trello.com/1/cards/" + self.id + "/pluginData"
         plugin_data = request_call(url=url, have_headers=False)
 
+        # If the card size module has not been filled out, set everything to zero
         if not plugin_data:
             print(
                 f"This card, {self.name}, has not been estimated, assigned values of 0")
@@ -110,10 +117,11 @@ class Card:
         """Retrieves the name of the list the card is associated with.
 
         Args:
-            list_id: str, the ID of the list to retrieve the name for.
+            list_id: str, Python list of the Trello list IDs to retrieve the name for.
         """
         self.list_name = next(
             list_obj for list_obj in sprint_lists if list_obj["id"] in list_id)["name"]
+
 
 
 # INPUTS
@@ -133,6 +141,7 @@ sp_unplanned_partial_completed = 0
 sp_retro_completed = 0
 sp_retro_leftover = 0  # total retro newly created in other lists
 
+# Pull board id from config
 board_id = config_var["board_id"]
 # Request to get every card off of the sprint board
 cards_url = f"https://api.trello.com/1/boards/{board_id}/cards"
@@ -141,13 +150,15 @@ sprint_cards = request_call(url=cards_url, have_headers=False)
 lists_url = f"https://api.trello.com/1/boards/{board_id}/lists"
 sprint_lists = request_call(url=lists_url, have_headers=True)
 
-# Parse request in for loop
+# Parse every card in request
 for card in sprint_cards:
+    # Gather all labels for current card
     labels_list = card["labels"]
     card_labels = [subitem["name"] for subitem in labels_list]
     # Check to ignore monitoring cards and counting and template card in count
     if "Monitoring" in card_labels or card["id"] == config_var["unplanned_template_card"]:
         continue
+    # If the card is the Sprint calc history card, pull out all the unplanned story points from previous Sprints
     if card["id"] == config_var["sprint_calc_card"]:
         unplanned_past_sprints = re.findall(
             r"unplanned: \*{2}(\d+)", card["desc"], re.IGNORECASE)
@@ -164,25 +175,31 @@ for card in sprint_cards:
     # Handle if in done list
     if "Done" in new_card.list_name:
         total_done_list += new_card.size["spent"]
+        # If Retro
         if "RETRO" in new_card.labels:
             sp_retro_completed += new_card.size["spent"]
 
     # Handle if still on other parts of the board
     if "Done" not in new_card.list_name:
+        # If unplanned
         if "UNPLANNED" in new_card.labels:
             if new_card.size["spent"] > 0:
                 sp_unplanned_partial_completed += new_card.size["spent"]
             elif new_card.size["spent"] == 0:
                 sp_unplanned_remaining += new_card.size["remaining"]
+        # If Retro
         elif "RETRO" in new_card.labels:
             sp_retro_leftover += new_card.size["remaining"]
         # If partially completed
         elif new_card.size["spent"] > 0:
             sp_planned_partial_completed += new_card.size["spent"]
 
+# Ask user for how much is planned for the upcoming Sprint
 sp_planned_total = input(
     "How much was planned for this Sprint? ")  # from summary card
 sp_planned_total = validate_user_input(sp_planned_total)
+
+
 
 # CALCULATIONS
 # ============
@@ -221,6 +238,7 @@ def get_long_sprint_controls(defaults=[10, 10, 0, 0, 9]):
         "members working this coming Sprint"]
 
     sprint_controls = []
+    # For every Sprint control, get user requested value
     for i in range(len(defaults)):
         default = defaults[i]
         var = variables[i]
@@ -230,6 +248,7 @@ def get_long_sprint_controls(defaults=[10, 10, 0, 0, 9]):
             sprint_controls.append(default)
         else:
             sprint_controls.append(validate_user_input(user_input))
+    # Send back user's selected controls for next Sprint calculation
     return sprint_controls
 
 
@@ -250,13 +269,13 @@ def calc_planned_next_sprint():
     return math.ceil((sp_planned_completed + sp_unplanned_completed -
                       avg_unplanned) / length_adjustment - pto_adjustment)
 
-
+# Call the calc function to get what next Sprint's estimate number of points should be
 sp_next_sprint = calc_planned_next_sprint()
+
+
 
 # OUTPUT
 # ======
-
-
 def output_current():
     """
     Prints out the current status of the sprint.
