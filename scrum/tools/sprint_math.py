@@ -155,8 +155,8 @@ for card in sprint_cards:
     # Gather all labels for current card
     labels_list = card["labels"]
     card_labels = [subitem["name"] for subitem in labels_list]
-    # Check to ignore monitoring cards and counting and template card in count
-    if "Monitoring" in card_labels or card["id"] == config_var["unplanned_template_card"]:
+    # Check to ignore template card in count
+    if card["id"] == config_var["unplanned_template_card"]:
         continue
     # If the card is the Sprint calc history card, pull out all the unplanned story points from previous Sprints
     if card["id"] == config_var["sprint_calc_card"]:
@@ -168,6 +168,10 @@ for card in sprint_cards:
     new_card = Card(card_id=card["id"], card_name=card["name"],
                     labels=card_labels, list_id=card["idList"])
 
+    # Handle if in monitoring
+    if "Monitoring" in new_card.list_name:
+        continue
+    
     # Handle if unplanned
     if "UNPLANNED" in new_card.labels:
         sp_unplanned_total += new_card.size["size"]
@@ -293,7 +297,7 @@ def output_proposal():
     Outputs the proposal for SP (Story Points) for the next sprint.
     """
     # adjust sp_planned_completed
-    sp_planned_completed < - total_done_list + \
+    sp_planned_completed = total_done_list + \
         sp_planned_partial_completed - sp_unplanned_done_list
 
     print(
