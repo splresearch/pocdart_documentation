@@ -45,24 +45,6 @@ def request_call(url, have_headers):
     return response.json()
 
 
-def validate_user_input(user_input):
-    """Validates the user input to ensure it is a valid integer.
-
-    Args:
-        user_input: str, the input provided by the user.
-
-    Returns:
-        int, the validated user input as an integer.
-    """
-    while True:
-        try:
-            user_input = int(user_input)
-            break
-        except ValueError:
-            user_input = input("Invalid input; enter a number: ")
-    return user_input
-
-
 
 # CARD CLASS
 # ======
@@ -198,83 +180,159 @@ for card in sprint_cards:
         elif new_card.size["spent"] > 0:
             sp_planned_partial_completed += new_card.size["spent"]
 
-# Ask user for how much is planned for the upcoming Sprint
-sp_planned_total = input(
-    "How much was planned for this Sprint? ")  # from summary card
-sp_planned_total = validate_user_input(sp_planned_total)
 
 
-
-# CALCULATIONS
+# CALCULATIONS CLASS
 # ============
-# unplanned points completed = total unplanned - remaining
-# intermediary to calculate sp_planned_completed
-sp_unplanned_done_list = sp_unplanned_total - \
-    sp_unplanned_remaining - sp_unplanned_partial_completed
-# planned points completed = total completed + partial done on any other lists + additional spent above planned/total in done - unplanned completed
-# (note: total_completed does not reflect "sp_retro_completed" (i.e. additional SP spent above planned size))
-sp_planned_completed = total_done_list + \
-    sp_planned_partial_completed - sp_unplanned_done_list
-# unplanned left over
-sp_planned_leftover = sp_planned_total - sp_planned_completed
-# Total unplanned completed
-sp_unplanned_completed = sp_unplanned_done_list + sp_unplanned_partial_completed
-# Total retro: indicates problem in discovery
-sp_retro_total = sp_retro_completed + sp_retro_leftover
-
-
-def get_long_sprint_controls(defaults=[10, 10, 0, 0, 9]):
-    """Prompts the user to enter values for sprint control variables.
+class SprintMath:
+    """A class that performs calculations related to the current sprint and the next planned sprint.
 
     Args:
-        defaults: A list of default values for each sprint control variable.
+        sp_unplanned_total (int): The total number of unplanned story points.
+        sp_unplanned_remaining (int): The remaining number of unplanned story points.
+        sp_unplanned_partial_completed (int): The number of partially completed unplanned story points.
+        total_done_list (int): The total number of completed story points across all lists.
+        sp_planned_partial_completed (int): The number of partially completed planned story points.
+        sp_retro_completed (int): The number of story points spent above the planned size.
+        sp_retro_leftover (int): The number of leftover story points from the above mentioned story points.
+        unplanned_past_sprints (int): The number of unplanned story points from the past sprints.
 
-    Returns:
-        A list of values entered by the user, with default values used if no input
-        was provided.
+    Attributes:
+        sp_planned_total (int): The total number of planned story points for the current sprint.
+        sp_unplanned_done_list (int): The number of completed unplanned story points.
+        sp_planned_completed (int): The number of completed planned story points.
+        sp_planned_leftover (int): The number of leftover planned story points.
+        sp_unplanned_completed (int): The total number of completed unplanned story points.
+        sp_retro_total (int): The total number of retro story points.
+        sp_next_sprint (int): The target planned points for the next sprint.
 
+    Methods:
+        __init__(self, sp_unplanned_total, sp_unplanned_remaining, sp_unplanned_partial_completed,
+                 total_done_list, sp_planned_partial_completed, sp_retro_completed,
+                 sp_retro_leftover, unplanned_past_sprints):
+            Initializes the SprintMath object and calculates extra current sprint inputs.
+
+        calc_current_sprint(self):
+            Calculates extra current sprint inputs used later on for other calculations or for the final output.
+
+        get_long_sprint_controls(self):
+            Prompts the user to enter values for sprint control variables.
+
+        validate_user_input(self, user_input):
+            Validates the user input to ensure it is a valid integer.
+
+        calc_planned_next_sprint(self):
+            Calculates the target planned points for the next sprint. Assigns result to sp_next_sprint of current object.
     """
-    variables = [
-        "last Sprint days",
-        "next Sprint days",
-        "total days missed last Sprint",
-        "total days planned missed next Sprint",
-        "members working this coming Sprint"]
+    def __init__(self, sp_unplanned_total = 0, sp_unplanned_remaining = 0, sp_unplanned_partial_completed = 0,
+                 total_done_list = 0, sp_planned_partial_completed = 0, sp_retro_completed = 0,
+                 sp_retro_leftover = 0, unplanned_past_sprints = 0):
+        # Assigning everything captured for calculations later on
+        self.sp_unplanned_total = sp_unplanned_total
+        self.sp_unplanned_remaining = sp_unplanned_remaining
+        self.sp_unplanned_partial_completed = sp_unplanned_partial_completed
+        self.total_done_list = total_done_list
+        self.sp_planned_partial_completed = sp_planned_partial_completed
+        self.sp_retro_completed = sp_retro_completed
+        self.sp_retro_leftover = sp_retro_leftover
+        self.unplanned_past_sprints = unplanned_past_sprints
 
-    sprint_controls = []
-    # For every Sprint control, get user requested value
-    for i in range(len(defaults)):
-        default = defaults[i]
-        var = variables[i]
-        user_input = input(
-            f"Enter number of {var} (default: {str(default)}): ")
-        if user_input == "":
-            sprint_controls.append(default)
-        else:
-            sprint_controls.append(validate_user_input(user_input))
-    # Send back user's selected controls for next Sprint calculation
-    return sprint_controls
+        # Ask user for how much is planned for the upcoming Sprint
+        self.sp_planned_total = input(
+            "How much was planned for this Sprint? ")  # from summary card
+        self.sp_planned_total = self.validate_user_input(self.sp_planned_total)
 
+        # Calculate extra current sprint inputs
+        self.calc_current_sprint()
 
-def calc_planned_next_sprint():
-    """Calculates the target planned points for the next sprint.
+    def calc_current_sprint(self):
+        """Calculate extra current sprint inputs used later on for other calculations or for the final output
+        """
+        # unplanned points completed = total unplanned - remaining
+        # intermediary to calculate sp_planned_completed
+        self.sp_unplanned_done_list = self.sp_unplanned_total - \
+            self.sp_unplanned_remaining - self.sp_unplanned_partial_completed
+        # planned points completed = total completed + partial done on any other lists + additional spent above planned/total in done - unplanned completed
+        # (note: total_completed does not reflect "sp_retro_completed" (i.e. additional SP spent above planned size))
+        self.sp_planned_completed = self.total_done_list + \
+            self.sp_planned_partial_completed - self.sp_unplanned_done_list
 
-    Returns:
-        int: The calculated target planned points for the next sprint.
-    """
-    # ' calculate target planned points for next sprint
-    avg_unplanned = statistics.median(unplanned_past_sprints)
-    # control for long sprints / vacation
-    sprint_days_last, sprint_days_next, total_days_missed_last, total_days_to_be_missed, n_members = get_long_sprint_controls()
-    length_adjustment = sprint_days_last / sprint_days_next
-    pto_adjustment = (total_days_to_be_missed -
-                      total_days_missed_last) / n_members
+        # Planned left over
+        self.sp_planned_leftover = self.sp_planned_total - self.sp_planned_completed
+        # Total unplanned completed
+        self.sp_unplanned_completed = self.sp_unplanned_done_list + self.sp_unplanned_partial_completed
+        # Total retro: indicates problem in discovery
+        self.sp_retro_total = self.sp_retro_completed + self.sp_retro_leftover
 
-    return math.ceil((sp_planned_completed + sp_unplanned_completed -
-                      avg_unplanned) / length_adjustment - pto_adjustment)
+        # Calculate the next Sprint
+        self.calc_planned_next_sprint()
+
+    def get_long_sprint_controls(self):
+        """Prompts the user to enter values for sprint control variables.
+        Args:
+            defaults: A list of default values for each sprint control variable.
+        Returns:
+            A list of values entered by the user, with default values used if no input
+            was provided.
+        """
+        variables = [
+            "last Sprint days",
+            "next Sprint days",
+            "total days missed last Sprint",
+            "total days planned missed next Sprint",
+            "members working this coming Sprint"]
+        defaults = [10, 10, 0, 0, 9]
+
+        sprint_controls = []
+        # For every Sprint control, get user requested value
+        for i in range(len(defaults)):
+            default = defaults[i]
+            var = variables[i]
+            user_input = input(
+                f"Enter number of {var} (default: {str(default)}): ")
+            if user_input == "":
+                sprint_controls.append(default)
+            else:
+                sprint_controls.append(self.validate_user_input(user_input))
+        # Return user's selected controls for next Sprint calculation
+        return sprint_controls
+
+    def validate_user_input(self, user_input):
+        """Validates the user input to ensure it is a valid integer.
+
+        Args:
+            user_input: str, the input provided by the user.
+
+        Returns:
+            int, the validated user input as an integer.
+        """
+        while True:
+            try:
+                user_input = int(user_input)
+                break
+            except ValueError:
+                user_input = input("Invalid input; enter a number: ")
+        return user_input
+
+    def calc_planned_next_sprint(self):
+        """Calculates the target planned points for the next sprint. Assigns result to sp_next_sprint of current object
+        """
+        # Calculate previous Sprints' unplanned points for reference
+        avg_unplanned = statistics.median(self.unplanned_past_sprints)
+        # Controls for things such as long sprints, vacation, etc.
+        sprint_days_last, sprint_days_next, total_days_missed_last, total_days_to_be_missed, n_members = self.get_long_sprint_controls()
+
+        length_adjustment = sprint_days_last / sprint_days_next
+        pto_adjustment = (total_days_to_be_missed -
+                          total_days_missed_last) / n_members
+
+        self.sp_next_sprint = math.ceil((self.sp_planned_completed + self.sp_unplanned_completed -
+                                avg_unplanned) / length_adjustment - pto_adjustment)
 
 # Call the calc function to get what next Sprint's estimate number of points should be
-sp_next_sprint = calc_planned_next_sprint()
+calc_obj = SprintMath(sp_unplanned_total, sp_unplanned_remaining, sp_unplanned_partial_completed,
+                        total_done_list, sp_planned_partial_completed, sp_retro_completed,
+                        sp_retro_leftover, unplanned_past_sprints)
 
 
 
@@ -289,7 +347,7 @@ def output_current():
     print(
         f"SP: Unplanned {str(sp_unplanned_total)}(T), {str(sp_unplanned_completed)}(A)\n")
     print(f"{str(sp_planned_leftover - sp_retro_completed)}(L.O.); {str(sp_retro_leftover)} Retro into next sprint\n")
-    print(f"SP: Target for next sprint: {str(sp_next_sprint)}\n")
+    print(f"SP: Target for next sprint: {str(calc_obj.sp_next_sprint)}\n")
 
 
 def output_proposal():
@@ -307,7 +365,7 @@ def output_proposal():
     print(
         f"SP Retro   : {str(sp_retro_total)}(T), {str(sp_retro_completed)}(A) {str(sp_retro_leftover)}(LO)")
     print("======================")
-    print("SP: Target for next sprint: " + str(sp_next_sprint))
+    print("SP: Target for next sprint: " + str(calc_obj.sp_next_sprint))
 
 
 output_current()
