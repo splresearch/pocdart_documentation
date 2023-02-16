@@ -343,10 +343,10 @@ def output_current():
     Prints out the current status of the sprint.
     """
     print(
-        f"SP: Planned {str(sp_planned_total)}(T), {str(sp_planned_completed)}(A) (+{str(sp_retro_completed)} retro completed)\n")
+        f"SP: Planned {str(calc_obj.sp_planned_total)}(T), {str(calc_obj.sp_planned_completed)}(A) (+{str(calc_obj.sp_retro_completed)} retro completed)\n")
     print(
-        f"SP: Unplanned {str(sp_unplanned_total)}(T), {str(sp_unplanned_completed)}(A)\n")
-    print(f"{str(sp_planned_leftover - sp_retro_completed)}(L.O.); {str(sp_retro_leftover)} Retro into next sprint\n")
+        f"SP: Unplanned {str(calc_obj.sp_unplanned_total)}(T), {str(calc_obj.sp_unplanned_completed)}(A)\n")
+    print(f"{str(calc_obj.sp_planned_leftover - calc_obj.sp_retro_completed)}(L.O.); {str(calc_obj.sp_retro_leftover)} Retro into next sprint\n")
     print(f"SP: Target for next sprint: {str(calc_obj.sp_next_sprint)}\n")
 
 
@@ -355,15 +355,15 @@ def output_proposal():
     Outputs the proposal for SP (Story Points) for the next sprint.
     """
     # adjust sp_planned_completed
-    sp_planned_completed = total_done_list + \
-        sp_planned_partial_completed - sp_unplanned_done_list
+    sp_planned_completed = calc_obj.total_done_list + \
+        calc_obj.sp_planned_partial_completed - calc_obj.sp_unplanned_done_list
 
     print(
-        f"SP Planned   : {str(sp_planned_total)}(T), {str(sp_planned_completed)}(A) {str(sp_planned_leftover)}(LO)")
+        f"SP Planned   : {str(calc_obj.sp_planned_total)}(T), {str(sp_planned_completed)}(A) {str(calc_obj.sp_planned_leftover)}(LO)")
     print(
-        f"SP Unplanned   : {str(sp_unplanned_total)}(T), {str(sp_unplanned_completed)}(A) {str(sp_unplanned_remaining)}(LO)")
+        f"SP Unplanned   : {str(calc_obj.sp_unplanned_total)}(T), {str(calc_obj.sp_unplanned_completed)}(A) {str(calc_obj.sp_unplanned_remaining)}(LO)")
     print(
-        f"SP Retro   : {str(sp_retro_total)}(T), {str(sp_retro_completed)}(A) {str(sp_retro_leftover)}(LO)")
+        f"SP Retro   : {str(calc_obj.sp_retro_total)}(T), {str(calc_obj.sp_retro_completed)}(A) {str(calc_obj.sp_retro_leftover)}(LO)")
     print("======================")
     print("SP: Target for next sprint: " + str(calc_obj.sp_next_sprint))
 
