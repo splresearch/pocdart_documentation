@@ -8,9 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.7", "3.8"]
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python 3.7
@@ -23,4 +20,4 @@ jobs:
         pip install pylint
     - name: Analysing changed code with pylint
       run: |
-        pylint --fail-under=9 $(git diff --name-only  --diff-filter=ACMRTUXB master | grep  -E "(.js$|.ts$|.tsx$)")
+        pylint --fail-under=9 $(git diff --name-only  --diff-filter=ACMRTUXB main | grep  -E "(.js$|.ts$|.tsx$)")
