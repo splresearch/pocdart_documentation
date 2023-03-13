@@ -20,7 +20,7 @@ jobs:
         pip install pylint
     - name: Getting all changed Python files
       run: |
-        echo "changed_files=git diff --name-only  --diff-filter=ACMRTUXB origin/main | grep  -E "(.py$)"" >> $GITHUB_ENV
+        echo "changed_files=git diff --name-only  --diff-filter=ACMRTUXB origin/main | grep  -E ".py$"" >> $GITHUB_ENV
     - name: Analysing changed code with pylint
       if: ${{ env.changed_files != '' }}
       run: |
