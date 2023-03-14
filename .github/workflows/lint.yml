@@ -22,7 +22,7 @@ jobs:
       run: |
         changed_files=$(git diff --name-only  --diff-filter=ACMRTUXB origin/main | grep  -E "(.py$)") >> $GITHUB_ENV
     - name: Analysing changed code with pylint
-      if: ${{ env.changed_files != '' }}
+      if: $changed_files != ''
       run: |
-        echo ${{ env.changed_files }}
-        pylint --fail-under=9 ${{ env.changed_files }}
+        echo $changed_files
+        pylint --fail-under=9 $changed_files
