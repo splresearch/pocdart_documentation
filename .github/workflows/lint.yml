@@ -21,6 +21,7 @@ jobs:
     - name: Getting all changed Python files
       run: |
         changed_files=$(git diff --name-only  --diff-filter=ACMRTUXB origin/main | grep  -E "(.py$)") >> $GITHUB_ENV
+        echo $changed_files
     - name: Analysing changed code with pylint
       if: env.changed_files != ''
       run: |
