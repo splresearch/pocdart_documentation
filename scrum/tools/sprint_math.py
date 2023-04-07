@@ -41,7 +41,8 @@ def request_call(url, have_headers):
         "GET",
         url,
         params=query,
-        headers=headers
+        headers=headers,
+        timeout=60
     )
 
     return response.json()
@@ -288,7 +289,7 @@ class SprintMath:
         self.sp_retro_total = self.sp_retro_completed + self.sp_retro_leftover
 
         # Calculate the next Sprint
-        self.calc_planned_next_sprint()
+        self.sp_next_sprint = self.calc_planned_next_sprint()
 
     def get_long_sprint_controls(self):
         """Prompts the user to enter values for sprint control variables.
@@ -308,7 +309,7 @@ class SprintMath:
 
         sprint_controls = []
         # For every Sprint control, get user requested value
-        for i in range(len(defaults)):
+        for i, _ in enumerate(defaults):
             default = defaults[i]
             var = variables[i]
             user_input = input(
@@ -350,7 +351,7 @@ class SprintMath:
         pto_adjustment = (total_days_to_be_missed -
                           total_days_missed_last) / n_members
 
-        self.sp_next_sprint = math.ceil((self.sp_planned_completed + self.sp_unplanned_completed -
+        return math.ceil((self.sp_planned_completed + self.sp_unplanned_completed -
                                 avg_unplanned) / length_adjustment - pto_adjustment)
 
 # Call the calc function to get what next Sprint's estimate number of points should be
