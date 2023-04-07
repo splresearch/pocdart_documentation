@@ -142,7 +142,7 @@ for card in sprint_cards:
     # Check to ignore template card in count
     if card["id"] == config_var["unplanned_template_card"]:
         continue
-    # If the card is the Sprint calc history card, 
+    # If the card is the Sprint calc history card,
     #   pull out all the unplanned story points from previous Sprints
     if card["id"] == config_var["sprint_calc_card"]:
         unplanned_past_sprints = re.findall(
@@ -273,9 +273,9 @@ class SprintMath:
         # intermediary to calculate sp_planned_completed
         self.sp_unplanned_done_list = self.sp_unplanned_total - \
             self.sp_unplanned_remaining - self.sp_unplanned_partial_completed
-        # planned points completed = total completed + partial done on any other lists + 
+        # planned points completed = total completed + partial done on any other lists +
         #   additional spent above planned/total in done - unplanned completed
-        # (note: total_completed does not reflect "sp_retro_completed" 
+        # (note: total_completed does not reflect "sp_retro_completed"
         #   (i.e. additional SP spent above planned size))
         self.sp_planned_completed = self.total_done_list + \
             self.sp_planned_partial_completed - self.sp_unplanned_done_list
