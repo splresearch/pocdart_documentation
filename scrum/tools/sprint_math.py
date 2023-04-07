@@ -75,7 +75,7 @@ class Card:
 
     def fetch_card_size(self):
         """Retrieves the size of the card."""
-        url = "https://api.trello.com/1/cards/" + self.id + "/pluginData"
+        url = "https://api.trello.com/1/cards/" + self._id + "/pluginData"
         plugin_data = request_call(url=url, have_headers=False)
 
         # If the card size module has not been filled out, set everything to zero
@@ -226,9 +226,14 @@ class SprintMath:
             points for the next sprint.
 
     Methods:
-        __init__(gathered_sp_unplanned_total, gathered_sp_unplanned_remaining, gathered_sp_unplanned_partial_completed,
-                 gathered_total_done_list, gathered_sp_planned_partial_completed, gathered_sp_retro_completed,
-                 gathered_sp_retro_leftover, gathered_unplanned_past_sprints):
+        __init__(gathered_sp_unplanned_total,
+                gathered_sp_unplanned_remaining,
+                gathered_sp_unplanned_partial_completed,
+                gathered_total_done_list,
+                gathered_sp_planned_partial_completed,
+                gathered_sp_retro_completed,
+                gathered_sp_retro_leftover,
+                gathered_unplanned_past_sprints):
             Initializes the SprintMath object and calculates extra current sprint inputs.
 
         calc_current_sprint(self):
@@ -245,9 +250,14 @@ class SprintMath:
             Calculates the target planned points for the next sprint. 
                 Assigns result to sp_next_sprint of current object.
     """
-    def __init__(self, gathered_sp_unplanned_total = 0, gathered_sp_unplanned_remaining = 0, gathered_sp_unplanned_partial_completed = 0,
-                 gathered_total_done_list = 0, gathered_sp_planned_partial_completed = 0, gathered_sp_retro_completed = 0,
-                 gathered_sp_retro_leftover = 0, gathered_unplanned_past_sprints = 0):
+    def __init__(self, gathered_sp_unplanned_total = 0,
+                 gathered_sp_unplanned_remaining = 0,
+                 gathered_sp_unplanned_partial_completed = 0,
+                 gathered_total_done_list = 0,
+                 gathered_sp_planned_partial_completed = 0,
+                 gathered_sp_retro_completed = 0,
+                 gathered_sp_retro_leftover = 0,
+                 gathered_unplanned_past_sprints = 0):
         # Assigning everything captured for calculations later on
         self.sp_unplanned_total = gathered_sp_unplanned_total
         self.sp_unplanned_remaining = gathered_sp_unplanned_remaining
