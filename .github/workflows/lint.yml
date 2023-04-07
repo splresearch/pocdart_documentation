@@ -1,5 +1,6 @@
 name: Pylint Check
 # Requires that changed files reach or exceed the 9.0 threshold
+# For checking more file extensions, do something like "(.js$|.ts$|.tsx$)"
 
 # Only run this Action when making a PR to main
 on:
@@ -23,8 +24,5 @@ jobs:
         pip install requests
     - name: Analysing changed code with pylint
       run: |
-        # For checking more file extensions, do something like "(.js$|.ts$|.tsx$)"
         changed_files=$(git diff --name-only  --diff-filter=ACMRTUXB origin/main | grep  -E "(.py$)")
-        # For debug purposes
-        #echo $changed_files
         pylint --fail-under=9 $changed_files
