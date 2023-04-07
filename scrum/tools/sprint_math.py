@@ -66,7 +66,7 @@ class Card:
         fetch_list_name: Retrieves the name of the list the card is associated with.
     """
     def __init__(self, card_id, card_name, labels, list_id):
-        self.id = card_id
+        self._id = card_id
         self.name = card_name
         self.labels = labels
 
