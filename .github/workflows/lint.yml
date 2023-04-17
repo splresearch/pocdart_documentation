@@ -1,6 +1,7 @@
 name: Pylint Check
 # Requires that changed files reach or exceed the 9.0 threshold
 # For checking more file extensions, do something like "(.js$|.ts$|.tsx$)"
+# For more information on GitHub Action workflows, see https://docs.github.com/en/actions
 
 # Only run this Action when making a PR to main
 on:
@@ -8,6 +9,9 @@ on:
     branches:
       - main
 
+# Step 1: Spin up a container with Python 3.7 to doing the checking in
+# Step 2: Install dependencies needed
+# Step 3: Gather changed files in PR and run them through pylint
 jobs:
   build:
     runs-on: ubuntu-latest
