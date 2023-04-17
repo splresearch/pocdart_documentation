@@ -274,7 +274,7 @@ class SprintMath:
         self.sp_planned_total = self.validate_user_input(self.sp_planned_total)
 
         # Calculate extra current sprint inputs
-        self.calc_current_sprint()
+        self.sp_next_sprint = self.calc_current_sprint()
 
     def calc_current_sprint(self):
         """Calculate extra current sprint inputs used later 
@@ -299,7 +299,7 @@ class SprintMath:
         self.sp_retro_total = self.sp_retro_completed + self.sp_retro_leftover
 
         # Calculate the next Sprint
-        self.sp_next_sprint = self.calc_planned_next_sprint()
+        return self.calc_planned_next_sprint()
 
     def get_long_sprint_controls(self):
         """Prompts the user to enter values for sprint control variables.
