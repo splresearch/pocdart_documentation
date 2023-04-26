@@ -165,9 +165,9 @@ for card in sprint_cards:
     # Handle if in done list
     if "Done" in new_card.list_name:
         TOTAL_DONE_LIST += new_card.size["spent"]
-        # If Retro
-        if "RETRO" in new_card.labels:
-            SP_RETRO_COMPLETED += new_card.size["spent"]
+        # If extra work was spent on card, add to Retro completed
+        if new_card.size["spent"] > new_card.size["size"]:
+            SP_RETRO_COMPLETED = SP_RETRO_COMPLETED + (new_card.size["spent"] - new_card.size["size"])
 
     # Handle if still on other parts of the board
     if "Done" not in new_card.list_name:
