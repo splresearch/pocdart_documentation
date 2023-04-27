@@ -164,7 +164,7 @@ for card in sprint_cards:
 
     # Handle if in done list
     if "Done" in new_card.list_name:
-        TOTAL_DONE_LIST += new_card.size["spent"]
+        TOTAL_DONE_LIST += new_card.size["size"]
         # If extra work was spent on card, add to Retro completed
         if new_card.size["spent"] > new_card.size["size"]:
             SP_RETRO_COMPLETED = SP_RETRO_COMPLETED + (new_card.size["spent"] - new_card.size["size"])
@@ -381,7 +381,7 @@ def output_current():
         f"SP: Planned {str(calc_obj.sp_planned_total)}(T), {str(calc_obj.sp_planned_completed)}(A) (+{str(calc_obj.sp_retro_completed)} retro completed)\n")
     print(
         f"SP: Unplanned {str(calc_obj.sp_unplanned_total)}(T), {str(calc_obj.sp_unplanned_completed)}(A)\n")
-    print(f"{str(calc_obj.sp_planned_leftover - calc_obj.sp_retro_completed)}(L.O.); {str(calc_obj.sp_retro_leftover)} Retro into next sprint\n")
+    print(f"{str(calc_obj.sp_planned_leftover)}(L.O.); {str(calc_obj.sp_retro_leftover)} Retro into next sprint\n")
     print(f"SP: Target for next sprint: {str(calc_obj.sp_next_sprint)}\n")
 
 
