@@ -181,7 +181,7 @@ for card in sprint_cards:
         elif "RETRO" in new_card.labels:
             SP_RETRO_LEFTOVER += new_card.size["remaining"]
         # If partially completed
-        elif new_card.size["spent"] > 0:
+        elif new_card.size["remaining"] > 0:
             SP_PLANNED_PARTIAL_COMPLETED += new_card.size["spent"]
 
 
