@@ -12,7 +12,6 @@ with open("config.json", "r", encoding="utf-8") as config_file:
     config_var = json.load(config_file)
 
 
-
 # HELPER FUNCTIONS
 # ======
 def request_call(url, have_headers):
@@ -48,7 +47,6 @@ def request_call(url, have_headers):
     return response.json()
 
 
-
 # CARD CLASS
 # ======
 class Card:
@@ -65,6 +63,7 @@ class Card:
         fetch_card_size: Retrieves the size of the card.
         fetch_list_name: Retrieves the name of the list the card is associated with.
     """
+
     def __init__(self, card_id, card_name, labels, list_id):
         self._id = card_id
         self.name = card_name
@@ -78,7 +77,8 @@ class Card:
         url = "https://api.trello.com/1/cards/" + self._id + "/pluginData"
         plugin_data = request_call(url=url, have_headers=False)
 
-        # If the card size module has not been filled out, set everything to zero
+        # If the card size module has not been filled out, set everything to
+        # zero
         if not plugin_data:
             print(
                 f"This card, {self.name}, has not been estimated, assigned values of 0")
@@ -106,7 +106,6 @@ class Card:
         """
         self.list_name = next(
             list_obj for list_obj in sprint_lists if list_obj["id"] in list_id)["name"]
-
 
 
 # INPUTS
@@ -168,7 +167,7 @@ for card in sprint_cards:
         # If extra work was spent on card, add to Retro completed
         if new_card.size["spent"] > new_card.size["size"]:
             SP_RETRO_COMPLETED = SP_RETRO_COMPLETED + \
-                  (new_card.size["spent"] - new_card.size["size"])
+                (new_card.size["spent"] - new_card.size["size"])
 
     # Handle if still on other parts of the board
     if "Done" not in new_card.list_name:
@@ -186,44 +185,43 @@ for card in sprint_cards:
             SP_PLANNED_PARTIAL_COMPLETED += new_card.size["spent"]
 
 
-
 # CALCULATIONS CLASS
 # ============
 class SprintMath:
     """A class that performs calculations related to the current sprint and the next planned sprint.
 
     Args:
-        sp_unplanned_total (int): The total number 
+        sp_unplanned_total (int): The total number
             of unplanned story points.
-        sp_unplanned_remaining (int): The remaining number 
+        sp_unplanned_remaining (int): The remaining number
             of unplanned story points.
-        sp_unplanned_partial_completed (int): The number of 
+        sp_unplanned_partial_completed (int): The number of
             partially completed unplanned story points.
-        total_done_list (int): The total number of completed 
+        total_done_list (int): The total number of completed
             story points across all lists.
-        sp_planned_partial_completed (int): The number of partially 
+        sp_planned_partial_completed (int): The number of partially
             completed planned story points.
-        sp_retro_completed (int): The number of story points 
+        sp_retro_completed (int): The number of story points
             spent above the planned size.
-        sp_retro_leftover (int): The number of leftover story points 
+        sp_retro_leftover (int): The number of leftover story points
             from the above mentioned story points.
-        unplanned_past_sprints (int): The number of unplanned story 
+        unplanned_past_sprints (int): The number of unplanned story
             points from the past sprints.
 
     Attributes:
-        sp_planned_total (int): The total number of planned story 
+        sp_planned_total (int): The total number of planned story
             points for the current sprint.
-        sp_unplanned_done_list (int): The number of completed 
+        sp_unplanned_done_list (int): The number of completed
             unplanned story points.
-        sp_planned_completed (int): The number of completed 
+        sp_planned_completed (int): The number of completed
             planned story points.
-        sp_planned_leftover (int): The number of leftover 
+        sp_planned_leftover (int): The number of leftover
             planned story points.
-        sp_unplanned_completed (int): The total number of 
+        sp_unplanned_completed (int): The total number of
             completed unplanned story points.
-        sp_retro_total (int): The total number of 
+        sp_retro_total (int): The total number of
             retro story points.
-        sp_next_sprint (int): The target planned 
+        sp_next_sprint (int): The target planned
             points for the next sprint.
 
     Methods:
@@ -238,7 +236,7 @@ class SprintMath:
             Initializes the SprintMath object and calculates extra current sprint inputs.
 
         calc_current_sprint(self):
-            Calculates extra current sprint inputs used 
+            Calculates extra current sprint inputs used
                 later on for other calculations or for the final output.
 
         get_long_sprint_controls(self):
@@ -248,17 +246,18 @@ class SprintMath:
             Validates the user input to ensure it is a valid integer.
 
         calc_planned_next_sprint(self):
-            Calculates the target planned points for the next sprint. 
+            Calculates the target planned points for the next sprint.
                 Assigns result to sp_next_sprint of current object.
     """
-    def __init__(self, gathered_sp_unplanned_total = 0,
-                 gathered_sp_unplanned_remaining = 0,
-                 gathered_sp_unplanned_partial_completed = 0,
-                 gathered_total_done_list = 0,
-                 gathered_sp_planned_partial_completed = 0,
-                 gathered_sp_retro_completed = 0,
-                 gathered_sp_retro_leftover = 0,
-                 unplanned_past_sprints = 0):
+
+    def __init__(self, gathered_sp_unplanned_total=0,
+                 gathered_sp_unplanned_remaining=0,
+                 gathered_sp_unplanned_partial_completed=0,
+                 gathered_total_done_list=0,
+                 gathered_sp_planned_partial_completed=0,
+                 gathered_sp_retro_completed=0,
+                 gathered_sp_retro_leftover=0,
+                 unplanned_past_sprints=0):
         # Assigning everything captured for calculations later on
         self.sp_unplanned_total = gathered_sp_unplanned_total
         self.sp_unplanned_remaining = gathered_sp_unplanned_remaining
@@ -278,8 +277,22 @@ class SprintMath:
         self.sp_next_sprint = 0
         self.calc_current_sprint()
 
+    def __str__(self):
+        return (
+            f"SP: Planned {str(self.sp_planned_total)}(T), {str(self.sp_planned_completed)}(A) (+{str(self.sp_retro_completed)} retro completed)\n"
+            f"SP: Unplanned {str(self.sp_unplanned_total)}(T), {str(self.sp_unplanned_completed)}(A)\n"
+            f"{str(self.sp_planned_leftover)}(L.O.); {str(self.sp_retro_leftover)} Retro into next sprint\n"
+            f"SP: Target for next sprint: {str(self.sp_next_sprint)}\n"
+            "`````````````````````````````````````````````````````````\n"
+            f"SP Planned   : {str(self.sp_planned_total)}(T), {str(self.sp_planned_completed)}(A) {str(self.sp_planned_leftover)}(LO)"
+            f"SP Unplanned   : {str(self.sp_unplanned_total)}(T), {str(self.sp_unplanned_completed)}(A) {str(self.sp_unplanned_remaining)}(LO)"
+            f"SP Retro   : {str(self.sp_retro_total)}(T), {str(self.sp_retro_completed)}(A) {str(self.sp_retro_leftover)}(LO)"
+            "======================"
+            f"SP: Target for next sprint: {str(self.sp_next_sprint)}"
+        )
+
     def calc_current_sprint(self):
-        """Calculate extra current sprint inputs used later 
+        """Calculate extra current sprint inputs used later
             on for other calculations or for the final output
         """
         # unplanned points completed = total unplanned - remaining
@@ -297,7 +310,7 @@ class SprintMath:
         self.sp_planned_leftover = self.sp_planned_total - self.sp_planned_completed
         # Total unplanned completed
         self.sp_unplanned_completed = self.sp_unplanned_done_list + \
-              self.sp_unplanned_partial_completed
+            self.sp_unplanned_partial_completed
         # Total retro: indicates problem in discovery
         self.sp_retro_total = self.sp_retro_completed + self.sp_retro_leftover
 
@@ -352,7 +365,7 @@ class SprintMath:
         return user_input
 
     def calc_planned_next_sprint(self):
-        """Calculates the target planned points for the next sprint. 
+        """Calculates the target planned points for the next sprint.
             Assigns result to sp_next_sprint of current object
         """
         # Calculate previous Sprints' unplanned points for reference
@@ -367,47 +380,16 @@ class SprintMath:
                           total_days_missed_last) / n_members
 
         self.sp_next_sprint = math.ceil((self.sp_planned_completed + self.sp_unplanned_completed -
-                                avg_unplanned) / length_adjustment - pto_adjustment)
+                                         avg_unplanned) / length_adjustment - pto_adjustment)
 
-# Call the calc function to get what next Sprint's estimate number of points should be
+
+# Call the calc function to get what next Sprint's estimate number of
+# points should be
 calc_obj = SprintMath(SP_UNPLANNED_TOTAL, SP_UNPLANNED_REMAINING, SP_UNPLANNED_PARTIAL_COMPLETED,
-                        TOTAL_DONE_LIST, SP_PLANNED_PARTIAL_COMPLETED, SP_RETRO_COMPLETED,
-                        SP_RETRO_LEFTOVER, unplanned_past_sprints)
-
+                      TOTAL_DONE_LIST, SP_PLANNED_PARTIAL_COMPLETED, SP_RETRO_COMPLETED,
+                      SP_RETRO_LEFTOVER, unplanned_past_sprints)
 
 
 # OUTPUT
 # ======
-def output_current():
-    """
-    Prints out the current status of the sprint.
-    """
-    print(
-        f"SP: Planned {str(calc_obj.sp_planned_total)}(T), {str(calc_obj.sp_planned_completed)}(A) (+{str(calc_obj.sp_retro_completed)} retro completed)\n")
-    print(
-        f"SP: Unplanned {str(calc_obj.sp_unplanned_total)}(T), {str(calc_obj.sp_unplanned_completed)}(A)\n")
-    print(f"{str(calc_obj.sp_planned_leftover)}(L.O.); {str(calc_obj.sp_retro_leftover)} Retro into next sprint\n")
-    print(f"SP: Target for next sprint: {str(calc_obj.sp_next_sprint)}\n")
-
-
-def output_proposal():
-    """
-    Outputs the proposal for SP (Story Points) for the next sprint.
-    """
-    # adjust sp_planned_completed
-    sp_planned_completed = calc_obj.total_done_list + \
-        calc_obj.sp_planned_partial_completed - calc_obj.sp_unplanned_done_list
-
-    print(
-        f"SP Planned   : {str(calc_obj.sp_planned_total)}(T), {str(sp_planned_completed)}(A) {str(calc_obj.sp_planned_leftover)}(LO)")
-    print(
-        f"SP Unplanned   : {str(calc_obj.sp_unplanned_total)}(T), {str(calc_obj.sp_unplanned_completed)}(A) {str(calc_obj.sp_unplanned_remaining)}(LO)")
-    print(
-        f"SP Retro   : {str(calc_obj.sp_retro_total)}(T), {str(calc_obj.sp_retro_completed)}(A) {str(calc_obj.sp_retro_leftover)}(LO)")
-    print("======================")
-    print("SP: Target for next sprint: " + str(calc_obj.sp_next_sprint))
-
-
-output_current()
-print("`````````````````````````````````````````````````````````\n")
-output_proposal()
+print(calc_obj)
