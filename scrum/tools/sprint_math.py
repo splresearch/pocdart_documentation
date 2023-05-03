@@ -279,7 +279,7 @@ class SprintMath:
 
     def __str__(self):
         return (
-            f"SP: Planned {str(self.sp_planned_total)}(T), {str(self.sp_planned_completed)}(A) (+{str(self.sp_retro_completed)} retro completed)\n\n"
+            f"\nSP: Planned {str(self.sp_planned_total)}(T), {str(self.sp_planned_completed)}(A) (+{str(self.sp_retro_completed)} retro completed)\n\n"
             f"SP: Unplanned {str(self.sp_unplanned_total)}(T), {str(self.sp_unplanned_completed)}(A)\n\n"
             f"{str(self.sp_planned_leftover)}(L.O.); {str(self.sp_retro_leftover)} Retro into next sprint\n\n"
             f"SP: Target for next sprint: {str(self.sp_next_sprint)}\n\n"
