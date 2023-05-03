@@ -167,7 +167,8 @@ for card in sprint_cards:
         TOTAL_DONE_LIST += new_card.size["size"]
         # If extra work was spent on card, add to Retro completed
         if new_card.size["spent"] > new_card.size["size"]:
-            SP_RETRO_COMPLETED = SP_RETRO_COMPLETED + (new_card.size["spent"] - new_card.size["size"])
+            SP_RETRO_COMPLETED = SP_RETRO_COMPLETED + \
+                  (new_card.size["spent"] - new_card.size["size"])
 
     # Handle if still on other parts of the board
     if "Done" not in new_card.list_name:
@@ -233,7 +234,7 @@ class SprintMath:
                 gathered_sp_planned_partial_completed,
                 gathered_sp_retro_completed,
                 gathered_sp_retro_leftover,
-                gathered_unplanned_past_sprints):
+                unplanned_past_sprints):
             Initializes the SprintMath object and calculates extra current sprint inputs.
 
         calc_current_sprint(self):
@@ -257,7 +258,7 @@ class SprintMath:
                  gathered_sp_planned_partial_completed = 0,
                  gathered_sp_retro_completed = 0,
                  gathered_sp_retro_leftover = 0,
-                 gathered_unplanned_past_sprints = 0):
+                 unplanned_past_sprints = 0):
         # Assigning everything captured for calculations later on
         self.sp_unplanned_total = gathered_sp_unplanned_total
         self.sp_unplanned_remaining = gathered_sp_unplanned_remaining
@@ -266,7 +267,7 @@ class SprintMath:
         self.sp_planned_partial_completed = gathered_sp_planned_partial_completed
         self.sp_retro_completed = gathered_sp_retro_completed
         self.sp_retro_leftover = gathered_sp_retro_leftover
-        self.unplanned_past_sprints = gathered_unplanned_past_sprints
+        self.unplanned_past_sprints = unplanned_past_sprints
 
         # Ask user for how much is planned for the upcoming Sprint
         self.sp_planned_total = input(
@@ -274,7 +275,8 @@ class SprintMath:
         self.sp_planned_total = self.validate_user_input(self.sp_planned_total)
 
         # Calculate extra current sprint inputs
-        self.sp_next_sprint = self.calc_current_sprint()
+        self.sp_next_sprint = 0
+        self.calc_current_sprint()
 
     def calc_current_sprint(self):
         """Calculate extra current sprint inputs used later 
@@ -294,12 +296,13 @@ class SprintMath:
         # Planned left over
         self.sp_planned_leftover = self.sp_planned_total - self.sp_planned_completed
         # Total unplanned completed
-        self.sp_unplanned_completed = self.sp_unplanned_done_list + self.sp_unplanned_partial_completed
+        self.sp_unplanned_completed = self.sp_unplanned_done_list + \
+              self.sp_unplanned_partial_completed
         # Total retro: indicates problem in discovery
         self.sp_retro_total = self.sp_retro_completed + self.sp_retro_leftover
 
         # Calculate the next Sprint
-        return self.calc_planned_next_sprint()
+        self.calc_planned_next_sprint()
 
     def get_long_sprint_controls(self):
         """Prompts the user to enter values for sprint control variables.
@@ -355,13 +358,15 @@ class SprintMath:
         # Calculate previous Sprints' unplanned points for reference
         avg_unplanned = statistics.median(self.unplanned_past_sprints)
         # Controls for things such as long sprints, vacation, etc.
-        sprint_days_last, sprint_days_next, total_days_missed_last, total_days_to_be_missed, n_members = self.get_long_sprint_controls()
+        sprint_days_last, sprint_days_next, \
+            total_days_missed_last, total_days_to_be_missed, \
+            n_members = self.get_long_sprint_controls()
 
         length_adjustment = sprint_days_last / sprint_days_next
         pto_adjustment = (total_days_to_be_missed -
                           total_days_missed_last) / n_members
 
-        return math.ceil((self.sp_planned_completed + self.sp_unplanned_completed -
+        self.sp_next_sprint = math.ceil((self.sp_planned_completed + self.sp_unplanned_completed -
                                 avg_unplanned) / length_adjustment - pto_adjustment)
 
 # Call the calc function to get what next Sprint's estimate number of points should be
