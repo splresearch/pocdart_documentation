@@ -279,16 +279,16 @@ class SprintMath:
 
     def __str__(self):
         return (
-            f"SP: Planned {str(self.sp_planned_total)}(T), {str(self.sp_planned_completed)}(A) (+{str(self.sp_retro_completed)} retro completed)\n"
-            f"SP: Unplanned {str(self.sp_unplanned_total)}(T), {str(self.sp_unplanned_completed)}(A)\n"
-            f"{str(self.sp_planned_leftover)}(L.O.); {str(self.sp_retro_leftover)} Retro into next sprint\n"
+            f"SP: Planned {str(self.sp_planned_total)}(T), {str(self.sp_planned_completed)}(A) (+{str(self.sp_retro_completed)} retro completed)\n\n"
+            f"SP: Unplanned {str(self.sp_unplanned_total)}(T), {str(self.sp_unplanned_completed)}(A)\n\n"
+            f"{str(self.sp_planned_leftover)}(L.O.); {str(self.sp_retro_leftover)} Retro into next sprint\n\n"
+            f"SP: Target for next sprint: {str(self.sp_next_sprint)}\n\n"
+            "`````````````````````````````````````````````````````````\n\n"
+            f"SP Planned   : {str(self.sp_planned_total)}(T), {str(self.sp_planned_completed)}(A) {str(self.sp_planned_leftover)}(LO)\n"
+            f"SP Unplanned   : {str(self.sp_unplanned_total)}(T), {str(self.sp_unplanned_completed)}(A) {str(self.sp_unplanned_remaining)}(LO)\n"
+            f"SP Retro   : {str(self.sp_retro_total)}(T), {str(self.sp_retro_completed)}(A) {str(self.sp_retro_leftover)}(LO)\n"
+            "======================\n"
             f"SP: Target for next sprint: {str(self.sp_next_sprint)}\n"
-            "`````````````````````````````````````````````````````````\n"
-            f"SP Planned   : {str(self.sp_planned_total)}(T), {str(self.sp_planned_completed)}(A) {str(self.sp_planned_leftover)}(LO)"
-            f"SP Unplanned   : {str(self.sp_unplanned_total)}(T), {str(self.sp_unplanned_completed)}(A) {str(self.sp_unplanned_remaining)}(LO)"
-            f"SP Retro   : {str(self.sp_retro_total)}(T), {str(self.sp_retro_completed)}(A) {str(self.sp_retro_leftover)}(LO)"
-            "======================"
-            f"SP: Target for next sprint: {str(self.sp_next_sprint)}"
         )
 
     def calc_current_sprint(self):
