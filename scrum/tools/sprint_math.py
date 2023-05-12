@@ -226,13 +226,13 @@ class SprintMath:
 
     Methods:
         __init__(gathered_sp_unplanned_total,
-                gathered_sp_unplanned_remaining,
-                gathered_sp_unplanned_partial_completed,
-                gathered_total_done_list,
-                gathered_sp_planned_partial_completed,
-                gathered_sp_retro_completed,
-                gathered_sp_retro_leftover,
-                unplanned_past_sprints):
+                 gathered_sp_unplanned_remaining,
+                 gathered_sp_unplanned_partial_completed,
+                 gathered_total_done_list,
+                 gathered_sp_planned_partial_completed,
+                 gathered_sp_retro_completed,
+                 gathered_sp_retro_leftover,
+                 unplanned_past_sprints):
             Initializes the SprintMath object and calculates extra current sprint inputs.
 
         calc_current_sprint(self):
