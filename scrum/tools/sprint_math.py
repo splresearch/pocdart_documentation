@@ -284,9 +284,9 @@ class SprintMath:
             f"{str(self.sp_planned_leftover)}(L.O.); {str(self.sp_retro_leftover)} Retro into next sprint\n\n"
             f"SP: Target for next sprint: {str(self.sp_next_sprint)}\n\n"
             "`````````````````````````````````````````````````````````\n\n"
-            f"SP Planned   : {str(self.sp_planned_total)}(T), {str(self.sp_planned_completed)}(A) {str(self.sp_planned_leftover)}(LO)\n"
-            f"SP Unplanned   : {str(self.sp_unplanned_total)}(T), {str(self.sp_unplanned_completed)}(A) {str(self.sp_unplanned_remaining)}(LO)\n"
-            f"SP Retro   : {str(self.sp_retro_total)}(T), {str(self.sp_retro_completed)}(A) {str(self.sp_retro_leftover)}(LO)\n"
+            f"SP Planned  : {str(self.sp_planned_total).rjust(2)}(T), {str(self.sp_planned_completed).rjust(2)}(A), {str(self.sp_planned_leftover).rjust(2)}(LO)\n"
+            f"SP Unplanned: {str(self.sp_unplanned_total).rjust(2)}(T), {str(self.sp_unplanned_completed).rjust(2)}(A), {str(self.sp_unplanned_remaining).rjust(2)}(LO)\n"
+            f"SP Retro    : {str(self.sp_retro_total).rjust(2)}(T), {str(self.sp_retro_completed).rjust(2)}(A), {str(self.sp_retro_leftover).rjust(2)}(LO)\n"
             "======================\n"
             f"SP: Target for next sprint: {str(self.sp_next_sprint)}\n"
         )
