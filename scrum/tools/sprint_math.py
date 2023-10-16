@@ -127,9 +127,30 @@ SP_RETRO_LEFTOVER = 0  # total retro newly created in other lists
 
 # Pull board id from config
 board_id = config_var["board_id"]
-# Request to get every card off of the sprint board
-cards_url = f"https://api.trello.com/1/boards/{board_id}/cards"
-sprint_cards = request_call(url=cards_url, have_headers=False)
+
+# Ask user if they wan tto use old JSON cards or pull what is currently on board
+while True:
+    print("Would you like to pull old card JSON instead of the current board?")
+    cards_origin = input("Enter Y or N: ").upper()
+    if cards_origin in ['Y']:
+        card_json_file = input("Please enter the path to the old cards JSON file that you would like to load: ")
+        try:
+            with open(card_json_file, 'r') as file:
+                sprint_cards = json.loads(file)
+        except FileNotFoundError:
+            print(f"File '{card_json_file}' not found.")
+        except json.JSONDecodeError:
+            print(f"File '{card_json_file}' is not a valid JSON file.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        break
+    elif cards_origin in ['N']:
+        # Request to get every card off of the sprint board
+        cards_url = f"https://api.trello.com/1/boards/{board_id}/cards"
+        sprint_cards = request_call(url=cards_url, have_headers=False)
+        break
+    else:
+        print("Invalid input. Please enter Y or N.")
 # Request list data using board id
 lists_url = f"https://api.trello.com/1/boards/{board_id}/lists"
 sprint_lists = request_call(url=lists_url, have_headers=True)
