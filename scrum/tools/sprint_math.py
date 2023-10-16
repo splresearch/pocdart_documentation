@@ -5,6 +5,7 @@ import statistics
 import math
 import re
 import requests
+from datetime import datetime
 
 # API key and token and board id should be stored in config, away from
 # posting on GitHub
@@ -415,3 +416,19 @@ calc_obj = SprintMath(SP_UNPLANNED_TOTAL, SP_UNPLANNED_REMAINING, SP_UNPLANNED_P
 # OUTPUT
 # ======
 print(calc_obj)
+
+# Give option to save output to JSON file
+save_cards = input("Do you want to save the data to a JSON file? (Enter Y to save): ").upper()
+
+if save_cards == "Y":
+    # Get the current date and format it as "YYYY-MM-DD"
+    today = datetime.now().strftime("%Y-%m-%d")
+    
+    # Construct the filename using the formatted date
+    file_path = f"/home/pocdart/pocdart_documentation/scrum/tools/card_json_archive/cards-{today}.json"
+    
+    with open(file_path, 'w') as file:
+        json.dump(sprint_cards, file, indent=4)
+    print(f"Data written to {file_path}")
+else:
+    print("Data not saved.")
