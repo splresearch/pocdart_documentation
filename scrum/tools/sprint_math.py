@@ -134,13 +134,14 @@ while True:
     cards_origin = input("Enter Y or N: ").upper()
     if cards_origin in ['Y']:
         card_json_file = input("Please enter the path to the old cards JSON file that you would like to load: ")
+        card_json_path = "/home/pocdart/pocdart_documentation/scrum/tools/card_json_archive/" + card_json_file
         try:
-            with open(card_json_file, 'r') as file:
-                sprint_cards = json.loads(file)
+            with open(card_json_path, 'r') as file:
+                sprint_cards = json.load(file)
         except FileNotFoundError:
-            print(f"File '{card_json_file}' not found.")
+            print(f"File '{card_json_path}' not found.")
         except json.JSONDecodeError:
-            print(f"File '{card_json_file}' is not a valid JSON file.")
+            print(f"File '{card_json_path}' is not a valid JSON file.")
         except Exception as e:
             print(f"An error occurred: {e}")
         break
