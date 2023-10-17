@@ -402,7 +402,7 @@ class SprintMath:
         pto_adjustment = (total_days_to_be_missed -
                           total_days_missed_last) / n_members
 
-        self.sp_next_sprint = math.ceil((self.sp_planned_completed + self.sp_unplanned_completed -
+        self.sp_next_sprint = math.ceil(((self.sp_planned_completed + self.sp_unplanned_completed + self.sp_retro_completed) -
                                          avg_unplanned) / length_adjustment - pto_adjustment)
 
 
