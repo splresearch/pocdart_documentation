@@ -354,7 +354,7 @@ class SprintMath:
             "total days missed last Sprint",
             "total days planned missed next Sprint",
             "members working this coming Sprint"]
-        defaults = [10, 10, 0, 0, 9]
+        defaults = [10, 10, 0, 0, 8]
 
         sprint_controls = []
         # For every Sprint control, get user requested value
@@ -392,7 +392,7 @@ class SprintMath:
             Assigns result to sp_next_sprint of current object
         """
         # Calculate previous Sprints' unplanned points for reference
-        avg_unplanned = statistics.median(self.unplanned_past_sprints)
+        avg_unplanned = statistics.median(self.unplanned_past_sprints[-6:])
         # Controls for things such as long sprints, vacation, etc.
         sprint_days_last, sprint_days_next, \
             total_days_missed_last, total_days_to_be_missed, \
