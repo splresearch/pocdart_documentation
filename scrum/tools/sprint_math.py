@@ -171,6 +171,9 @@ for card in sprint_cards:
         unplanned_past_sprints = re.findall(
             r"unplanned: \*{2}(\d+)", card["desc"], re.IGNORECASE)
         unplanned_past_sprints = [int(i) for i in unplanned_past_sprints]
+        retro_past_sprints = re.findall(
+            r"\*\* (\d+)\*\* Retro", card["desc"], re.IGNORECASE)
+        retro_past_sprints = [int(i) for i in retro_past_sprints]
         continue
 
     new_card = Card(card_id=card["id"], card_name=card["name"],
@@ -230,6 +233,8 @@ class SprintMath:
             from the above mentioned story points.
         unplanned_past_sprints (int): The number of unplanned story
             points from the past sprints.
+        retro_past_sprints (int): The number of retro leftover story
+            points from past sprints
 
     Attributes:
         sp_planned_total (int): The total number of planned story
@@ -255,7 +260,8 @@ class SprintMath:
                  gathered_sp_planned_partial_completed,
                  gathered_sp_retro_completed,
                  gathered_sp_retro_leftover,
-                 unplanned_past_sprints):
+                 unplanned_past_sprints,
+                 retro_past_sprints):
             Initializes the SprintMath object and calculates extra current sprint inputs.
 
         calc_current_sprint(self):
@@ -280,7 +286,8 @@ class SprintMath:
                  gathered_sp_planned_partial_completed=0,
                  gathered_sp_retro_completed=0,
                  gathered_sp_retro_leftover=0,
-                 unplanned_past_sprints=0):
+                 unplanned_past_sprints=0,
+                 retro_past_sprints=0):
         # Assigning everything captured for calculations later on
         self.sp_unplanned_total = gathered_sp_unplanned_total
         self.sp_unplanned_remaining = gathered_sp_unplanned_remaining
@@ -290,6 +297,7 @@ class SprintMath:
         self.sp_retro_completed = gathered_sp_retro_completed
         self.sp_retro_leftover = gathered_sp_retro_leftover
         self.unplanned_past_sprints = unplanned_past_sprints
+        self.retro_past_sprints = retro_past_sprints
 
         # Ask user for how much is planned for the upcoming Sprint
         self.sp_planned_total = input(
@@ -393,6 +401,7 @@ class SprintMath:
         """
         # Calculate previous Sprints' unplanned points for reference
         avg_unplanned = statistics.median(self.unplanned_past_sprints[-6:])
+        avg_retro_leftover = statistics.median(self.unplanned_past_sprints[-6:])
         # Controls for things such as long sprints, vacation, etc.
         sprint_days_last, sprint_days_next, \
             total_days_missed_last, total_days_to_be_missed, \
@@ -403,7 +412,7 @@ class SprintMath:
                           total_days_missed_last) / n_members
 
         self.sp_next_sprint = math.ceil(((self.sp_planned_completed + self.sp_unplanned_completed + self.sp_retro_completed) -
-                                         avg_unplanned) / length_adjustment - pto_adjustment)
+                                         (avg_unplanned + avg_retro_leftover)) / length_adjustment - pto_adjustment)
 
 
 # Call the calc function to get what next Sprint's estimate number of
