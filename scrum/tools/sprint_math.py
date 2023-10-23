@@ -172,7 +172,7 @@ for card in sprint_cards:
             r"unplanned: \*{2}(\d+)", card["desc"], re.IGNORECASE)
         unplanned_past_sprints = [int(i) for i in unplanned_past_sprints]
         retro_past_sprints = re.findall(
-            r"\*\* (\d+)\*\* Retro", card["desc"], re.IGNORECASE)
+            r"\\\*\\\* (\d+)\\\*\\\* Retro", card["desc"], re.IGNORECASE)
         retro_past_sprints = [int(i) for i in retro_past_sprints]
         continue
 
@@ -401,7 +401,7 @@ class SprintMath:
         """
         # Calculate previous Sprints' unplanned points for reference
         avg_unplanned = statistics.median(self.unplanned_past_sprints[-6:])
-        avg_retro_leftover = statistics.median(self.unplanned_past_sprints[-6:])
+        avg_retro_leftover = statistics.median(self.retro_past_sprints[-6:])
         # Controls for things such as long sprints, vacation, etc.
         sprint_days_last, sprint_days_next, \
             total_days_missed_last, total_days_to_be_missed, \
@@ -410,7 +410,6 @@ class SprintMath:
         length_adjustment = sprint_days_last / sprint_days_next
         pto_adjustment = (total_days_to_be_missed -
                           total_days_missed_last) / n_members
-
         self.sp_next_sprint = math.ceil(((self.sp_planned_completed + self.sp_unplanned_completed + self.sp_retro_completed) -
                                          (avg_unplanned + avg_retro_leftover)) / length_adjustment - pto_adjustment)
 
@@ -419,7 +418,7 @@ class SprintMath:
 # points should be
 calc_obj = SprintMath(SP_UNPLANNED_TOTAL, SP_UNPLANNED_REMAINING, SP_UNPLANNED_PARTIAL_COMPLETED,
                       TOTAL_DONE_LIST, SP_PLANNED_PARTIAL_COMPLETED, SP_RETRO_COMPLETED,
-                      SP_RETRO_LEFTOVER, unplanned_past_sprints)
+                      SP_RETRO_LEFTOVER, unplanned_past_sprints, retro_past_sprints)
 
 
 # OUTPUT
