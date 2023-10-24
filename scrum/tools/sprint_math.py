@@ -206,9 +206,13 @@ for card in sprint_cards:
         # If Retro
         elif "RETRO" in new_card.labels:
             SP_RETRO_LEFTOVER += new_card.size["remaining"]
-        # If partially completed
-        elif new_card.size["remaining"] > 0:
-            SP_PLANNED_PARTIAL_COMPLETED += new_card.size["spent"]
+        # Otherwise, incomplete card must be counted
+        else:
+            # Capture any story point overflow with retro completed
+            if new_card.size["spent"] > new_card.size["size"]:
+                SP_RETRO_COMPLETED = SP_RETRO_COMPLETED + \
+                    (new_card.size["spent"] - new_card.size["size"])
+            SP_PLANNED_PARTIAL_COMPLETED += new_card.size["size"]
 
 
 # CALCULATIONS CLASS
