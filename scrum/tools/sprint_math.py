@@ -133,14 +133,18 @@ board_id = config_var["board_id"]
 # board
 while True:
     print("Would you like to pull old card JSON instead of the current board?")
+    # Get user wants on if they want to pull from current board or archived cards
     cards_origin = input("Enter Y or N: ").upper()
     if cards_origin in ['Y']:
+        # Get the file name of the archived cards
         card_json_file = input(
             "Please enter the path to the old cards JSON file that you would like to load: ")
+        # Append that file name ot the pathing of where those cards should be
         card_json_path = "/home/pocdart/pocdart_documentation/scrum/tools/card_json_archive/" + \
             card_json_file
         try:
             with open(card_json_path, 'r', encoding="utf-8") as file:
+                # Load in the json file
                 sprint_cards = json.load(file)
         except FileNotFoundError:
             print(f"File '{card_json_path}' not found.")
@@ -213,8 +217,10 @@ for card in sprint_cards:
                 SP_RETRO_COMPLETED = SP_RETRO_COMPLETED + \
                     (new_card.size["spent"] - new_card.size["size"])
                 SP_PLANNED_PARTIAL_COMPLETED += new_card.size["size"]
+            # Capture fully spent cards with no extra spent points above size
             elif new_card.size["spent"] == new_card.size["size"]:
                 SP_PLANNED_PARTIAL_COMPLETED += new_card.size["size"]
+            # Capture actual partial completed cards
             else:
                 SP_PLANNED_PARTIAL_COMPLETED += new_card.size['spent']
 
