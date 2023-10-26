@@ -4,6 +4,7 @@ import json
 import statistics
 import math
 import re
+from datetime import datetime
 import requests
 
 # API key and token and board id should be stored in config, away from
@@ -127,9 +128,35 @@ SP_RETRO_LEFTOVER = 0  # total retro newly created in other lists
 
 # Pull board id from config
 board_id = config_var["board_id"]
-# Request to get every card off of the sprint board
-cards_url = f"https://api.trello.com/1/boards/{board_id}/cards"
-sprint_cards = request_call(url=cards_url, have_headers=False)
+
+# Ask user if they wan tto use old JSON cards or pull what is currently on
+# board
+while True:
+    print("Would you like to pull old card JSON instead of the current board?")
+    # Get user wants on if they want to pull from current board or archived cards
+    cards_origin = input("Enter Y or N: ").upper()
+    if cards_origin in ['Y']:
+        # Get the file name of the archived cards
+        card_json_file = input(
+            "Please enter the path to the old cards JSON file that you would like to load: ")
+        # Append that file name ot the pathing of where those cards should be
+        card_json_path = "/home/pocdart/pocdart_documentation/scrum/tools/card_json_archive/" + \
+            card_json_file
+        try:
+            with open(card_json_path, 'r', encoding="utf-8") as file:
+                # Load in the json file
+                sprint_cards = json.load(file)
+        except FileNotFoundError:
+            print(f"File '{card_json_path}' not found.")
+        except json.JSONDecodeError:
+            print(f"File '{card_json_path}' is not a valid JSON file.")
+        break
+    if cards_origin in ['N']:
+        # Request to get every card off of the sprint board
+        cards_url = f"https://api.trello.com/1/boards/{board_id}/cards"
+        sprint_cards = request_call(url=cards_url, have_headers=False)
+        break
+    print("Invalid input. Please enter Y or N.")
 # Request list data using board id
 lists_url = f"https://api.trello.com/1/boards/{board_id}/lists"
 sprint_lists = request_call(url=lists_url, have_headers=True)
@@ -148,6 +175,9 @@ for card in sprint_cards:
         unplanned_past_sprints = re.findall(
             r"unplanned: \*{2}(\d+)", card["desc"], re.IGNORECASE)
         unplanned_past_sprints = [int(i) for i in unplanned_past_sprints]
+        retro_past_sprints = re.findall(
+            r"\\\*\\\* (\d+)\\\*\\\* Retro", card["desc"], re.IGNORECASE)
+        retro_past_sprints = [int(i) for i in retro_past_sprints]
         continue
 
     new_card = Card(card_id=card["id"], card_name=card["name"],
@@ -180,9 +210,19 @@ for card in sprint_cards:
         # If Retro
         elif "RETRO" in new_card.labels:
             SP_RETRO_LEFTOVER += new_card.size["remaining"]
-        # If partially completed
-        elif new_card.size["remaining"] > 0:
-            SP_PLANNED_PARTIAL_COMPLETED += new_card.size["spent"]
+        # Otherwise, incomplete card must be counted
+        elif new_card.size["spent"] > 0:
+            # Capture any story point overflow with retro completed
+            if new_card.size["spent"] > new_card.size["size"]:
+                SP_RETRO_COMPLETED = SP_RETRO_COMPLETED + \
+                    (new_card.size["spent"] - new_card.size["size"])
+                SP_PLANNED_PARTIAL_COMPLETED += new_card.size["size"]
+            # Capture fully spent cards with no extra spent points above size
+            elif new_card.size["spent"] == new_card.size["size"]:
+                SP_PLANNED_PARTIAL_COMPLETED += new_card.size["size"]
+            # Capture actual partial completed cards
+            else:
+                SP_PLANNED_PARTIAL_COMPLETED += new_card.size['spent']
 
 
 # CALCULATIONS CLASS
@@ -205,8 +245,10 @@ class SprintMath:
             spent above the planned size.
         sp_retro_leftover (int): The number of leftover story points
             from the above mentioned story points.
-        unplanned_past_sprints (int): The number of unplanned story
+        gathered_unplanned_past_sprints (int): The number of unplanned story
             points from the past sprints.
+        gathered_retro_past_sprints (int): The number of retro leftover story
+            points from past sprints
 
     Attributes:
         sp_planned_total (int): The total number of planned story
@@ -232,7 +274,8 @@ class SprintMath:
                  gathered_sp_planned_partial_completed,
                  gathered_sp_retro_completed,
                  gathered_sp_retro_leftover,
-                 unplanned_past_sprints):
+                 gathered_unplanned_past_sprints,
+                 gathered_retro_past_sprints):
             Initializes the SprintMath object and calculates extra current sprint inputs.
 
         calc_current_sprint(self):
@@ -257,7 +300,8 @@ class SprintMath:
                  gathered_sp_planned_partial_completed=0,
                  gathered_sp_retro_completed=0,
                  gathered_sp_retro_leftover=0,
-                 unplanned_past_sprints=0):
+                 gathered_unplanned_past_sprints=0,
+                 gathered_retro_past_sprints=0):
         # Assigning everything captured for calculations later on
         self.sp_unplanned_total = gathered_sp_unplanned_total
         self.sp_unplanned_remaining = gathered_sp_unplanned_remaining
@@ -266,7 +310,8 @@ class SprintMath:
         self.sp_planned_partial_completed = gathered_sp_planned_partial_completed
         self.sp_retro_completed = gathered_sp_retro_completed
         self.sp_retro_leftover = gathered_sp_retro_leftover
-        self.unplanned_past_sprints = unplanned_past_sprints
+        self.unplanned_past_sprints = gathered_unplanned_past_sprints
+        self.retro_past_sprints = gathered_retro_past_sprints
 
         # Ask user for how much is planned for the upcoming Sprint
         self.sp_planned_total = input(
@@ -331,7 +376,7 @@ class SprintMath:
             "total days missed last Sprint",
             "total days planned missed next Sprint",
             "members working this coming Sprint"]
-        defaults = [10, 10, 0, 0, 9]
+        defaults = [10, 10, 0, 0, 8]
 
         sprint_controls = []
         # For every Sprint control, get user requested value
@@ -369,7 +414,8 @@ class SprintMath:
             Assigns result to sp_next_sprint of current object
         """
         # Calculate previous Sprints' unplanned points for reference
-        avg_unplanned = statistics.median(self.unplanned_past_sprints)
+        avg_unplanned = statistics.median(self.unplanned_past_sprints[-6:])
+        avg_retro_leftover = statistics.median(self.retro_past_sprints[-6:])
         # Controls for things such as long sprints, vacation, etc.
         sprint_days_last, sprint_days_next, \
             total_days_missed_last, total_days_to_be_missed, \
@@ -378,18 +424,38 @@ class SprintMath:
         length_adjustment = sprint_days_last / sprint_days_next
         pto_adjustment = (total_days_to_be_missed -
                           total_days_missed_last) / n_members
-
-        self.sp_next_sprint = math.ceil((self.sp_planned_completed + self.sp_unplanned_completed -
-                                         avg_unplanned) / length_adjustment - pto_adjustment)
+        self.sp_next_sprint = math.ceil(((self.sp_planned_completed +
+                                          self.sp_unplanned_completed +
+                                          self.sp_retro_completed) -
+                                          (avg_unplanned + avg_retro_leftover)) /
+                                          length_adjustment - pto_adjustment)
 
 
 # Call the calc function to get what next Sprint's estimate number of
 # points should be
 calc_obj = SprintMath(SP_UNPLANNED_TOTAL, SP_UNPLANNED_REMAINING, SP_UNPLANNED_PARTIAL_COMPLETED,
                       TOTAL_DONE_LIST, SP_PLANNED_PARTIAL_COMPLETED, SP_RETRO_COMPLETED,
-                      SP_RETRO_LEFTOVER, unplanned_past_sprints)
+                      SP_RETRO_LEFTOVER, unplanned_past_sprints, retro_past_sprints)
 
 
 # OUTPUT
 # ======
 print(calc_obj)
+
+# Give option to save output to JSON file
+save_cards = input(
+    "Do you want to save the data to a JSON file? (Enter Y to save): ").upper()
+
+if save_cards == "Y":
+    # Get the current date and format it as "YYYY-MM-DD"
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # Construct the filename using the formatted date
+    file_path = f"/home/pocdart/pocdart_documentation/scrum/tools\
+    /card_json_archive/cards-{today}.json"
+
+    with open(file_path, 'w', encoding="utf-8") as file:
+        json.dump(sprint_cards, file, indent=4)
+    print(f"Data written to {file_path}")
+else:
+    print("Data not saved.")
