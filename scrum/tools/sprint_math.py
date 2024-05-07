@@ -452,7 +452,7 @@ if save_cards == "Y":
 
     # Construct the filename using the formatted date
     file_path = f"/home/pocdart/pocdart_documentation/scrum/tools\
-    /card_json_archive/cards-{today}.json"
+/card_json_archive/cards-{today}.json"
 
     with open(file_path, 'w', encoding="utf-8") as file:
         json.dump(sprint_cards, file, indent=4)
