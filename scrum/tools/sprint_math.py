@@ -52,7 +52,7 @@ def delete_card(id):
     """Makes a DELETE request for the specified card using the requests library.
 
     Args:
-        id: str, card id (not shortLink)
+        id: str, 24 character hexadecimal card id (not shortLink)
 
     Usage:
         # to delete cards older than <date>
