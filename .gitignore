@@ -3,3 +3,4 @@
 scrum/tools/config.json
 scrum/tools/card_json_archive/*
 !scrum/tools/card_json_archive/.gitkeep
+.ipynb_checkpoints
