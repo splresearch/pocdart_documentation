@@ -1,51 +1,46 @@
 """
 board.py
 
-This module contains the Board class, which represents a Trello board and includes methods
-to fetch board data, calculate story points, and save data to a JSON file.
+This module contains the Board class, which represents a Trello board and includes methods to
+fetch board data and calculate story points.
 
 Classes:
-    - Board: Represents a Trello board with methods to manage and analyze its data.
-
-Example:
+    - Board: Represents a Trello board and includes methods for data fetching and calculation.
 """
 
-import json
+import requests
 
 class Board:
-    class Stats:
-        def __init__(self, total=0, accomplished=0, leftover=0):
-            self.total = total
-            self.accomplished = accomplished
-            self.leftover = leftover
+    def __init__(self, board_id, api, data):
+        """
+        Initializes a Board instance.
 
-        def __repr__(self):
-            return f"Stats(total={self.total}, accomplished={self.accomplished}, leftover={self.leftover})"
+        Args:
+            board_id (str): The Trello board ID.
+            api (TrelloAPI): An instance of the TrelloAPI class.
+            data (dict): Initial data for the board.
+        """
+        self.board_id = board_id
+        self.api = api
+        self.data = data
 
-    def __init__(self, board_id):
-        self.planned = self.Stats()
-        self.unplanned = self.Stats()
-        self.retro = self.Stats()
-
-    def calculate_total(self):
-        return self.planned.total + self.unplanned.total + self.retro.total
-
-    def __repr__(self):
-        return (f"Board(planned={self.planned}, "
-                f"unplanned={self.unplanned}, "
-                f"retro={self.retro})")
-
-    def fetch_cards(self):
+    def fetch_data(self):
+        """
+        Fetches board data from the Trello API and sets the data attribute.
+        """
         pass
 
-    def fetch_list_id(self):
+    def extract_cards(self):
+        """
+        Extracts card data from the board's JSON data and creates Card objects.
+        """
         pass
 
     def calculate_story_points(self):
-        pass
+        """
+        Calculates story points for the board.
 
-    def save_to_json(self):
-        pass
-
-    def save_to_db(self):
+        Returns:
+            dict: A dictionary with calculated story points for planned, unplanned, and retro categories.
+        """
         pass
