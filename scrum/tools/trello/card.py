@@ -32,6 +32,15 @@ class Card:
 
     def get_story_points(self):
         return self.story_points
+    
+    def get_remaining_story_points(self):
+        return self.story_points["remaining"]
+    
+    def get_total_story_points(self):
+        return self.story_points["total"]
+    
+    def get_spent_story_points(self):
+        return self.story_points["spent"]
 
     def get_title(self):
         return self.title
@@ -48,6 +57,15 @@ class Card:
 
     def set_story_points(self, story_points):
         self.story_points = story_points
+
+    def set_remaining_story_points(self, story_points):
+        self.story_points["remaining"] = story_points
+    
+    def set_total_story_points(self, story_points):
+        self.story_points["total"] = story_points
+
+    def set_spent_story_points(self, story_points):
+        self.story_points["spent"] = story_points
 
     def set_title(self, title):
         self.title = title

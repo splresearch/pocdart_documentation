@@ -31,7 +31,7 @@ def test_insert_board_data():
     """
     Tests the insert_board_data function.
     """
-    # Arrange: Create mock cursor and connection
+    # Arrange: Create mock connection
 
     # Arrange: Set up the board data
 
@@ -44,7 +44,7 @@ def test_insert_sprint_summary():
     """
     Tests the insert_sprint_summary function.
     """
-    # Arrange: Create mock cursor and connection
+    # Arrange: Create mock connection
 
     # Arrange: Set up the sprint summary data
 
@@ -58,7 +58,7 @@ def test_get_board_data_from_db():
     """
     Tests the get_board_data_from_db function.
     """
-    # Arrange: Create mock cursor and connection
+    # Arrange: Create mock connection
 
     # Arrange: Set up the expected result
 
@@ -72,7 +72,7 @@ def test_get_sprint_summary_from_db():
     """
     Tests the get_sprint_summary_from_db function.
     """
-    # Arrange: Create mock cursor and connection
+    # Arrange: Create mock connection
 
     # Arrange: Set up the expected result
 

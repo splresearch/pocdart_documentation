@@ -15,69 +15,73 @@ Functions:
 import mysql.connector
 import json
 
-def connect_to_db(host, user, password, database):
-    """
-    Establishes a connection to the MySQL database.
+class SprintDBManger:
+    def __init__(self, database):
+        """
+        Initializes a SprintDBManager instance and connects to the MySQL database
+        Pulls MySQL credentials from local config file
+        
+        Args:
+            database (str): The database name
+        """
+        pass
 
-    Args:
-        host (str): The database host.
-        user (str): The database user.
-        password (str): The database password.
-        database (str): The database name.
+    def get_cnx(self, database="default"):
+        """
+        Define connection agent cnx
 
-    Returns:
-        mysql.connector.connection.MySQLConnection: A MySQL database connection.
-    """
-    pass
+        Args:
+            database: target database name, defaults to global environment value
 
-def insert_board_data(db_connection, board_id, board_name, json_data):
-    """
-    Inserts board data into the database.
+        Returns:
+            obj: mysql connector connect object
+        """
+        pass
 
-    Args:
-        db_connection (mysql.connector.connection.MySQLConnection): The database connection.
-        board_id (str): The Trello board ID.
-        board_name (str): The Trello board name.
-        json_data (dict): The JSON data of the board.
+    def insert_board_data(self, board_id, board_name, json_data):
+        """
+        Inserts board data into the database.
 
-    Returns:
-        int: The ID of the inserted board record.
-    """
-    pass
+        Args:
+            board_id (str): The Trello board ID.
+            board_name (str): The Trello board name.
+            json_data (dict): The JSON data of the board.
 
-def insert_sprint_summary(db_connection, board_db_id, sprint_summary):
-    """
-    Inserts sprint summary data into the database.
+        Returns:
+            int: The ID of the inserted board record.
+        """
+        pass
 
-    Args:
-        db_connection (mysql.connector.connection.MySQLConnection): The database connection.
-        board_db_id (int): The ID of the board record in the database.
-        sprint_summary (dict): The sprint summary data.
-    """
-    pass
+    def insert_sprint_summary(self, board_db_id, sprint_summary):
+        """
+        Inserts sprint summary data into the database.
 
-def get_board_data_from_db(db_connection, entry_id):
-    """
-    Fetches board data from the database based on user input.
+        Args:
+            board_db_id (int): The ID of the board record in the database.
+            sprint_summary (dict): The sprint summary data.
+        """
+        pass
 
-    Args:
-        db_connection (mysql.connector.connection.MySQLConnection): The database connection.
-        entry_id (str): The ID of the database entry.
+    def get_board_data_from_db(self, entry_id):
+        """
+        Fetches board data from the database based on user input.
 
-    Returns:
-        dict: The board data.
-    """
-    pass
+        Args:
+            entry_id (str): The ID of the database entry.
 
-def get_sprint_summary_from_db(db_connection, board_id):
-    """
-    Fetches sprint summary data from the database for a given board ID.
+        Returns:
+            dict: The board data.
+        """
+        pass
 
-    Args:
-        db_connection (mysql.connector.connection.MySQLConnection): The database connection.
-        board_id (str): The ID of the board.
+    def get_sprint_summary_from_db(self, board_id):
+        """
+        Fetches sprint summary data from the database for a given board ID.
 
-    Returns:
-        dict: The sprint summary data formatted as expected story points.
-    """
-    pass
+        Args:
+            board_id (str): The ID of the board.
+
+        Returns:
+            dict: The sprint summary data formatted as expected story points.
+        """
+        pass
