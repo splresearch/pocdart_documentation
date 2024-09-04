@@ -10,22 +10,31 @@ Test Cases:
     - test_get_sprint_summary_from_db: Tests the get_sprint_summary_from_db function.
 """
 
-import pytest
-import mysql.connector
+import pytest, mysql.connector, sys, os
 from unittest.mock import patch, MagicMock
-from trello.db import connect_to_db, insert_board_data, insert_sprint_summary, get_board_data_from_db, get_sprint_summary_from_db
-from utils import load_config
+# Get the absolute path of the 'utils' directory relative to this file's location
+trello_path = os.path.join(os.path.dirname(os.path.dirname(__file__), 'trello'))
 
+# Add the parent directory to the Python path
+sys.path.append(trello_path)
+
+# Import the function from helper.py
+from utlis import load_config
+from db import SprintDBManger
 def test_connect_to_db():
     """
     Tests the connect_to_db function.
     """
     # Arrange: Create a mock connection
+    sprint_db_manager = SprintDBManger()
 
-    # Act: Call the connect_to_db function
+    # Act: Select rows from sprint_summary
+    select_statement = "SELECT * FROM sprint_metrics;"
     
-    # Assert: Verify the connection was established
-    pass
+    # Assert: Verify no error was generated following Select statement
+    results = sprint_db_manager.execute_query(query = select_statement)
+    assert results is not None
+    
 
 def test_insert_board_data():
     """
