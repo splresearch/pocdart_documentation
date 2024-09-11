@@ -10,24 +10,47 @@ Tests:
     - test_get_card_story_points: Test the get_card_story_points method.
 """
 
-from unittest.mock import patch
+import pytest, os, sys
+# Import the function from helper.py
+# Get the absolute path of the 'utils' directory relative to this file's location
+parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
+
+# Add the parent directory to the Python path
+sys.path.append(parent_path)
 from trello.api import TrelloAPI
-import pytest
+from sprint_utlis import load_config
 
-@patch('trello.api.requests.get')
-def test_get_board(mock_get):
-    # Arrange: Set up mock response data for get_board
+# Arrange: Set up mock response data for get_board_cards
+trello_api = TrelloAPI()
 
-    # Act: Create TrelloAPI instance and call get_board method
+def test_get_cards():
 
-    # Assert: Verify that the response data matches expected values
-    pass
-
-@patch('trello.api.requests.get')
-def test_get_cards(mock_get):
-    # Arrange: Set up mock response data for get_cards
-
-    # Act: Create TrelloAPI instance and call get_cards method
+    # Act: Call get_board_cards method
+    sprint_cards = trello_api.get_board_cards()
     
     # Assert: Verify that the response data matches expected values
-    pass
+    assert sprint_cards is not None
+    assert len(sprint_cards) > 0
+
+def test_get_lists():
+
+    # Act: Call get_board_cards method
+    sprint_lists = trello_api.get_board_lists()
+    
+    # Assert: Verify that the response data matches expected values
+    assert sprint_lists is not None
+    assert len(sprint_lists) > 0
+
+def test_get_card_story_points():
+    # Arrange: Get board config and test card id
+    board_config = load_config("../config.json")['board']
+    test_card_id = board_config['slack_card']
+    # Act: Call get_board_cards method
+    sprint_cards = trello_api.get_card_story_points("Slack Channel Assignments", test_card_id)
+    
+    # Assert: Verify that the response data matches expected values
+    assert sprint_cards is not None
+    assert len(sprint_cards) > 0
+    assert sprint_cards['total'] == 1
+    assert sprint_cards['spent'] == 1
+    assert sprint_cards['remaining'] == 0

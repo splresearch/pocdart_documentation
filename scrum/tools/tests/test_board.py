@@ -50,6 +50,3 @@ def test_calculate_story_points():
     
     # Assert: Verify the calculated story points match the expected results
     pass
-
-if __name__ == '__main__':
-    pytest.main()
