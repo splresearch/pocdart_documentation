@@ -18,3 +18,10 @@ def load_config(file_path):
     """
     with open(file_path, "r", encoding="utf-8") as config_file:
         return json.load(config_file)
+
+def load_test_board_data(file_path, return_str = False):
+    with open(file_path, "r", encoding="utf-8") as test_board_data_file:
+        if (return_str == False):
+            return json.load(test_board_data_file)
+        else:
+            return json.dumps(json.load(test_board_data_file))

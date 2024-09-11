@@ -11,16 +11,14 @@ Functions:
     - get_sprint_summary_from_db: Retrieves sprint summary data from the database.
 """
 
-import mysql.connector, json, os, sys
+import mysql.connector, json, os, sys, traceback
 
 # Get the absolute path of the 'utils' directory relative to this file's location
 parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
 
 # Add the parent directory to the Python path
 sys.path.append(parent_path)
-
-# Import the function from helper.py
-from utils import load_config
+from sprint_utlis import load_config
 
 class SprintDBManger:
     def __init__(self):
@@ -29,7 +27,7 @@ class SprintDBManger:
         Pulls MySQL credentials from local config file
         """
         # Load mysql information from config file
-        self.mysql_config = load_config()['mysql']
+        self.mysql_config = load_config("../config.json")['mysql']
 
     def get_cnx(self, database="default"):
         """
@@ -52,41 +50,63 @@ class SprintDBManger:
                                       database=target_database)
         return(cnx)
 
-    def insert_board_data(self, board_id, board_name, json_data):
-        """
-        Inserts board data into the database.
-
-        Args:
-            board_id (str): The Trello board ID.
-            board_name (str): The Trello board name.
-            json_data (dict): The JSON data of the board.
-
-        Returns:
-            int: The ID of the inserted board record.
-        """
-        pass
-
-    def insert_sprint_summary(self, board_db_id, sprint_summary):
+    def insert_data(self, table, insert_data):
         """
         Inserts sprint summary data into the database.
 
         Args:
-            board_db_id (int): The ID of the board record in the database.
-            sprint_summary (dict): The sprint summary data.
-        """
-        pass
+            table (str): The table that the data goes into
+            insert_data (dict): The data to be inserted into specific table.
 
-    def get_board_data_from_db(self, entry_id):
+        Returns:
+            int: The ID of the inserted record.
+        """
+        cnx = self.get_cnx()
+        cursor = cnx.cursor()
+
+        try:
+            # Prepare the SQL query dynamically using dictionary keys and values
+            columns = ", ".join(insert_data.keys())
+            placeholders = ", ".join(["%s"] * len(insert_data))
+            values = tuple(insert_data.values())
+
+            # Insert query
+            sql = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+
+            # Execute the query
+            cursor.execute(sql, values)
+            cnx.commit()
+        except:
+            traceback.print_exc()
+            raise Exception(
+                'Error occurred while inserting into boards table')
+
+        inserted_id = cursor.lastrowid
+
+        cnx.close()
+
+        return inserted_id
+
+    def get_board_data_from_db(self, board_id):
         """
         Fetches board data from the database based on user input.
 
         Args:
-            entry_id (str): The ID of the database entry.
+            board_id (str): The ID of the board.
 
         Returns:
             dict: The board data.
         """
-        pass
+        cnx = self.get_cnx()
+        cursor = cnx.cursor()
+
+        select_statement = f"SELECT * FROM boards WHERE board_id = '{board_id}';"
+
+        cursor.execute(select_statement)
+        
+        results = cursor.fetchall()
+    
+        return results
 
     def get_sprint_summary_from_db(self, board_id):
         """
@@ -96,9 +116,18 @@ class SprintDBManger:
             board_id (str): The ID of the board.
 
         Returns:
-            dict: The sprint summary data formatted as expected story points.
+            dict: The sprint summaries data based off board_id - will be sorted chronologically in ascending order.
         """
-        pass
+        cnx = self.get_cnx()
+        cursor = cnx.cursor()
+
+        select_statement = f"SELECT * FROM sprint_summary WHERE board_id = '{board_id}'; ORDER BY created_at ASC"
+    
+        cursor.execute(select_statement)
+        
+        results = cursor.fetchall()
+    
+        return results
 
     def execute_query(self, query, database="default", dic=False):
         """Execute generic MySQL command
