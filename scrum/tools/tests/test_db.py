@@ -125,7 +125,6 @@ def test_get_data_from_db(setup_and_teardown_summaries):
     assert results is not None
     assert len(results) == 1
 
-    breakpoint()
     # Assert: Verify the data was inserted correctly
     results = sprint_db_manager.get_sprint_summary_from_db(board_id="J117")
     assert results is not None
