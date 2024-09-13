@@ -43,6 +43,18 @@ def prompt_for_manual_corrections(story_points):
     """
     pass
 
+def prompt_for_sprint_controls(story_points):
+    """
+    Prompts the user for vacation time, number of members, etc. that may influnce the final result.
+
+    Args:
+        story_points (dict): The calculated story points.
+
+    Returns:
+        int: final recommendation for next Sprint.
+    """
+    pass
+
 def main():
     # Load configuration
 

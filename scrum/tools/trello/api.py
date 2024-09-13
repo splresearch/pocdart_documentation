@@ -12,20 +12,11 @@ Example:
 
 import requests, json, os, sys, re
 
-# Get the absolute path of the 'utils' directory relative to this file's location
-parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
-
-# Add the parent directory to the Python path
-sys.path.append(parent_path)
-from sprint_utlis import load_config
-
 class TrelloAPI:
-    def __init__(self):
-        self.board_config = load_config("../config.json")['board']
-
-        self.board_id = self.board_config['board_id']
-        self.api_key = self.board_config['api_key']
-        self.api_token = self.board_config['api_token']
+    def __init__(self, board_id, api_key, api_token):
+        self.board_id = board_id
+        self.api_key = api_key
+        self.api_token = api_token
         self.base_url = "https://api.trello.com/1"
 
     def request_call(self, url, have_headers):

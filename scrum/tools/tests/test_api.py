@@ -20,8 +20,15 @@ sys.path.append(parent_path)
 from trello.api import TrelloAPI
 from sprint_utlis import load_config
 
-# Arrange: Set up mock response data for get_board_cards
-trello_api = TrelloAPI()
+# Arrange: Pull board config info
+board_config = load_config("../config.json")['board']
+
+# Arrange: Set up mock response data
+trello_api = TrelloAPI(
+    board_id = board_config['board_id'],
+    api_key = board_config['api_key'],
+    api_token = board_config['api_token']
+)
 
 def test_get_cards():
 
@@ -31,6 +38,7 @@ def test_get_cards():
     # Assert: Verify that the response data matches expected values
     assert sprint_cards is not None
     assert len(sprint_cards) > 0
+    assert sprint_cards[0]["id"] == board_config['sprint_calc_card']
 
 def test_get_lists():
 
@@ -42,8 +50,7 @@ def test_get_lists():
     assert len(sprint_lists) > 0
 
 def test_get_card_story_points():
-    # Arrange: Get board config and test card id
-    board_config = load_config("../config.json")['board']
+    # Arrange: Get test card id
     test_card_id = board_config['slack_card']
     # Act: Call get_board_cards method
     sprint_cards = trello_api.get_card_story_points("Slack Channel Assignments", test_card_id)
