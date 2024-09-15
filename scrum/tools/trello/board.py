@@ -73,32 +73,44 @@ class Board:
         """
         Extracts card data from the board's JSON data and creates Card objects.
         """
+        # Preprocess list IDs to names for quick lookup
+        list_id_to_name = {list_obj['id']: list_obj['name'] for list_obj in self.lists}
+
+        # Compile regex patterns once to improve performance
+        unplanned_pattern = re.compile(r"unplanned: \*{2}(\d+)", re.IGNORECASE)
+        retro_pattern = re.compile(r"\*\* (\d+)\*\* Retro", re.IGNORECASE)
+
         for card in self.board_data:
-            curr_card_id = card["id"]
-            curr_card_name = card["name"]
-            curr_card_labels = [subitem["name"] for subitem in card["labels"]]
-            curr_card_list = next(
-                list_obj for list_obj in self.lists if list_obj["id"] in card['idList'])["name"]
-            if (curr_card_id == self.unplanned_template_card or
-                "Monitoring" in curr_card_list):
+            curr_card_id = card.get("id")
+            curr_card_name = card.get("name", "")
+            curr_card_labels = [label.get("name", "") for label in card.get("labels", [])]
+            curr_card_list = list_id_to_name.get(card.get('idList'))
+
+            # Skip if card is in 'Monitoring' list
+            if "Monitoring" in curr_card_list:
                 continue
-            # If the card is the Sprint calc history card,
-            #   pull out all the unplanned story points from previous Sprints
+
+            # Skip the unplanned template card
+            if curr_card_id == self.unplanned_template_card:
+                continue
+
+            # Process the sprint summary card
             if curr_card_id == self.sprint_summary_card:
-                self.unplanned_past_sprints = re.findall(
-                    r"unplanned: \*{2}(\d+)", card["desc"], re.IGNORECASE)
-                self.unplanned_past_sprints = [int(i) for i in self.unplanned_past_sprints]
-                self.retro_past_sprints = re.findall(
-                    r"\\\*\\\* (\d+)\\\*\\\* Retro", card["desc"], re.IGNORECASE)
-                self.retro_past_sprints = [int(i) for i in self.retro_past_sprints]
+                self.unplanned_past_sprints = [int(i) for i in unplanned_pattern.findall(card.get("desc", ""))]
+                self.retro_past_sprints = [int(i) for i in retro_pattern.findall(card.get("desc", ""))]
                 continue
+
+            # Extract story points
+            story_points = self.api.get_card_story_points(curr_card_name, curr_card_id)
+
+            # Create and append the Card object
             self.cards.append(
                 Card(
-                    card_id = curr_card_id,
-                    story_points = self.api.get_card_story_points(curr_card_name, curr_card_id),
-                    title = curr_card_name,
-                    labels = curr_card_labels,
-                    list_name = curr_card_list
+                    card_id=curr_card_id,
+                    story_points=story_points,
+                    title=curr_card_name,
+                    labels=curr_card_labels,
+                    list_name=curr_card_list
                 )
             )
 
@@ -110,44 +122,41 @@ class Board:
             dict: A dictionary with calculated story points for planned, unplanned, and retro categories.
         """
         for card in self.cards:
-            # Handle if in monitoring
-            if "Monitoring" in card.get_list_name():
-                continue
+            labels = set(card.get_labels())
+            list_name = card.get_list_name()
 
-            # Handle if unplanned
-            if "UNPLANNED" in card.get_list_name():
-                self.calcs['unplanned']['total'] += card.get_total_story_points()
+            is_unplanned = 'UNPLANNED' in labels
+            is_retro = 'RETRO' in labels
+            is_done = 'Done' in list_name
 
-            # Handle if in done list
-            if "Done" in card.get_list_name():
-                self.calcs['planned']['total'] += card.get_total_story_points()
-                self.calcs['planned']['spent'] += card.get_total_story_points()
-                # If extra work was spent on card, add to Retro completed
-                if new_card.size["spent"] > new_card.size["size"]:
-                    SP_RETRO_COMPLETED = SP_RETRO_COMPLETED + \
-                        (new_card.size["spent"] - new_card.size["size"])
+            total_points = card.get_total_story_points()
+            spent_points = card.get_spent_story_points()
+            remaining_points = card.get_remaining_story_points()
 
-            # Handle if still on other parts of the board
-            if "Done" not in new_card.list_name:
-                # If unplanned
-                if "UNPLANNED" in new_card.labels:
-                    if new_card.size["spent"] > 0:
-                        SP_UNPLANNED_PARTIAL_COMPLETED += new_card.size["spent"]
-                    elif new_card.size["spent"] == 0:
-                        SP_UNPLANNED_REMAINING += new_card.size["remaining"]
-                # If Retro
-                elif "RETRO" in new_card.labels:
-                    SP_RETRO_LEFTOVER += new_card.size["remaining"]
-                # Otherwise, incomplete card must be counted
-                elif new_card.size["spent"] > 0:
-                    # Capture any story point overflow with retro completed
-                    if new_card.size["spent"] > new_card.size["size"]:
-                        SP_RETRO_COMPLETED = SP_RETRO_COMPLETED + \
-                            (new_card.size["spent"] - new_card.size["size"])
-                        SP_PLANNED_PARTIAL_COMPLETED += new_card.size["size"]
-                    # Capture fully spent cards with no extra spent points above size
-                    elif new_card.size["spent"] == new_card.size["size"]:
-                        SP_PLANNED_PARTIAL_COMPLETED += new_card.size["size"]
-                    # Capture actual partial completed cards
-                    else:
-                        SP_PLANNED_PARTIAL_COMPLETED += new_card.size['spent']
+            # Determine category
+            if is_unplanned:
+                category = 'unplanned'
+            # RETRO is treated as planned if not in DONE and has had some work done to it already
+            elif is_retro and not (is_done or spent_points > 0):
+                category = 'retro'
+            else:
+                category = 'planned'
+
+            # Update total points
+            self.calcs[category]['total'] += total_points
+
+            # Calculate actual spent and extra spent points
+            if category in ('planned', 'unplanned'):
+                actual_spent = min(spent_points, total_points)
+                extra_spent = max(spent_points - total_points, 0)
+                self.calcs[category]['spent'] += actual_spent
+                self.calcs['retro']['spent'] += extra_spent
+                self.calcs['retro']['total'] += extra_spent
+            else:
+                self.calcs[category]['spent'] += spent_points
+
+            # Update remaining points if card is not done
+            if not is_done:
+                self.calcs[category]['remaining'] += remaining_points
+
+        return self.calcs

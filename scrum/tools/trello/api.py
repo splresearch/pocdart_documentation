@@ -82,10 +82,11 @@ class TrelloAPI:
             values = re.findall(
                 r'"size":(\d+),\s*"spent":(\d+)',
                 plugin_data[0]['value'])
+            remaining_value = int(values[0][0]) - int(values[0][1])
             card_size = {
                 "total": int(values[0][0]),
                 "spent": int(values[0][1]),
-                "remaining": int(values[0][0]) - int(values[0][1])
+                "remaining": remaining_value if remaining_value > 0 else 0
             }
 
         return card_size

@@ -15,7 +15,7 @@ parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
 
 # Add the parent directory to the Python path
 sys.path.append(parent_path)
-from sprint_utlis import load_config
+from sprint_utlis import load_config, load_test_board_data
 from trello.board import Board
 from trello.api import TrelloAPI
 from trello.db import SprintDBManger
@@ -64,10 +64,35 @@ def test_calculate_story_points():
     """
     Tests the calculate_story_points method of the Board class using stored boards from the database.
     """
-        
+    test_board_data = load_test_board_data("../card_json_archive/test_board_data.json")
     # Arrange: Create a Board instance with the retrieved data
+    board = Board(trello_api, test_board_data)
+    #board = Board(trello_api)
+    board.extract_cards()
+
+    # Arrange: Make expected results data
+    expected = {
+        'unplanned': {
+            'total': 20, 
+            'spent': 16, 
+            'remaining': 4
+        }, 
+        'planned': {
+            'total': 29, 
+            'spent': 24, 
+            'remaining': 5
+        }, 
+        'retro': {
+            'total': 4, 
+            'spent': 0, 
+            'remaining': 4
+        }
+    }
 
     # Act: Call the calculate_story_points method
-    
+    results = board.calculate_story_points()
+
     # Assert: Verify the calculated story points match the expected results
-    pass
+    assert results is not None
+    assert len(results) > 0
+    assert results == expected
