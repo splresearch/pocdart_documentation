@@ -32,30 +32,29 @@ jobs:
 
     - name: Run Pylint on changed files
       if: steps.get_changed_files.outputs.files != ''
-      working-directory: pocdart_documentation/scrum/tools
       env:
-        PYTHONPATH: ${{ github.workspace }}/pocdart_documentation/scrum/tools:${{ github.workspace }}
+        PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/pocdart_documentation/scrum/tools
       run: |
         echo "Running Pylint..."
         CHANGED_FILES="${{ steps.get_changed_files.outputs.files }}"
         echo "Changed files: $CHANGED_FILES"
+
         # Initialize an empty variable to hold the files to lint
         FILES_TO_LINT=""
         for file in $CHANGED_FILES; do
-          # Check if the file is within the tools directory
-          if [[ "$file" == pocdart_documentation/scrum/tools/* ]]; then
-            # Get the relative path to the file from the tools directory
-            RELATIVE_PATH="${file#pocdart_documentation/scrum/tools/}"
-            # Check if the file exists
-            if [ -f "$RELATIVE_PATH" ]; then
-              FILES_TO_LINT="$FILES_TO_LINT $RELATIVE_PATH"
-            fi
+          # Check if the file exists
+          if [ -f "${{ github.workspace }}/$file" ]; then
+            FILES_TO_LINT="$FILES_TO_LINT $file"
           fi
         done
+
         echo "Files to lint: $FILES_TO_LINT"
         if [ -z "$FILES_TO_LINT" ]; then
-          echo "No Python files to lint in the tools directory."
+          echo "No Python files to lint."
           exit 0
         fi
+
         # Run pylint with the specified .pylintrc
+        # Change directory to the root of the repository
+        cd "${{ github.workspace }}/pocdart_documentation/scrum/tools"
         pylint --rcfile=.pylintrc --fail-under=8 $FILES_TO_LINT
