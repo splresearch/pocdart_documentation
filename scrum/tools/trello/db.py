@@ -1,64 +1,74 @@
 """
 db.py
 
-This module contains functions for interacting with the MySQL database to store and retrieve
+This module contains the `SprintDBManager` class for interacting with the MySQL database to store and retrieve
 Trello board and story points data.
 
-Functions:
-    - insert_board_data: Inserts board data into the database.
-    - insert_sprint_summary: Inserts sprint summary data into the database.
-    - get_board_data_from_db: Retrieves board data from the database.
-    - get_sprint_summary_from_db: Retrieves sprint summary data from the database.
+Classes:
+    - SprintDBManager: Manages database operations for sprint data.
+
+Example Usage:
+    db_manager = SprintDBManager(config)
+    db_manager.insert_data(table='boards', insert_data=board_data)
+    board_data = db_manager.get_board_data_from_db(board_id='your_board_id')
 """
 
-import mysql.connector, json, os, sys, traceback
-
-# Get the absolute path of the 'utils' directory relative to this file's location
-parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
+import mysql.connector
+import json
+import os
+import sys
+import traceback
 
 # Add the parent directory to the Python path
+parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
 sys.path.append(parent_path)
 
-class SprintDBManger:
+class SprintDBManager:
     def __init__(self, config):
         """
-        Initializes a SprintDBManager instance
-        Pulls MySQL credentials from local config file
+        Initializes a SprintDBManager instance with MySQL configuration.
+
+        Args:
+            config (dict): MySQL configuration parameters.
         """
-        # Load mysql information from config file
         self.mysql_config = config
 
     def get_cnx(self, database="default"):
         """
-        Define connection agent cnx
+        Establishes a connection to the MySQL database.
 
         Args:
-            database: target database name, defaults to global environment value
+            database (str, optional): Target database name. Defaults to the one specified in the config.
 
         Returns:
-            obj: mysql connector connect object
+            mysql.connector.connection.MySQLConnection: A MySQL connection object.
         """
-        
         if database == "default":
             target_database = self.mysql_config["database"]
         else:
             target_database = database
-        cnx = mysql.connector.connect(user=self.mysql_config["user"],
-                                      password=self.mysql_config["password"],
-                                      host=self.mysql_config["host"],
-                                      database=target_database)
-        return(cnx)
+
+        cnx = mysql.connector.connect(
+            user=self.mysql_config["user"],
+            password=self.mysql_config["password"],
+            host=self.mysql_config["host"],
+            database=target_database
+        )
+        return cnx
 
     def insert_data(self, table, insert_data):
         """
-        Inserts sprint summary data into the database.
+        Inserts data into a specified table in the database.
 
         Args:
-            table (str): The table that the data goes into
-            insert_data (dict): The data to be inserted into specific table.
+            table (str): The name of the table to insert data into.
+            insert_data (dict): A dictionary of data to insert (column names as keys).
 
         Returns:
             int: The ID of the inserted record.
+
+        Raises:
+            Exception: If an error occurs during the insertion.
         """
         cnx = self.get_cnx()
         cursor = cnx.cursor()
@@ -75,81 +85,102 @@ class SprintDBManger:
             # Execute the query
             cursor.execute(sql, values)
             cnx.commit()
-        except:
+
+            inserted_id = cursor.lastrowid
+        except Exception as e:
             traceback.print_exc()
-            raise Exception(
-                'Error occurred while inserting into boards table')
-
-        inserted_id = cursor.lastrowid
-
-        cnx.close()
+            raise Exception('Error occurred while inserting into the table') from e
+        finally:
+            cnx.close()
 
         return inserted_id
 
-    def get_board_data_from_db(self, board_id = None, assigned_board_id = None):
+    def get_board_data_from_db(self, board_id=None, assigned_board_id=None):
         """
-        Fetches board data from the database based on user input.
+        Retrieves board data from the database.
 
         Args:
-            board_id (str): The ID of the board.
+            board_id (str, optional): The Trello board ID.
+            assigned_board_id (str, optional): The internal database ID of the board.
 
         Returns:
-            dict: The board data.
+            dict: The board data in JSON format.
+
+        Raises:
+            Exception: If the board data is not found.
         """
         cnx = self.get_cnx()
         cursor = cnx.cursor()
 
-        if board_id is not None:
-            select_statement = f"SELECT json_data FROM boards WHERE board_id = '{board_id}';"
-        else:
-            select_statement = f"SELECT json_data FROM boards WHERE id = '{assigned_board_id}';"
+        try:
+            if board_id is not None:
+                select_statement = "SELECT json_data FROM boards WHERE board_id = %s;"
+                cursor.execute(select_statement, (board_id,))
+            elif assigned_board_id is not None:
+                select_statement = "SELECT json_data FROM boards WHERE id = %s;"
+                cursor.execute(select_statement, (assigned_board_id,))
+            else:
+                raise ValueError("Either 'board_id' or 'assigned_board_id' must be provided.")
 
-        cursor.execute(select_statement)
-        
-        results = cursor.fetchall()
-    
-        return json.loads(results[0][0])
+            results = cursor.fetchall()
+
+            if not results:
+                raise Exception("Board data not found in the database.")
+
+            board_data_json = results[0][0]
+            return json.loads(board_data_json)
+        finally:
+            cnx.close()
 
     def get_sprint_summary_from_db(self, board_id):
         """
-        Fetches sprint summary data from the database for a given board ID.
+        Retrieves sprint summary data from the database for a given board ID.
 
         Args:
-            board_id (str): The ID of the board.
+            board_id (str): The Trello board ID.
 
         Returns:
-            dict: The sprint summaries data based off board_id - will be sorted chronologically in ascending order.
+            list: A list of sprint summary records sorted chronologically in ascending order.
+
+        Raises:
+            Exception: If an error occurs during the retrieval.
         """
         cnx = self.get_cnx()
-        cursor = cnx.cursor()
+        cursor = cnx.cursor(dictionary=True)
 
-        select_statement = f"SELECT * FROM sprint_summary WHERE board_id = '{board_id}'; ORDER BY created_at ASC"
-    
-        cursor.execute(select_statement)
-        
-        results = cursor.fetchall()
-    
-        return results
+        try:
+            select_statement = """
+                SELECT * FROM sprint_summary WHERE board_id = %s ORDER BY created_at ASC;
+            """
+            cursor.execute(select_statement, (board_id,))
+
+            results = cursor.fetchall()
+            return results
+        finally:
+            cnx.close()
 
     def execute_query(self, query, database="default", dic=False):
-        """Execute generic MySQL command
+        """
+        Executes a generic MySQL query.
 
         Args:
-            query (str): MySQL query
-            condition (str): MySQL select condition
-            database (str): Which MySQL database
+            query (str): The MySQL query to execute.
+            database (str, optional): The database to use. Defaults to 'default'.
+            dic (bool, optional): Whether to return results as dictionaries. Defaults to False.
 
         Returns:
-            list / list of dictionaries: MySQL query output
+            list: The query results.
+
+        Raises:
+            Exception: If an error occurs during query execution.
         """
         cnx = self.get_cnx(database)
         cursor = cnx.cursor(dictionary=dic)
 
-        cursor.execute(query)
-
-        result = cursor.fetchall()
-
-        cnx.commit()
-        cnx.close()
-
-        return(result)
+        try:
+            cursor.execute(query)
+            result = cursor.fetchall()
+            cnx.commit()
+            return result
+        finally:
+            cnx.close()

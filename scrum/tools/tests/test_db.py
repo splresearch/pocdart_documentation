@@ -20,15 +20,15 @@ parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
 
 # Add the parent directory to the Python path
 sys.path.append(parent_path)
-from sprint_utlis import load_config, load_test_board_data
-from trello.db import SprintDBManger
+from sprint_utils import load_config, load_test_board_data
+from trello.db import SprintDBManager
 
 from pathlib import Path
 
 # Arrange: Pull mysql config info
 parent_path = Path(__file__).parent.parent
 mysql_config = load_config(parent_path / "config.json")['mysql']
-sprint_db_manager = SprintDBManger(mysql_config)
+sprint_db_manager = SprintDBManager(mysql_config)
 # Arrange: Create mock connection and get test board data
 test_board_data = load_test_board_data(Path(__file__).parent.parent / "card_json_archive/test_board_data.json", True)
 # Arrange: Set up the board data

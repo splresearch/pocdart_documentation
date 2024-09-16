@@ -1,53 +1,42 @@
 """
 board.py
 
-This module contains the Board class, which represents a Trello board and includes methods to
-fetch board data and calculate story points.
+This module contains the `Board` class, which represents a Trello board and includes methods to
+fetch board data, extract card information, and calculate story points.
 
 Classes:
-    - Board: Represents a Trello board and includes methods for data fetching and calculation.
+    - Board: Represents a Trello board and includes methods for data fetching and calculations.
 """
 
-import requests, os, sys, re
+import os
+import sys
+import re
 from pathlib import Path
 
-# Get the absolute path of the 'utils' directory relative to this file's location
-parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
-
 # Add the parent directory to the Python path
+parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
 sys.path.append(parent_path)
-from sprint_utlis import load_config
+
+from sprint_utils import load_config
 from trello.card import Card
 
 class Board:
-    def __init__(self, api, board_data = None):
+    def __init__(self, api, board_data=None):
         """
         Initializes a Board instance.
 
         Args:
             api (TrelloAPI): An instance of the TrelloAPI class.
-            board_data (dict): Initial data for the board. Can be None if wanting to pull from API rather than DB
+            board_data (dict, optional): Initial data for the board. If None, data will be fetched using the API.
         """
         self.api = api
         self.cards = []
-        self.unplanned_past_sprints = None
-        self.retro_past_sprints = None
+        self.unplanned_past_sprints = []
+        self.retro_past_sprints = []
         self.calcs = {
-            "unplanned": {
-                "total": 0,
-                "spent": 0,
-                "remaining": 0
-            },
-            "planned": {
-                "total": 0,
-                "spent": 0,
-                "remaining": 0
-            },
-            "retro": {
-                "total": 0,
-                "spent": 0,
-                "remaining": 0
-            }
+            "unplanned": {"total": 0, "spent": 0, "remaining": 0},
+            "planned": {"total": 0, "spent": 0, "remaining": 0},
+            "retro": {"total": 0, "spent": 0, "remaining": 0},
         }
         self.lists = api.get_board_lists()
         if board_data is None:
@@ -55,22 +44,50 @@ class Board:
         else:
             self.board_data = board_data
 
+        # Load board configuration
         board_config = load_config(Path(__file__).parent.parent / "config.json")['board']
         self.unplanned_template_card = board_config['unplanned_template_card']
         self.sprint_summary_card = board_config['sprint_calc_card']
 
     def get_data(self):
+        """
+        Returns the board data.
+
+        Returns:
+            dict: The board data.
+        """
         return self.board_data
+
     def get_cards(self):
+        """
+        Returns the list of Card objects.
+
+        Returns:
+            list: A list of Card instances.
+        """
         return self.cards
+
     def get_unplanned_past_sprints(self):
+        """
+        Returns the unplanned story points from past sprints.
+
+        Returns:
+            list: A list of integers representing unplanned story points.
+        """
         return self.unplanned_past_sprints
+
     def get_retro_past_sprints(self):
+        """
+        Returns the retro story points from past sprints.
+
+        Returns:
+            list: A list of integers representing retro story points.
+        """
         return self.retro_past_sprints
 
     def fetch_data(self):
         """
-        Fetches board data from the Trello API and sets the data attribute.
+        Fetches board data from the Trello API and sets the board_data attribute.
         """
         self.board_data = self.api.get_board_cards()
 
@@ -89,7 +106,7 @@ class Board:
             curr_card_id = card.get("id")
             curr_card_name = card.get("name", "")
             curr_card_labels = [label.get("name", "") for label in card.get("labels", [])]
-            curr_card_list = list_id_to_name.get(card.get('idList'))
+            curr_card_list = list_id_to_name.get(card.get('idList'), '')
 
             # Skip if card is in 'Monitoring' list
             if "Monitoring" in curr_card_list:
@@ -101,8 +118,9 @@ class Board:
 
             # Process the sprint summary card
             if curr_card_id == self.sprint_summary_card:
-                self.unplanned_past_sprints = [int(i) for i in unplanned_pattern.findall(card.get("desc", ""))]
-                self.retro_past_sprints = [int(i) for i in retro_pattern.findall(card.get("desc", ""))]
+                desc = card.get("desc", "")
+                self.unplanned_past_sprints = [int(i) for i in unplanned_pattern.findall(desc)]
+                self.retro_past_sprints = [int(i) for i in retro_pattern.findall(desc)]
                 continue
 
             # Extract story points
@@ -124,7 +142,7 @@ class Board:
         Calculates story points for the board.
 
         Returns:
-            dict: A dictionary with calculated story points for planned, unplanned, and retro categories.
+            dict: A dictionary with calculated story points for 'planned', 'unplanned', and 'retro' categories.
         """
         for card in self.cards:
             labels = set(card.get_labels())
@@ -141,7 +159,6 @@ class Board:
             # Determine category
             if is_unplanned:
                 category = 'unplanned'
-            # RETRO is treated as planned if not in DONE and has had some work done to it already
             elif is_retro and not (is_done or spent_points > 0):
                 category = 'retro'
             else:

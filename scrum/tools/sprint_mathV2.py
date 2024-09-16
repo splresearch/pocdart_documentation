@@ -29,10 +29,10 @@ parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
 
 # Add the parent directory to the Python path
 sys.path.append(parent_path)
-from sprint_utlis import load_config
+from sprint_utils import load_config
 from trello.board import Board
 from trello.api import TrelloAPI
-from trello.db import SprintDBManger
+from trello.db import SprintDBManager
 
 def validate_user_input(user_input):
     """Validates the user input to ensure it is a valid integer.
@@ -190,7 +190,7 @@ def main():
     board_config = config['board']
 
     # Initialize database manager and Trello API
-    sprint_db_manager = SprintDBManger(mysql_config)
+    sprint_db_manager = SprintDBManager(mysql_config)
     trello_api = TrelloAPI(
         board_id=board_config['board_id'],
         api_key=board_config['api_key'],
