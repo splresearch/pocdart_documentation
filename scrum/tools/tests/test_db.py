@@ -97,7 +97,8 @@ def insert_board_data(sprint_db_manager, board_data):
         int: The ID of the inserted board record.
     """
     # Insert board data
-    board_db_id = sprint_db_manager.insert_data(table='boards', insert_data=board_data)
+    board_db_id = sprint_db_manager.insert_data(
+        table='boards', insert_data=board_data)
     yield board_db_id
     # Cleanup: delete the inserted board data
     delete_statement = f"DELETE FROM boards WHERE id = {board_db_id};"
@@ -105,7 +106,10 @@ def insert_board_data(sprint_db_manager, board_data):
 
 
 @pytest.fixture
-def insert_sprint_summary_data(sprint_db_manager, sprint_summary_data, insert_board_data):
+def insert_sprint_summary_data(
+        sprint_db_manager,
+        sprint_summary_data,
+        insert_board_data):
     """
     Fixture to insert sprint summary data into the database and clean up after the test.
 
@@ -124,7 +128,8 @@ def insert_sprint_summary_data(sprint_db_manager, sprint_summary_data, insert_bo
     )
     yield sprint_summary_db_id
     # Cleanup: delete the inserted sprint summary data
-    delete_statement = f"DELETE FROM sprint_summary WHERE id = {sprint_summary_db_id};"
+    delete_statement = f"DELETE FROM sprint_summary WHERE id = {
+        sprint_summary_db_id};"
     sprint_db_manager.execute_query(query=delete_statement)
 
 
@@ -142,7 +147,10 @@ def test_connect_to_db(sprint_db_manager):
     assert results is not None
 
 
-def test_insert_data(sprint_db_manager, insert_board_data, insert_sprint_summary_data):
+def test_insert_data(
+        sprint_db_manager,
+        insert_board_data,
+        insert_sprint_summary_data):
     """
     Tests the insertion of board data and sprint summary data into the database.
 
@@ -161,13 +169,17 @@ def test_insert_data(sprint_db_manager, insert_board_data, insert_sprint_summary
     assert len(results) == 1
 
     # Assert: Verify the sprint summary data was inserted correctly
-    select_statement = f"SELECT * FROM sprint_summary WHERE id = {sprint_summary_db_id};"
+    select_statement = f"SELECT * FROM sprint_summary WHERE id = {
+        sprint_summary_db_id};"
     results = sprint_db_manager.execute_query(query=select_statement)
     assert results is not None
     assert len(results) == 1
 
 
-def test_get_data_from_db(sprint_db_manager, insert_board_data, insert_sprint_summary_data):
+def test_get_data_from_db(
+        sprint_db_manager,
+        insert_board_data,
+        insert_sprint_summary_data):
     """
     Tests the retrieval of board data and sprint summary data from the database.
 
@@ -184,5 +196,8 @@ def test_get_data_from_db(sprint_db_manager, insert_board_data, insert_sprint_su
     assert len(board_data) == 73
 
     # Act: Retrieve sprint summary data using the board_id
-    sprint_summaries = sprint_db_manager.get_sprint_summary_from_db(board_id="J117")
+    sprint_summaries = sprint_db_manager.get_sprint_summary_from_db(
+        board_id="J117")
     # Assert: Verify the sprint summary
+    assert sprint_summaries is not None
+    assert len(sprint_summaries) == 1

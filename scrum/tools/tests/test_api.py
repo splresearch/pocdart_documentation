@@ -22,6 +22,7 @@ sys.path.append(str(parent_path))
 from trello.api import TrelloAPI
 from sprint_utils import load_config
 
+
 @pytest.fixture(scope='module')
 def board_config():
     """
@@ -31,6 +32,7 @@ def board_config():
         dict: The board configuration dictionary.
     """
     return load_config(parent_path / "config.json")['board']
+
 
 @pytest.fixture(scope='module')
 def trello_api(board_config):
@@ -51,6 +53,7 @@ def trello_api(board_config):
     )
     return api
 
+
 def test_get_board_cards(trello_api, board_config):
     """
     Tests the get_board_cards method of the TrelloAPI class.
@@ -61,13 +64,14 @@ def test_get_board_cards(trello_api, board_config):
     """
     # Act: Call get_board_cards method
     sprint_cards = trello_api.get_board_cards()
-    
+
     # Assert: Verify that the response data matches expected values
     assert sprint_cards is not None
     assert len(sprint_cards) > 0
     # Assuming 'sprint_calc_card' is expected to be in the list of cards
     card_ids = [card['id'] for card in sprint_cards]
     assert board_config['sprint_calc_card'] in card_ids
+
 
 def test_get_board_lists(trello_api):
     """
@@ -78,10 +82,11 @@ def test_get_board_lists(trello_api):
     """
     # Act: Call get_board_lists method
     sprint_lists = trello_api.get_board_lists()
-    
+
     # Assert: Verify that the response data matches expected values
     assert sprint_lists is not None
     assert len(sprint_lists) > 0
+
 
 def test_get_card_story_points(trello_api, board_config):
     """
@@ -93,11 +98,13 @@ def test_get_card_story_points(trello_api, board_config):
     """
     # Arrange: Get test card ID and name
     test_card_id = board_config['slack_card']
-    test_card_name = "Slack Channel Assignments"  # Replace with the actual card name if different
+    # Replace with the actual card name if different
+    test_card_name = "Slack Channel Assignments"
 
     # Act: Call get_card_story_points method
-    story_points = trello_api.get_card_story_points(test_card_name, test_card_id)
-    
+    story_points = trello_api.get_card_story_points(
+        test_card_name, test_card_id)
+
     # Assert: Verify that the response data matches expected values
     assert story_points is not None
     assert story_points['total'] == 1

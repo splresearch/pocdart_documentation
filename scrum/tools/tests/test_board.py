@@ -99,7 +99,8 @@ def test_calculate_story_points(trello_api):
         This test uses stored test data from `test_board_data.json`. Ensure that this file exists and contains valid data.
     """
     # Arrange: Load test board data
-    test_board_data = load_test_board_data(parent_path / "card_json_archive/test_board_data.json")
+    test_board_data = load_test_board_data(
+        parent_path / "card_json_archive/test_board_data.json")
 
     # Create a Board instance with the test data
     board = Board(trello_api, test_board_data)
