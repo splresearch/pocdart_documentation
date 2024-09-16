@@ -1,136 +1,188 @@
 """
 test_db.py
 
-This module contains test cases for the database functions.
+This module contains test cases for the database functions using pytest.
 
 Test Cases:
-    - test_insert_board_data: Tests the insert_board_data function.
-    - test_insert_sprint_summary: Tests the insert_sprint_summary function.
-    - test_get_board_data_from_db: Tests the get_board_data_from_db function.
-    - test_get_sprint_summary_from_db: Tests the get_sprint_summary_from_db function.
+    - test_connect_to_db: Tests the database connection.
+    - test_insert_data: Tests the insertion of board data and sprint summary data.
+    - test_get_data_from_db: Tests the retrieval of board data and sprint summary data.
 """
 
-import pytest, mysql.connector, sys, os, json
-from datetime import date, datetime
-from unittest.mock import patch, MagicMock
-
-# Import the function from helper.py
-# Get the absolute path of the 'utils' directory relative to this file's location
-parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
+import pytest
+import sys
+import os
+from datetime import date
+from pathlib import Path
 
 # Add the parent directory to the Python path
-sys.path.append(parent_path)
+parent_path = Path(__file__).parent.parent
+sys.path.append(str(parent_path))
+
 from sprint_utils import load_config, load_test_board_data
 from trello.db import SprintDBManager
 
-from pathlib import Path
 
-# Arrange: Pull mysql config info
-parent_path = Path(__file__).parent.parent
-mysql_config = load_config(parent_path / "config.json")['mysql']
-sprint_db_manager = SprintDBManager(mysql_config)
-# Arrange: Create mock connection and get test board data
-test_board_data = load_test_board_data(Path(__file__).parent.parent / "card_json_archive/test_board_data.json", True)
-# Arrange: Set up the board data
-board_data = {
-    'board_id': 'J117',
-    'board_name': 'Test Board',
-    'json_data': test_board_data
-}
-# Arrange: Set up the mock sprint summary data
-sprint_summary_data = {
-    'board_id': 'J117',
-    'start_date': date.today().strftime('%Y-%m-%d'),
-    'length_days': 15,
-    'members': 8,
-    'vacation_days': 0,
-    'planned_total': 20,
-    'planned_completed': 16,
-    'planned_remaining': 4,
-    'unplanned_total': 8,
-    'unplanned_completed': 6,
-    'unplanned_remaining': 2,
-    'retro_total': 4,
-    'retro_completed': 4,
-    'retro_remaining': 0
-}
+@pytest.fixture(scope='module')
+def sprint_db_manager():
+    """
+    Fixture to create a SprintDBManager instance.
 
-@pytest.fixture()
-def teardown():
-    delete_data = {
-        "board_db_id": None,
-        "sprint_summary_db_id": None
+    Returns:
+        SprintDBManager: An instance of the SprintDBManager class.
+    """
+    # Load MySQL configuration
+    mysql_config = load_config(parent_path / "config.json")['mysql']
+    manager = SprintDBManager(mysql_config)
+    return manager
+
+
+@pytest.fixture
+def board_data():
+    """
+    Fixture to provide test board data.
+
+    Returns:
+        dict: A dictionary containing test board data.
+    """
+    test_board_data = load_test_board_data(
+        parent_path / "card_json_archive/test_board_data.json",
+        True
+    )
+    data = {
+        'board_id': 'J117',
+        'board_name': 'Test Board',
+        'json_data': test_board_data
     }
-
-    yield delete_data
-
-    # Clean out inserted data
-    if delete_data["sprint_summary_db_id"] is not None:
-        delete_statement = f"DELETE FROM sprint_summary WHERE id = {delete_data["sprint_summary_db_id"]};"
-        sprint_db_manager.execute_query(query = delete_statement)
-
-    if delete_data["board_db_id"] is not None:
-        delete_statement = f"DELETE FROM boards WHERE id = {delete_data["board_db_id"]};"
-        sprint_db_manager.execute_query(query = delete_statement)
-
-@pytest.fixture()
-def setup_and_teardown_boards(teardown):
-
-    # Act: Call the insert_board_data function
-    teardown["board_db_id"] = sprint_db_manager.insert_data(table='boards', insert_data=board_data)
-
-    yield teardown
-
-@pytest.fixture()
-def setup_and_teardown_summaries(setup_and_teardown_boards):
-
-    # Act: Call the insert_board_data function
-    setup_and_teardown_boards["sprint_summary_db_id"] = sprint_db_manager.insert_data(table='sprint_summary', insert_data=sprint_summary_data)
-
-    yield setup_and_teardown_boards
+    return data
 
 
-def test_connect_to_db():
+@pytest.fixture
+def sprint_summary_data():
     """
-    Tests the connect_to_db function.
-    """
+    Fixture to provide test sprint summary data.
 
-    # Act: Select rows from sprint_summary
+    Returns:
+        dict: A dictionary containing test sprint summary data.
+    """
+    data = {
+        'board_id': 'J117',
+        'start_date': date.today().strftime('%Y-%m-%d'),
+        'length_days': 15,
+        'members': 8,
+        'vacation_days': 0,
+        'planned_total': 20,
+        'planned_completed': 16,
+        'planned_remaining': 4,
+        'unplanned_total': 8,
+        'unplanned_completed': 6,
+        'unplanned_remaining': 2,
+        'retro_total': 4,
+        'retro_completed': 4,
+        'retro_remaining': 0
+    }
+    return data
+
+
+@pytest.fixture
+def insert_board_data(sprint_db_manager, board_data):
+    """
+    Fixture to insert board data into the database and clean up after the test.
+
+    Args:
+        sprint_db_manager (SprintDBManager): The database manager fixture.
+        board_data (dict): The board data fixture.
+
+    Yields:
+        int: The ID of the inserted board record.
+    """
+    # Insert board data
+    board_db_id = sprint_db_manager.insert_data(table='boards', insert_data=board_data)
+    yield board_db_id
+    # Cleanup: delete the inserted board data
+    delete_statement = f"DELETE FROM boards WHERE id = {board_db_id};"
+    sprint_db_manager.execute_query(query=delete_statement)
+
+
+@pytest.fixture
+def insert_sprint_summary_data(sprint_db_manager, sprint_summary_data, insert_board_data):
+    """
+    Fixture to insert sprint summary data into the database and clean up after the test.
+
+    Args:
+        sprint_db_manager (SprintDBManager): The database manager fixture.
+        sprint_summary_data (dict): The sprint summary data fixture.
+        insert_board_data (int): The board data insertion fixture.
+
+    Yields:
+        int: The ID of the inserted sprint summary record.
+    """
+    # Insert sprint summary data
+    sprint_summary_db_id = sprint_db_manager.insert_data(
+        table='sprint_summary',
+        insert_data=sprint_summary_data
+    )
+    yield sprint_summary_db_id
+    # Cleanup: delete the inserted sprint summary data
+    delete_statement = f"DELETE FROM sprint_summary WHERE id = {sprint_summary_db_id};"
+    sprint_db_manager.execute_query(query=delete_statement)
+
+
+def test_connect_to_db(sprint_db_manager):
+    """
+    Tests the database connection by executing a simple query.
+
+    Args:
+        sprint_db_manager (SprintDBManager): The database manager fixture.
+    """
+    # Act: Execute a simple SELECT query
     select_statement = "SELECT * FROM sprint_summary;"
-    
-    # Assert: Verify no error was generated following Select statement
-    results = sprint_db_manager.execute_query(query = select_statement)
+    # Assert: Verify no error was generated and results are returned
+    results = sprint_db_manager.execute_query(query=select_statement)
     assert results is not None
 
-def test_insert_data(teardown):
-    # Act: Call the insert_board_data function
-    teardown["board_db_id"] = sprint_db_manager.insert_data(table='boards', insert_data=board_data)
 
-    # Assert: Verify the data was inserted correctly
-    select_statement = f"SELECT * FROM boards WHERE id = '{teardown["board_db_id"]}';"
-    
-    results = sprint_db_manager.execute_query(query = select_statement)
-    assert results is not None
-    assert len(results) == 1
+def test_insert_data(sprint_db_manager, insert_board_data, insert_sprint_summary_data):
+    """
+    Tests the insertion of board data and sprint summary data into the database.
 
-    # Act: Call the insert_board_data function
-    teardown["sprint_summary_db_id"] = sprint_db_manager.insert_data(table='sprint_summary', insert_data=sprint_summary_data)
+    Args:
+        sprint_db_manager (SprintDBManager): The database manager fixture.
+        insert_board_data (int): The board data insertion fixture.
+        insert_sprint_summary_data (int): The sprint summary data insertion fixture.
+    """
+    board_db_id = insert_board_data
+    sprint_summary_db_id = insert_sprint_summary_data
 
-    # Assert: Verify the data was inserted correctly
-    select_statement = f"SELECT * FROM sprint_summary WHERE id = '{teardown["sprint_summary_db_id"]}';"
-    
-    results = sprint_db_manager.execute_query(query = select_statement)
+    # Assert: Verify the board data was inserted correctly
+    select_statement = f"SELECT * FROM boards WHERE id = {board_db_id};"
+    results = sprint_db_manager.execute_query(query=select_statement)
     assert results is not None
     assert len(results) == 1
 
-def test_get_data_from_db(setup_and_teardown_summaries):
-
-    # Assert: Verify the data was inserted correctly
-    results = sprint_db_manager.get_board_data_from_db(board_id="J117")
-    assert results is not None
-    assert len(results) == 73
-
-    # Assert: Verify the data was inserted correctly
-    results = sprint_db_manager.get_sprint_summary_from_db(board_id="J117")
+    # Assert: Verify the sprint summary data was inserted correctly
+    select_statement = f"SELECT * FROM sprint_summary WHERE id = {sprint_summary_db_id};"
+    results = sprint_db_manager.execute_query(query=select_statement)
     assert results is not None
     assert len(results) == 1
+
+
+def test_get_data_from_db(sprint_db_manager, insert_board_data, insert_sprint_summary_data):
+    """
+    Tests the retrieval of board data and sprint summary data from the database.
+
+    Args:
+        sprint_db_manager (SprintDBManager): The database manager fixture.
+        insert_board_data (int): The board data insertion fixture.
+        insert_sprint_summary_data (int): The sprint summary data insertion fixture.
+    """
+    # Act: Retrieve board data using the board_id
+    board_data = sprint_db_manager.get_board_data_from_db(board_id="J117")
+    # Assert: Verify the board data was retrieved correctly
+    assert board_data is not None
+    # Assuming the test board data contains 73 cards
+    assert len(board_data) == 73
+
+    # Act: Retrieve sprint summary data using the board_id
+    sprint_summaries = sprint_db_manager.get_sprint_summary_from_db(board_id="J117")
+    # Assert: Verify the sprint summary

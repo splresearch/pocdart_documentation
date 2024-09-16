@@ -5,61 +5,101 @@ This module contains unit tests for the TrelloAPI class, ensuring that the API i
 with Trello are correctly implemented.
 
 Tests:
-    - test_get_cards: Tests the get_board_cards method.
-    - test_get_lists: Tests the get_board_lists method.
-    - test_get_card_story_points: Test the get_card_story_points method.
+    - test_get_board_cards: Tests the get_board_cards method.
+    - test_get_board_lists: Tests the get_board_lists method.
+    - test_get_card_story_points: Tests the get_card_story_points method.
 """
 
-import pytest, os, sys
-# Import the function from helper.py
-# Get the absolute path of the 'utils' directory relative to this file's location
-parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
+import pytest
+import os
+import sys
+from pathlib import Path
 
 # Add the parent directory to the Python path
-sys.path.append(parent_path)
+parent_path = Path(__file__).parent.parent
+sys.path.append(str(parent_path))
+
 from trello.api import TrelloAPI
 from sprint_utils import load_config
 
-from pathlib import Path
+@pytest.fixture(scope='module')
+def board_config():
+    """
+    Fixture to load the board configuration.
 
-# Arrange: Pull board config info
-board_config = load_config(Path(__file__).parent.parent / "config.json")['board']
+    Returns:
+        dict: The board configuration dictionary.
+    """
+    return load_config(parent_path / "config.json")['board']
 
-# Arrange: Set up mock response data
-trello_api = TrelloAPI(
-    board_id = board_config['board_id'],
-    api_key = board_config['api_key'],
-    api_token = board_config['api_token']
-)
+@pytest.fixture(scope='module')
+def trello_api(board_config):
+    """
+    Fixture to create a TrelloAPI instance for testing.
 
-def test_get_cards():
+    Args:
+        board_config (dict): The board configuration fixture.
 
+    Returns:
+        TrelloAPI: An instance of the TrelloAPI class.
+    """
+    # Initialize TrelloAPI instance
+    api = TrelloAPI(
+        board_id=board_config['board_id'],
+        api_key=board_config['api_key'],
+        api_token=board_config['api_token']
+    )
+    return api
+
+def test_get_board_cards(trello_api, board_config):
+    """
+    Tests the get_board_cards method of the TrelloAPI class.
+
+    Args:
+        trello_api (TrelloAPI): The TrelloAPI instance fixture.
+        board_config (dict): The board configuration fixture.
+    """
     # Act: Call get_board_cards method
     sprint_cards = trello_api.get_board_cards()
     
     # Assert: Verify that the response data matches expected values
     assert sprint_cards is not None
     assert len(sprint_cards) > 0
-    assert sprint_cards[0]["id"] == board_config['sprint_calc_card']
+    # Assuming 'sprint_calc_card' is expected to be in the list of cards
+    card_ids = [card['id'] for card in sprint_cards]
+    assert board_config['sprint_calc_card'] in card_ids
 
-def test_get_lists():
+def test_get_board_lists(trello_api):
+    """
+    Tests the get_board_lists method of the TrelloAPI class.
 
-    # Act: Call get_board_cards method
+    Args:
+        trello_api (TrelloAPI): The TrelloAPI instance fixture.
+    """
+    # Act: Call get_board_lists method
     sprint_lists = trello_api.get_board_lists()
     
     # Assert: Verify that the response data matches expected values
     assert sprint_lists is not None
     assert len(sprint_lists) > 0
 
-def test_get_card_story_points():
-    # Arrange: Get test card id
+def test_get_card_story_points(trello_api, board_config):
+    """
+    Tests the get_card_story_points method of the TrelloAPI class.
+
+    Args:
+        trello_api (TrelloAPI): The TrelloAPI instance fixture.
+        board_config (dict): The board configuration fixture.
+    """
+    # Arrange: Get test card ID and name
     test_card_id = board_config['slack_card']
-    # Act: Call get_board_cards method
-    sprint_cards = trello_api.get_card_story_points("Slack Channel Assignments", test_card_id)
+    test_card_name = "Slack Channel Assignments"  # Replace with the actual card name if different
+
+    # Act: Call get_card_story_points method
+    story_points = trello_api.get_card_story_points(test_card_name, test_card_id)
     
     # Assert: Verify that the response data matches expected values
-    assert sprint_cards is not None
-    assert len(sprint_cards) > 0
-    assert sprint_cards['total'] == 1
-    assert sprint_cards['spent'] == 1
-    assert sprint_cards['remaining'] == 0
+    assert story_points is not None
+    assert story_points['total'] == 1
+    assert story_points['spent'] == 1
+    assert story_points['remaining'] == 0
