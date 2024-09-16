@@ -9,6 +9,7 @@ Classes:
 """
 
 import requests, os, sys, re
+from pathlib import Path
 
 # Get the absolute path of the 'utils' directory relative to this file's location
 parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
@@ -54,7 +55,7 @@ class Board:
         else:
             self.board_data = board_data
 
-        board_config = load_config("../config.json")['board']
+        board_config = load_config(Path(__file__).parent.parent / "config.json")['board']
         self.unplanned_template_card = board_config['unplanned_template_card']
         self.sprint_summary_card = board_config['sprint_calc_card']
 
@@ -62,6 +63,10 @@ class Board:
         return self.board_data
     def get_cards(self):
         return self.cards
+    def get_unplanned_past_sprints(self):
+        return self.unplanned_past_sprints
+    def get_retro_past_sprints(self):
+        return self.retro_past_sprints
 
     def fetch_data(self):
         """
@@ -78,7 +83,7 @@ class Board:
 
         # Compile regex patterns once to improve performance
         unplanned_pattern = re.compile(r"unplanned: \*{2}(\d+)", re.IGNORECASE)
-        retro_pattern = re.compile(r"\*\* (\d+)\*\* Retro", re.IGNORECASE)
+        retro_pattern = re.compile(r"\\\*\\\* (\d+)\\\*\\\* Retro", re.IGNORECASE)
 
         for card in self.board_data:
             curr_card_id = card.get("id")

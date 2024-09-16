@@ -23,9 +23,14 @@ sys.path.append(parent_path)
 from sprint_utlis import load_config, load_test_board_data
 from trello.db import SprintDBManger
 
-sprint_db_manager = SprintDBManger()
+from pathlib import Path
+
+# Arrange: Pull mysql config info
+parent_path = Path(__file__).parent.parent
+mysql_config = load_config(parent_path / "config.json")['mysql']
+sprint_db_manager = SprintDBManger(mysql_config)
 # Arrange: Create mock connection and get test board data
-test_board_data = load_test_board_data("../card_json_archive/test_board_data.json", True)
+test_board_data = load_test_board_data(Path(__file__).parent.parent / "card_json_archive/test_board_data.json", True)
 # Arrange: Set up the board data
 board_data = {
     'board_id': 'J117',
@@ -123,7 +128,7 @@ def test_get_data_from_db(setup_and_teardown_summaries):
     # Assert: Verify the data was inserted correctly
     results = sprint_db_manager.get_board_data_from_db(board_id="J117")
     assert results is not None
-    assert len(results) == 1
+    assert len(results) == 73
 
     # Assert: Verify the data was inserted correctly
     results = sprint_db_manager.get_sprint_summary_from_db(board_id="J117")

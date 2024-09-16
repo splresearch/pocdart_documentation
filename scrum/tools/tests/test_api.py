@@ -20,8 +20,10 @@ sys.path.append(parent_path)
 from trello.api import TrelloAPI
 from sprint_utlis import load_config
 
+from pathlib import Path
+
 # Arrange: Pull board config info
-board_config = load_config("../config.json")['board']
+board_config = load_config(Path(__file__).parent.parent / "config.json")['board']
 
 # Arrange: Set up mock response data
 trello_api = TrelloAPI(

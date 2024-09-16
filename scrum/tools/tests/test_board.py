@@ -21,8 +21,11 @@ from trello.api import TrelloAPI
 from trello.db import SprintDBManger
 from trello.card import Card
 
+from pathlib import Path
+
 # Arrange: Pull board config info
-board_config = load_config("../config.json")['board']
+parent_path = Path(__file__).parent.parent
+board_config = load_config(parent_path / "config.json")['board']
 
 # Arrange: Set up the mock response data
 trello_api = TrelloAPI(
@@ -64,7 +67,7 @@ def test_calculate_story_points():
     """
     Tests the calculate_story_points method of the Board class using stored boards from the database.
     """
-    test_board_data = load_test_board_data("../card_json_archive/test_board_data.json")
+    test_board_data = load_test_board_data(parent_path / "card_json_archive/test_board_data.json")
     # Arrange: Create a Board instance with the retrieved data
     board = Board(trello_api, test_board_data)
     #board = Board(trello_api)
