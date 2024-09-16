@@ -8,10 +8,10 @@ Classes:
     - Board: Represents a Trello board and includes methods for data fetching and calculations.
 """
 
-from trello.card import Card
-from sprint_utils import load_config
 import re
 from pathlib import Path
+from trello.card import Card
+from sprint_utils import load_config
 
 
 class Board:
@@ -21,7 +21,8 @@ class Board:
 
         Args:
             api (TrelloAPI): An instance of the TrelloAPI class.
-            board_data (dict, optional): Initial data for the board. If None, data will be fetched using the API.
+            board_data (dict, optional): Initial data for the board. 
+                If None, data will be fetched using the API.
         """
         self.api = api
         self.cards = []
@@ -148,7 +149,8 @@ class Board:
         Calculates story points for the board.
 
         Returns:
-            dict: A dictionary with calculated story points for 'planned', 'unplanned', and 'retro' categories.
+            dict: A dictionary with calculated story points for 
+                'planned', 'unplanned', and 'retro' categories.
         """
         for card in self.cards:
             labels = set(card.get_labels())

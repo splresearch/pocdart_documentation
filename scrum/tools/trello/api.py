@@ -6,17 +6,10 @@ including fetching board and card data, retrieving story points, and deleting ca
 
 Classes:
     - TrelloAPI: Manages API requests to Trello.
-
-Example:
-    trello_api = TrelloAPI(board_id='your_board_id', api_key='your_api_key', api_token='your_api_token')
-    cards = trello_api.get_board_cards()
-    lists = trello_api.get_board_lists()
-    card_story_points = trello_api.get_card_story_points(card_name='Card Name', card_id='Card ID')
-    delete_response = trello_api.delete_card(card_id='Card ID')
 """
 
-import requests
 import re
+import requests
 
 
 class TrelloAPI:

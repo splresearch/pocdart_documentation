@@ -1,8 +1,9 @@
 """
 db.py
 
-This module contains the `SprintDBManager` class for interacting with the MySQL database to store and retrieve
-Trello board and story points data.
+This module contains the `SprintDBManager` class for interacting 
+    with the MySQL database to store and retrieve
+    Trello board and story points data.
 
 Classes:
     - SprintDBManager: Manages database operations for sprint data.
@@ -13,9 +14,9 @@ Example Usage:
     board_data = db_manager.get_board_data_from_db(board_id='your_board_id')
 """
 
-import mysql.connector
 import json
 import traceback
+import mysql.connector
 
 
 class SprintDBManager:
@@ -33,7 +34,8 @@ class SprintDBManager:
         Establishes a connection to the MySQL database.
 
         Args:
-            database (str, optional): Target database name. Defaults to the one specified in the config.
+            database (str, optional): Target database name. 
+                Defaults to the one specified in the config.
 
         Returns:
             mysql.connector.connection.MySQLConnection: A MySQL connection object.

@@ -6,11 +6,11 @@ This module contains test cases for the `Board` class using pytest.
 Test Cases:
     - `test_fetch_data`: Tests the `fetch_data` method of the `Board` class.
     - `test_extract_cards`: Tests the `extract_cards` method of the `Board` class.
-    - `test_calculate_story_points`: Tests the `calculate_story_points` method of the `Board` class using stored board data.
+    - `test_calculate_story_points`: Tests the `calculate_story_points` 
+        method of the `Board` class using stored board data.
 """
 
 import sys
-import os
 from pathlib import Path
 
 import pytest
@@ -73,7 +73,8 @@ def test_extract_cards(trello_api):
         trello_api (TrelloAPI): Fixture providing a `TrelloAPI` instance.
 
     Notes:
-        This test depends on the live Trello board data. Ensure that the board contains cards to extract.
+        This test depends on the live Trello board data. 
+            Ensure that the board contains cards to extract.
     """
     # Arrange: Create a Board instance with data from the live board
     board = Board(trello_api)
@@ -96,7 +97,8 @@ def test_calculate_story_points(trello_api):
         trello_api (TrelloAPI): Fixture providing a `TrelloAPI` instance.
 
     Notes:
-        This test uses stored test data from `test_board_data.json`. Ensure that this file exists and contains valid data.
+        This test uses stored test data from `test_board_data.json`. 
+            Ensure that this file exists and contains valid data.
     """
     # Arrange: Load test board data
     test_board_data = load_test_board_data(

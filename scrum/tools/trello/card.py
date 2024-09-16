@@ -22,10 +22,12 @@ class Card:
 
         Args:
             card_id (str): The Trello card ID.
-            story_points (dict): The story points of the card, with keys 'total', 'spent', 'remaining'.
+            story_points (dict): The story points of the card, 
+                with keys 'total', 'spent', 'remaining'.
             title (str, optional): The title of the card. Defaults to an empty string.
             labels (list, optional): The labels of the card. Defaults to an empty list.
-            list_name (str, optional): The name of the list the card is in. Defaults to an empty string.
+            list_name (str, optional): The name of the list the card is in. 
+                Defaults to an empty string.
         """
         self.card_id = card_id
         self.story_points = story_points

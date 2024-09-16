@@ -10,10 +10,9 @@ Tests:
     - test_get_card_story_points: Tests the get_card_story_points method.
 """
 
-import pytest
-import os
 import sys
 from pathlib import Path
+import pytest
 
 # Add the parent directory to the Python path
 parent_path = Path(__file__).parent.parent

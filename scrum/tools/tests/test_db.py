@@ -8,12 +8,10 @@ Test Cases:
     - test_insert_data: Tests the insertion of board data and sprint summary data.
     - test_get_data_from_db: Tests the retrieval of board data and sprint summary data.
 """
-
-import pytest
 import sys
-import os
 from datetime import date
 from pathlib import Path
+import pytest
 
 # Add the parent directory to the Python path
 parent_path = Path(__file__).parent.parent

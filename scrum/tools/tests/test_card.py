@@ -9,10 +9,10 @@ Tests:
     - test_set_story_points: Tests the modification of story points.
 """
 
-import pytest
 import sys
-import os
 from pathlib import Path
+
+import pytest
 
 # Add the parent directory to the Python path
 parent_path = Path(__file__).parent.parent
