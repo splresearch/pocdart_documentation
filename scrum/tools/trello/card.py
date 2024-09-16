@@ -8,8 +8,15 @@ Classes:
     - Card: Represents a Trello card and holds card data.
 """
 
+
 class Card:
-    def __init__(self, card_id, story_points, title='', labels=None, list_name=''):
+    def __init__(
+            self,
+            card_id,
+            story_points,
+            title='',
+            labels=None,
+            list_name=''):
         """
         Initializes a Card instance.
 

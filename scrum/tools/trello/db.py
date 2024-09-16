@@ -15,13 +15,8 @@ Example Usage:
 
 import mysql.connector
 import json
-import os
-import sys
 import traceback
 
-# Add the parent directory to the Python path
-parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
-sys.path.append(parent_path)
 
 class SprintDBManager:
     def __init__(self, config):
@@ -74,7 +69,8 @@ class SprintDBManager:
         cursor = cnx.cursor()
 
         try:
-            # Prepare the SQL query dynamically using dictionary keys and values
+            # Prepare the SQL query dynamically using dictionary keys and
+            # values
             columns = ", ".join(insert_data.keys())
             placeholders = ", ".join(["%s"] * len(insert_data))
             values = tuple(insert_data.values())
@@ -89,7 +85,8 @@ class SprintDBManager:
             inserted_id = cursor.lastrowid
         except Exception as e:
             traceback.print_exc()
-            raise Exception('Error occurred while inserting into the table') from e
+            raise Exception(
+                'Error occurred while inserting into the table') from e
         finally:
             cnx.close()
 
@@ -120,7 +117,8 @@ class SprintDBManager:
                 select_statement = "SELECT json_data FROM boards WHERE id = %s;"
                 cursor.execute(select_statement, (assigned_board_id,))
             else:
-                raise ValueError("Either 'board_id' or 'assigned_board_id' must be provided.")
+                raise ValueError(
+                    "Either 'board_id' or 'assigned_board_id' must be provided.")
 
             results = cursor.fetchall()
 

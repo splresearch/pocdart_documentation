@@ -18,7 +18,7 @@ parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
 # Add the parent directory to the Python path
 sys.path.append(parent_path)
 from trello.api import TrelloAPI
-from sprint_utlis import load_config
+from sprint_utils import load_config
 
 from pathlib import Path
 

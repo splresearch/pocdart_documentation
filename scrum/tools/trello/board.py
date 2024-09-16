@@ -8,17 +8,11 @@ Classes:
     - Board: Represents a Trello board and includes methods for data fetching and calculations.
 """
 
-import os
-import sys
+from trello.card import Card
+from sprint_utils import load_config
 import re
 from pathlib import Path
 
-# Add the parent directory to the Python path
-parent_path = os.path.join(os.path.dirname(os.path.dirname(__file__)))
-sys.path.append(parent_path)
-
-from sprint_utils import load_config
-from trello.card import Card
 
 class Board:
     def __init__(self, api, board_data=None):
@@ -45,7 +39,9 @@ class Board:
             self.board_data = board_data
 
         # Load board configuration
-        board_config = load_config(Path(__file__).parent.parent / "config.json")['board']
+        board_config = load_config(
+            Path(__file__).parent.parent /
+            "config.json")['board']
         self.unplanned_template_card = board_config['unplanned_template_card']
         self.sprint_summary_card = board_config['sprint_calc_card']
 
@@ -96,16 +92,23 @@ class Board:
         Extracts card data from the board's JSON data and creates Card objects.
         """
         # Preprocess list IDs to names for quick lookup
-        list_id_to_name = {list_obj['id']: list_obj['name'] for list_obj in self.lists}
+        list_id_to_name = {list_obj['id']: list_obj['name']
+                           for list_obj in self.lists}
 
         # Compile regex patterns once to improve performance
         unplanned_pattern = re.compile(r"unplanned: \*{2}(\d+)", re.IGNORECASE)
-        retro_pattern = re.compile(r"\\\*\\\* (\d+)\\\*\\\* Retro", re.IGNORECASE)
+        retro_pattern = re.compile(
+            r"\\\*\\\* (\d+)\\\*\\\* Retro", re.IGNORECASE)
 
         for card in self.board_data:
             curr_card_id = card.get("id")
             curr_card_name = card.get("name", "")
-            curr_card_labels = [label.get("name", "") for label in card.get("labels", [])]
+            curr_card_labels = [
+                label.get(
+                    "name",
+                    "") for label in card.get(
+                    "labels",
+                    [])]
             curr_card_list = list_id_to_name.get(card.get('idList'), '')
 
             # Skip if card is in 'Monitoring' list
@@ -119,12 +122,15 @@ class Board:
             # Process the sprint summary card
             if curr_card_id == self.sprint_summary_card:
                 desc = card.get("desc", "")
-                self.unplanned_past_sprints = [int(i) for i in unplanned_pattern.findall(desc)]
-                self.retro_past_sprints = [int(i) for i in retro_pattern.findall(desc)]
+                self.unplanned_past_sprints = [
+                    int(i) for i in unplanned_pattern.findall(desc)]
+                self.retro_past_sprints = [
+                    int(i) for i in retro_pattern.findall(desc)]
                 continue
 
             # Extract story points
-            story_points = self.api.get_card_story_points(curr_card_name, curr_card_id)
+            story_points = self.api.get_card_story_points(
+                curr_card_name, curr_card_id)
 
             # Create and append the Card object
             self.cards.append(

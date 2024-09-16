@@ -18,6 +18,7 @@ Example:
 import requests
 import re
 
+
 class TrelloAPI:
     def __init__(self, board_id, api_key, api_token):
         """
@@ -94,9 +95,11 @@ class TrelloAPI:
         card_url = f"{self.base_url}/cards/{card_id}/pluginData"
         plugin_data = self.request_call(url=card_url, have_headers=False)
 
-        # If the card size module has not been filled out, set everything to zero
+        # If the card size module has not been filled out, set everything to
+        # zero
         if not plugin_data:
-            print(f"This card, '{card_name}', has not been estimated. Assigned values of 0.")
+            print(
+                f"This card, '{card_name}', has not been estimated. Assigned values of 0.")
             card_size = {
                 "total": 0,
                 "spent": 0,
@@ -118,7 +121,8 @@ class TrelloAPI:
                     "remaining": remaining
                 }
             else:
-                print(f"Could not parse story points for card '{card_name}'. Assigned values of 0.")
+                print(f"Could not parse story points for card '{
+                      card_name}'. Assigned values of 0.")
                 card_size = {
                     "total": 0,
                     "spent": 0,
