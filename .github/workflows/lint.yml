@@ -28,6 +28,5 @@ jobs:
         pip install requests
     - name: Analysing changed code with pylint
       run: |
-        cd scrum/tools/
         changed_files=$(git diff --name-only  --diff-filter=ACMRTUXB origin/main | grep  -E "(.py$)")
         pylint --fail-under=8 $changed_files
