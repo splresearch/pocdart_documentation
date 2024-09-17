@@ -33,7 +33,7 @@ jobs:
     - name: Run Pylint on changed files
       if: steps.get_changed_files.outputs.files != ''
       env:
-        PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/pocdart_documentation/scrum/tools
+        PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/scrum/tools
       run: |
         echo "Running Pylint..."
         CHANGED_FILES="${{ steps.get_changed_files.outputs.files }}"
@@ -56,5 +56,5 @@ jobs:
 
         # Run pylint with the specified .pylintrc
         # Change directory to the root of the repository
-        cd "${{ github.workspace }}/pocdart_documentation/scrum/tools"
+        cd "${{ github.workspace }}/scrum/tools"
         pylint --rcfile=.pylintrc --fail-under=8 $FILES_TO_LINT
