@@ -28,8 +28,6 @@ jobs:
         pip install requests
     - name: Analysing changed code with pylint
       run: |
-        changed_files=$(git diff --name-only  --diff-filter=ACMRTUXB origin/main | grep  -E "(.py$)")
-        pwd
-        ls
         cd scrum/tools/
-        pylint --init-hook='import sys; sys.path.append(".")' --fail-under=8 $changed_files
+        changed_files=$(git diff --name-only  --diff-filter=ACMRTUXB origin/main | grep  -E "(.py$)")
+        pylint --fail-under=8 $changed_files
