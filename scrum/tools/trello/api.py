@@ -114,8 +114,8 @@ class TrelloAPI:
                     "remaining": remaining
                 }
             else:
-                print(f"Could not parse story points for card '{
-                      card_name}'. Assigned values of 0.")
+                print(f"Could not parse story points for card '\
+                      {card_name}'. Assigned values of 0.")
                 card_size = {
                     "total": 0,
                     "spent": 0,
