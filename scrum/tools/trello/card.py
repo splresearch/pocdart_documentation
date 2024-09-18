@@ -15,7 +15,7 @@ class Card:
             card_id,
             story_points,
             title='',
-            labels=None,
+            labels=[],
             list_name=''):
         """
         Initializes a Card instance.
@@ -32,7 +32,7 @@ class Card:
         self.card_id = card_id
         self.story_points = story_points
         self.title = title
-        self.labels = labels if labels is not None else []
+        self.labels = labels
         self.list_name = list_name
 
     # Getters
