@@ -27,7 +27,7 @@ jobs:
         pip install pylint
         pip install requests
         pip install pytest
-        pip install mysql
+        pip install mysql-connector-python
     - name: Analysing changed code with pylint
       run: |
         changed_files=$(git diff --name-only  --diff-filter=ACMRTUXB origin/main | grep  -E "(.py$)")

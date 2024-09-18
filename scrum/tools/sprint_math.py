@@ -151,8 +151,7 @@ def show_sp_calculations(story_points, recommendation=None):
         f"SP Planned  : {str(story_points['planned']['total']).rjust(2)}(T), "
         f"{str(story_points['planned']['spent']).rjust(2)}(A), "
         f"{str(story_points['planned']['remaining']).rjust(2)}(LO)\n"
-        f"SP Unplanned: {
-            str(story_points['unplanned']['total']).rjust(2)}(T), "
+        f"SP Unplanned: {str(story_points['unplanned']['total']).rjust(2)}(T), "
         f"{str(story_points['unplanned']['spent']).rjust(2)}(A), "
         f"{str(story_points['unplanned']['remaining']).rjust(2)}(LO)\n"
         f"SP Retro    : {str(story_points['retro']['total']).rjust(2)}(T), "

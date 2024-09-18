@@ -126,8 +126,7 @@ def insert_sprint_summary_data(
     )
     yield sprint_summary_db_id
     # Cleanup: delete the inserted sprint summary data
-    delete_statement = f"DELETE FROM sprint_summary WHERE id = {
-        sprint_summary_db_id};"
+    delete_statement = f"DELETE FROM sprint_summary WHERE id = {sprint_summary_db_id};"
     sprint_db_manager.execute_query(query=delete_statement)
 
 
