@@ -70,12 +70,11 @@ def prompt_for_sprint_controls():
     # Loop through the variables and prompt the user for each value
     for i, (var_name, description) in enumerate(variables.items()):
         default = defaults[i]
-        while True:
-            user_input = input(
-                f"Enter number of {description} (default: {default}): ")
-            if user_input == "":
-                sprint_controls[var_name] = default
-                break
+        user_input = input(
+            f"Enter number of {description} (default: {default}): ")
+        if user_input == "":
+            sprint_controls[var_name] = default
+        else:
             validated_input = validate_user_input(user_input)
             sprint_controls[var_name] = validated_input
 
