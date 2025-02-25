@@ -1,34 +1,10 @@
-name: Pylint Check
-# Requires that changed files reach or exceed the 9.0 threshold
-# For checking more file extensions, do something like "(.js$|.ts$|.tsx$)"
-# For more information on GitHub Action workflows, see https://docs.github.com/en/actions
+name: Run Lint on Pull Request
 
-# Only run this Action when making a PR to main
 on:
   pull_request:
     branches:
       - main
 
-# Step 1: Spin up a container with Python 3.7 to doing the checking in
-# Step 2: Install dependencies needed
-# Step 3: Gather changed files in PR and run them through pylint
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ vars.PYTHON_VERSION }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pylint
-        pip install requests
-        pip install pytest
-        pip install mysql-connector-python
-    - name: Analysing changed code with pylint
-      run: |
-        changed_files=$(git diff --name-only  --diff-filter=ACMRTUXB origin/main | grep  -E "(.py$)")
-        pylint --fail-under=8 $changed_files
+  lint_job:
+    uses: splresearch/pocdart_documentation/.github/workflows/lint-reusable.yml@main
