@@ -1,5 +1,5 @@
 name: Run Lint on Pull Request
-# Callable Pylint file
+# Callable Pylint
 
 on:
   pull_request:
