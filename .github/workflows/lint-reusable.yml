@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch the full git history
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -25,11 +27,11 @@ jobs:
 
       - name: Analyse changed code with pylint
         run: |
-          changed_files=$(git diff --name-only --diff-filter=ACMRTUXB origin/main | grep -E "(.py$)" || true)
-
+          git fetch origin main
+          changed_files=$(git diff --name-only origin/main...HEAD -- '*.py' || true)
+          echo "Changed files: $changed_files"
           if [ -z "$changed_files" ]; then
             echo "No Python files changed. Skipping pylint."
             exit 0
           fi
-
           pylint --fail-under=8 $changed_files
