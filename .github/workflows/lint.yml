@@ -7,4 +7,4 @@ on:
 
 jobs:
   lint_job:
-    uses: splresearch/pocdart_documentation/.github/workflows/lint-reusable.yml@main
+    uses: splresearch/pocdart_documentation/.github/workflows/lint-reusable.yml@RYFwqajo-pylint_update
