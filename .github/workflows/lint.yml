@@ -8,4 +8,4 @@ on:
 
 jobs:
   lint_job:
-    uses: splresearch/pocdart_documentation/.github/workflows/lint-reusable.yml@hotfix-filter-unfound-files
+    uses: splresearch/pocdart_documentation/.github/workflows/lint-reusable.yml@main
