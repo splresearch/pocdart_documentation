@@ -22,11 +22,11 @@ pipeline {
                 sshagent(credentials: ['jenkins_sp-dmaras2']) {
                     sh '''
                         # host key check
-			ssh-keyscan -H 10.214.16.64 >> /home/jenkins/.ssh/known_hosts
+                        ssh-keyscan -H $HOST_ADDRESS >> /home/jenkins/.ssh/known_hosts
                         # copy config into container
-                        scp jenkins@10.214.16.64:/home/pocdart/config/python/sprint_math/config.json /home/pocdart/pocdart_documentation/scrum/tools
+                        scp jenkins@$HOST_ADDRESS:/home/pocdart/config/python/sprint_math/config.json /home/pocdart/pocdart_documentation/scrum/tools
                         # copy test board into container
-                        scp jenkins@10.214.16.64:/home/pocdart/config/python/sprint_math/test_board_data.json /home/pocdart/pocdart_documentation/scrum/tools/card_json_archive
+                        scp jenkins@$HOST_ADDRESS:/home/pocdart/config/python/sprint_math/test_board_data.json /home/pocdart/pocdart_documentation/scrum/tools/card_json_archive
                     '''
                 }
             }
