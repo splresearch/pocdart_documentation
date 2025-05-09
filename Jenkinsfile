@@ -7,7 +7,7 @@ pipeline {
             -v /home/shiny/sms_queue:/home/shiny/sms_queue \
             -v /var/run/docker.sock:/var/run/docker.sock \
             --group-add shiny-apps \
-            --name=pocdart_documentation_jenkins
+            --name=pocdart_documentation_jenkins_${BRANCH_NAME}
             '''
         }
     }
