@@ -19,7 +19,7 @@ pipeline {
                     cd /home/pocdart && git clone https://github.com/splresearch/pocdart_documentation.git
                     cd /home/pocdart/pocdart_documentation && git checkout $BRANCH_NAME
                 ''' 
-                sshagent(credentials: ['jenkins_sp-dmaras2']) {
+                sshagent(credentials: ['jenkins_host_user']) {
                     sh '''
                         # host key check
                         ssh-keyscan -H $HOST_ADDRESS >> /home/jenkins/.ssh/known_hosts
