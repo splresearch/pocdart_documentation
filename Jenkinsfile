@@ -24,9 +24,9 @@ pipeline {
                         # host key check
                         ssh-keyscan -H $HOST_ADDRESS >> /home/jenkins/.ssh/known_hosts
                         # copy config into container
-                        scp jenkins@$HOST_ADDRESS:/home/pocdart/config/python/sprint_math/config.json /home/pocdart/pocdart_documentation/scrum/tools
+                        scp -L jenkins@$HOST_ADDRESS:/home/pocdart/config/python/sprint_math/config.json /home/pocdart/pocdart_documentation/scrum/tools
                         # copy test board into container
-                        scp jenkins@$HOST_ADDRESS:/home/pocdart/config/python/sprint_math/test_board_data.json /home/pocdart/pocdart_documentation/scrum/tools/card_json_archive
+                        scp -L jenkins@$HOST_ADDRESS:/home/pocdart/config/python/sprint_math/test_board_data.json /home/pocdart/pocdart_documentation/scrum/tools/card_json_archive
                     '''
                 }
             }
