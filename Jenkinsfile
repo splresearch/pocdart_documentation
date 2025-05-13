@@ -7,7 +7,7 @@ pipeline {
             -v /home/shiny/sms_queue:/home/shiny/sms_queue \
             -v /var/run/docker.sock:/var/run/docker.sock \
             --group-add shiny-apps \
-            --name=jenkins_${JOB_BASE_NAME}_${BRANCH_NAME}
+            --name=${BUILD_TAG}
             '''
         }
     }
