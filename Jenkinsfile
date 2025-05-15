@@ -7,7 +7,7 @@ pipeline {
             -v /home/shiny/sms_queue:/home/shiny/sms_queue \
             -v /var/run/docker.sock:/var/run/docker.sock \
             --group-add shiny-apps \
-            --name=pocdart_documentation_jenkins
+            --name=${BUILD_TAG}
             '''
         }
     }
@@ -19,14 +19,14 @@ pipeline {
                     cd /home/pocdart && git clone https://github.com/splresearch/pocdart_documentation.git
                     cd /home/pocdart/pocdart_documentation && git checkout $BRANCH_NAME
                 ''' 
-                sshagent(credentials: ['jenkins_sp-dmaras2']) {
+                sshagent(credentials: ['jenkins_host_user']) {
                     sh '''
                         # host key check
-			ssh-keyscan -H 10.214.16.64 >> /home/jenkins/.ssh/known_hosts
+                        ssh-keyscan -H $HOST_ADDRESS >> /home/jenkins/.ssh/known_hosts
                         # copy config into container
-                        scp jenkins@10.214.16.64:/home/pocdart/config/python/sprint_math/config.json /home/pocdart/pocdart_documentation/scrum/tools
+                        scp jenkins@$HOST_ADDRESS:/home/pocdart/config/python/sprint_math/config.json /home/pocdart/pocdart_documentation/scrum/tools
                         # copy test board into container
-                        scp jenkins@10.214.16.64:/home/pocdart/config/python/sprint_math/test_board_data.json /home/pocdart/pocdart_documentation/scrum/tools/card_json_archive
+                        scp jenkins@$HOST_ADDRESS:/home/pocdart/config/python/sprint_math/test_board_data.json /home/pocdart/pocdart_documentation/scrum/tools/card_json_archive
                     '''
                 }
             }
