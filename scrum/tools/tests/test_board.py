@@ -87,6 +87,8 @@ def test_extract_cards(trello_api):
     assert cards is not None
     assert len(cards) > 0
     assert isinstance(cards[0], Card)
+    assert len(board.get_retro_past_sprints()) > 0
+    assert len(board.get_unplanned_past_sprints()) > 0
 
 
 def test_calculate_story_points(trello_api):
