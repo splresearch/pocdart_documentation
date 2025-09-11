@@ -97,9 +97,8 @@ class Board:
                            for list_obj in self.lists}
 
         # Compile regex patterns once to improve performance
-        unplanned_pattern = re.compile(r"unplanned: \*{2}(\d+)", re.IGNORECASE)
-        retro_pattern = re.compile(
-            r"\\\*\\\* (\d+)\\\*\\\* Retro", re.IGNORECASE)
+        unplanned_pattern = re.compile(r"SP Unplanned:\s*(\d+)\(T\)", re.IGNORECASE)
+        retro_pattern = re.compile(r"SP Retro:\s*(\d+)\(T\)", re.IGNORECASE)
 
         for card in self.board_data:
             curr_card_id = card.get("id")
