@@ -88,9 +88,12 @@ class Board:
         """
         self.board_data = self.api.get_board_cards()
 
-    def extract_cards(self):
+    def extract_cards(self, calc_sp = True):
         """
         Extracts card data from the board's JSON data and creates Card objects.
+
+        Args:
+            calc_sp (bool): should story points be calculated for each card
         """
         # Preprocess list IDs to names for quick lookup
         list_id_to_name = {list_obj['id']: list_obj['name']
@@ -102,6 +105,7 @@ class Board:
 
         for card in self.board_data:
             curr_card_id = card.get("id")
+            curr_card_short_link = card.get("shortLink")
             curr_card_name = card.get("name", "")
             curr_card_labels = [
                 label.get(
@@ -129,13 +133,17 @@ class Board:
                 continue
 
             # Extract story points
-            story_points = self.api.get_card_story_points(
-                curr_card_name, curr_card_id)
+            if calc_sp:
+                story_points = self.api.get_card_story_points(
+                    curr_card_name, curr_card_id)
+            else:
+                story_points = {}
 
             # Create and append the Card object
             self.cards.append(
                 Card(
                     card_id=curr_card_id,
+                    short_link=curr_card_short_link,
                     story_points=story_points,
                     title=curr_card_name,
                     labels=curr_card_labels,

@@ -13,6 +13,7 @@ class Card:
     def __init__(
             self,
             card_id,
+            short_link,
             story_points,
             title='',
             labels=[],
@@ -22,6 +23,7 @@ class Card:
 
         Args:
             card_id (str): The Trello card ID.
+            short_link (str): The short_link value for card URLs
             story_points (dict): The story points of the card, 
                 with keys 'total', 'spent', 'remaining'.
             title (str, optional): The title of the card. Defaults to an empty string.
@@ -30,6 +32,7 @@ class Card:
                 Defaults to an empty string.
         """
         self.card_id = card_id
+        self.short_link = short_link
         self.story_points = story_points
         self.title = title
         self.labels = labels
@@ -44,6 +47,15 @@ class Card:
             str: The card ID.
         """
         return self.card_id
+
+    def get_short_link(self):
+        """
+        Returns the card shortLink for URLs.
+
+        Returns:
+            str: The card shortLink.
+        """
+        return self.short_link
 
     def get_story_points(self):
         """
