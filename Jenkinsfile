@@ -39,12 +39,11 @@ pipeline {
         stage('Python version check') {
             steps {
                 sh '''
-                    # Get python version from container
-                    pver_image=$(python --version)
                     # Get lint version set locally
-                    pver_lint=$(grep python-version .github/workflows/lint-reusable.yml | cut -d':' -f2 | tr -d " '")
-                    # Compare and fail if not matching
-                    [[ $pver_image =~ $pver_lint ]] || exit 1
+                    pver_lint=$(grep python-version /home/pocdart/pocdart_documentation/.github/workflows/lint-reusable.yml | cut -d':' -f2 | tr -d " '")
+                    # Compare image python version to pylint version
+                    py_match=$(python --version | grep ${pver_lint} | wc -l)
+                    [ ${py_match} -eq 1 ]
                 '''
             }
         }
