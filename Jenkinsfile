@@ -42,7 +42,7 @@ pipeline {
                     # Get python version from container
                     pver_image=$(python --version)
                     # Get lint version set locally
-                    pver_lint=$(grep python-version .github/workflows/lint-reusable.yml | cut -d':' -f3 | tr -d " '")
+                    pver_lint=$(grep python-version /home/pocdart/pocdart_documentation/.github/workflows/lint-reusable.yml | cut -d':' -f3 | tr -d " '")
                     # Compare and fail if not matching
                     [[ $pver_image =~ $pver_lint ]] || exit 1
                 '''
