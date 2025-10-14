@@ -136,7 +136,7 @@ class Board:
 				continue
 
 			# Extract story points
-			if calc_sp and curr_card_short_link == 'oUAIJS0G':
+			if calc_sp:
 				story_points = self.parse_story_points(
 					curr_card_id, custom_fields_data)
 			else:
@@ -159,11 +159,21 @@ class Board:
 			)
 
 	def parse_story_points(self, card_id, custom_fields_data):
+		story_points = {
+			"total": 0,
+			"spent": 0,
+			"remaining": 0
+		}
 		for card in custom_fields_data:
 			if card["id"] == card_id:
 				for field in card["customFieldItems"]:
-					if field["id"] == '68eea41ec8ba6170f3bd55d7':
-						print(field["value"]["number"])
+					if field["id"] == '68eecfb7548218d82797620a':
+						story_points["spent"] = int(field["value"]["number"])
+					elif field["id"] == '68eecfb582c4ec7df90c12e8':
+						story_points["total"] = int(field["value"]["number"])
+				remaining = story_points["total"] - story_points["spent"]
+				story_points["remaining"] = remaining if remaining >= 0 else 0
+				return story_points
 
 	def calculate_story_points(self):
 		"""

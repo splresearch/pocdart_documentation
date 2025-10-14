@@ -27,7 +27,7 @@ trello_api = TrelloAPI(
 # Get board data
 board_data = trello_api.get_board_cards()
 board = Board(trello_api, board_data)
-board.extract_cards(calc_sp = False)
+board.extract_cards(calc_sp = True)
 cards = board.get_cards()
 card_links = []
 for card in cards:
