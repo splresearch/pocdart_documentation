@@ -45,6 +45,8 @@ class Board:
 			"config.json")['board']
 		self.unplanned_template_card = board_config['unplanned_template_card']
 		self.sprint_summary_card = board_config['sprint_calc_card']
+		self.sp_total_id = board_config['sp_total_id']
+		self.sp_spent_id = board_config['sp_spent_id']
 
 	def get_data(self):
 		"""
@@ -167,10 +169,10 @@ class Board:
 		for card in custom_fields_data:
 			if card["id"] == card_id:
 				for field in card["customFieldItems"]:
-					if field["id"] == '68eecfb7548218d82797620a':
-						story_points["spent"] = int(field["value"]["number"])
-					elif field["id"] == '68eecfb582c4ec7df90c12e8':
+					if field["id"] == self.sp_total_id:
 						story_points["total"] = int(field["value"]["number"])
+					elif field["id"] == self.sp_spent_id:
+						story_points["spent"] = int(field["value"]["number"])
 				remaining = story_points["total"] - story_points["spent"]
 				story_points["remaining"] = remaining if remaining >= 0 else 0
 				return story_points
