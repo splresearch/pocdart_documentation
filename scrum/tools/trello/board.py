@@ -108,6 +108,7 @@ class Board:
 		# Get custom field data
 		custom_fields_data = self.api.get_custom_fields_data()
 
+		# Iterate board data to parse individual cards into Card() objects
 		for card in self.board_data:
 			curr_card_id = card.get("id")
 			curr_card_short_link = card.get("shortLink")

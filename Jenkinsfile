@@ -36,9 +36,15 @@ pipeline {
                 sh '''cd /home/pocdart/pocdart_documentation/scrum/tools && python -m pytest tests'''
             }
         }
-        stage('Integration Tests') {
+        stage('Python version check') {
             steps {
-                echo 'integration tests'
+                sh '''
+                    # Get lint version set locally
+                    pver_lint=$(grep python-version /home/pocdart/pocdart_documentation/.github/workflows/lint-reusable.yml | cut -d':' -f2 | tr -d " '")
+                    # Compare image python version to pylint version
+                    py_match=$(python --version | grep ${pver_lint} | wc -l)
+                    [ ${py_match} -eq 1 ]
+                '''
             }
         }
         stage('Deploy') {
