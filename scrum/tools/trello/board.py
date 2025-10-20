@@ -103,6 +103,7 @@ class Board:
         unplanned_pattern = re.compile(r"SP Unplanned:\s*(\d+)\(T\)", re.IGNORECASE)
         retro_pattern = re.compile(r"SP Retro:\s*(\d+)\(T\)", re.IGNORECASE)
 
+        # Iterate board data to parse individual cards into Card() objects
         for card in self.board_data:
             curr_card_id = card.get("id")
             curr_card_short_link = card.get("shortLink")
