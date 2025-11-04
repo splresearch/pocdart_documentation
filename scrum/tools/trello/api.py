@@ -55,6 +55,35 @@ class TrelloAPI:
 		response.raise_for_status()
 		return response.json()
 
+	def put_call(self, url, payload):
+		"""Makes a GET request to the specified URL using the requests library.
+
+		Args:
+			url (str): The URL to make the GET request to.
+
+		Returns:
+			dict or list: The JSON response from the API.
+
+		Raises:
+			requests.exceptions.HTTPError: If the HTTP request returned an unsuccessful status code.
+		"""
+		headers = {"Content-Type": "application/json"}
+		
+		query = {
+			'key': self.api_key,
+			'token': self.api_token
+		}
+
+		response = requests.put(
+			url,
+			params=query,
+			headers=headers,
+			payload=payload,
+			timeout=60
+		)
+		response.raise_for_status()
+		return response.json()
+
 	def get_board_cards(self):
 		"""Retrieves all cards from the Trello board.
 
