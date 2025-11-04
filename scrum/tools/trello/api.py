@@ -114,6 +114,19 @@ class TrelloAPI:
 		plugin_data = self.request_call(url=card_url, have_headers=False)
 		return plugin_data
 
+	def get_card_story_points(self, card_name, card_id):
+		"""Retrieves the story points (size, spent, remaining) for a given card.
+
+        Args:
+            card_name (str): The name of the card.
+            card_id (str): The ID of the card.
+
+               Returns:
+            dict: A dictionary with 'total', 'spent', and 'remaining' story points.
+		"""
+        card_url = f"{self.base_url}/cards/{card_id}/pluginData"
+		plugin_data = self.request_call(url=card_url, have_headers=False)
+		
 		# If the card size module has not been filled out, set everything to
 		# zero
 		if not plugin_data:
