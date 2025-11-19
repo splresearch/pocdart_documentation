@@ -10,7 +10,7 @@ Classes:
 
 import re
 import requests
-
+import json
 
 class TrelloAPI:
 	def __init__(self, board_id, api_key, api_token):
@@ -55,7 +55,7 @@ class TrelloAPI:
 		response.raise_for_status()
 		return response.json()
 
-	def put_call(self, url, payload):
+	def put_call(self, card_id, custom_field_id, value):
 		"""Makes a GET request to the specified URL using the requests library.
 
 		Args:
@@ -67,22 +67,58 @@ class TrelloAPI:
 		Raises:
 			requests.exceptions.HTTPError: If the HTTP request returned an unsuccessful status code.
 		"""
-		headers = {"Content-Type": "application/json"}
-		
+
+		url = f"https://api.trello.com/1/cards/{card_id}/customField/{custom_field_id}/item"
+
+		headers = {
+			"Content-Type": "application/json"
+		}
+
 		query = {
 			'key': self.api_key,
 			'token': self.api_token
 		}
 
-		response = requests.put(
+		payload = json.dumps({
+			"value": {
+				"number": str(value)
+			}
+		})
+
+		#print(url)
+		#print(headers)
+		#print(query)
+		#print(payload)
+		
+
+		response = requests.request(
+			"PUT",
 			url,
-			params=query,
+			data=payload,
 			headers=headers,
-			payload=payload,
-			timeout=60
+			params=query
 		)
-		response.raise_for_status()
-		return response.json()
+		# print(response)
+		# print(response.apparent_encoding)
+		# print(response.content)
+		# print(response.cookies)
+		# print(response.elapsed)
+		# print(response.encoding)
+		# print(response.headers)
+		# print(response.history)
+		# print(response.is_permanent_redirect)
+		# print(response.is_redirect)
+		# print(response.json())
+		# print(response.links)
+		# print(response.next)
+		# print(response.ok)
+		# print(response.reason)
+		# print(response.request)
+		# print(response.status_code)
+		# print(response.text)
+		# print(response.url)
+		# response.raise_for_status()
+		# print(response.text)
 
 	def get_board_cards(self):
 		"""Retrieves all cards from the Trello board.
@@ -117,16 +153,16 @@ class TrelloAPI:
 	def get_card_story_points(self, card_name, card_id):
 		"""Retrieves the story points (size, spent, remaining) for a given card.
 
-        Args:
-            card_name (str): The name of the card.
-            card_id (str): The ID of the card.
+		Args:
+			card_name (str): The name of the card.
+			card_id (str): The ID of the card.
 
-               Returns:
-            dict: A dictionary with 'total', 'spent', and 'remaining' story points.
+			   Returns:
+			dict: A dictionary with 'total', 'spent', and 'remaining' story points.
 		"""
-        card_url = f"{self.base_url}/cards/{card_id}/pluginData"
+		card_url = f"{self.base_url}/cards/{card_id}/pluginData"
 		plugin_data = self.request_call(url=card_url, have_headers=False)
-		
+
 		# If the card size module has not been filled out, set everything to
 		# zero
 		if not plugin_data:

@@ -12,7 +12,7 @@ board_config = load_config("config.json")['board']
 trello_api = TrelloAPI(
     board_id=board_config['board_id'],
     api_key=board_config['api_key'],
-    api_token=board_config['api_token']
+        api_token=board_config['api_token']
 )
 # Get board data
 board_data = trello_api.get_board_cards()
@@ -21,15 +21,13 @@ board.extract_cards(calc_sp = True)
 
 ## Convert (double, round to fib)
 for card in board.get_cards():
-    if card.get_short_link() == 'tAm3ipG3':
-        json_object = {
-            "idValue": board_config['sp_total_id'],
-            "key": '',
-            "value": { "number": card.get_total_story_points() }
-        }
-        url = "https://api.trello.com/1/card/" + card.get_card_id() + "/customField/" + board_config['sp_total_id'] + "/item"
-        print(url)
-        print(json_object)
-        # trello_api.put_call(
-        #     url = url
-        # )
+    trello_api.put_call(
+        card.get_card_id(),
+        board_config['sp_total_id'],
+        card.get_total_story_points()
+    )
+    trello_api.put_call(
+        card.get_card_id(),
+        board_config['sp_spent_id'],
+        card.get_spent_story_points()
+    )

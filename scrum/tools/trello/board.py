@@ -140,8 +140,7 @@ class Board:
 
 			# Extract story points
 			if calc_sp:
-				story_points = self.parse_story_points(
-					curr_card_id, custom_fields_data)
+				story_points = self.api.get_card_story_points(curr_card_name, curr_card_id)
 			else:
 				story_points = {
 					"total": 0,
