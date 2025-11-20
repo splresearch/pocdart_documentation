@@ -158,7 +158,7 @@ class Board:
 			)
 		# Extract story points
 		if calc_sp:
-			self.parse_story_points()
+			self.assign_story_points()
 
 	def calculate_story_points(self):
 		"""
