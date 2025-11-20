@@ -138,15 +138,12 @@ class Board:
 					int(i) for i in retro_pattern.findall(desc)]
 				continue
 
-			# Extract story points
-			if calc_sp:
-				story_points = self.api.get_card_story_points(curr_card_name, curr_card_id)
-			else:
-				story_points = {
-					"total": 0,
-					"spent": 0,
-					"remaining": 0
-				}
+			# Default SP to zero
+			story_points = {
+				"total": 0,
+				"spent": 0,
+				"remaining": 0
+			}
 
 			# Create and append the Card object
 			self.cards.append(
@@ -159,23 +156,9 @@ class Board:
 					list_name=curr_card_list
 				)
 			)
-
-	def parse_story_points(self, card_id, custom_fields_data):
-		story_points = {
-			"total": 0,
-			"spent": 0,
-			"remaining": 0
-		}
-		for card in custom_fields_data:
-			if card["id"] == card_id:
-				for field in card["customFieldItems"]:
-					if field["id"] == self.sp_total_id:
-						story_points["total"] = int(field["value"]["number"])
-					elif field["id"] == self.sp_spent_id:
-						story_points["spent"] = int(field["value"]["number"])
-				remaining = story_points["total"] - story_points["spent"]
-				story_points["remaining"] = remaining if remaining >= 0 else 0
-				return story_points
+		# Extract story points
+		if calc_sp:
+			self.parse_story_points()
 
 	def calculate_story_points(self):
 		"""
@@ -223,3 +206,30 @@ class Board:
 				self.calcs[category]['remaining'] += remaining_points
 
 		return self.calcs
+
+	def assign_story_points(self):
+		"""Sets story points on each card using Trello custom field data
+		"""
+		# Request custom_fields data from Trello
+		board_story_points = self.api.get_custom_fields_data()
+
+		# Iterate trello cards
+		for card in self.cards:
+			# Extract story points from custom_fields object
+			card_story_points = [x['customFieldItems'] for x in board_story_points if x['id'] == card.get_card_id()]
+			# Extract story point values and format result
+			total_sp = [int(x["value"]["number"]) for x in card_story_points[0] if x["idCustomField"] == self.sp_total_id]
+			spent_sp = [int(x["value"]["number"]) for x in card_story_points[0] if x["idCustomField"] == self.sp_spent_id]
+			# Extract list and default missing to 0
+			total_sp = total_sp[0] if len(total_sp) > 0 else 0
+			spent_sp = spent_sp[0] if len(spent_sp) > 0 else 0
+			# Calculate difference for remaining and retro
+			#  Positive indicates remaining, negative indicates retro
+			diff_sp = total_sp - spent_sp
+			story_points = {
+				"total": total_sp,
+				"spent": spent_sp,
+				"remaining": diff_sp if diff_sp >= 0 else 0,
+				"retro": abs(diff_sp if diff_sp < 0 else 0)
+			}
+			card.set_story_points(story_points)

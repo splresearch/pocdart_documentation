@@ -67,30 +67,22 @@ class TrelloAPI:
 		Raises:
 			requests.exceptions.HTTPError: If the HTTP request returned an unsuccessful status code.
 		"""
-
+		# Define api endpoint to update custom field on the given card
 		url = f"https://api.trello.com/1/cards/{card_id}/customField/{custom_field_id}/item"
-
+		# Set connection parameters
 		headers = {
 			"Content-Type": "application/json"
 		}
-
 		query = {
 			'key': self.api_key,
 			'token': self.api_token
 		}
-
 		payload = json.dumps({
 			"value": {
 				"number": str(value)
 			}
 		})
-
-		#print(url)
-		#print(headers)
-		#print(query)
-		#print(payload)
-		
-
+		# Execute request
 		response = requests.request(
 			"PUT",
 			url,
@@ -98,27 +90,11 @@ class TrelloAPI:
 			headers=headers,
 			params=query
 		)
-		# print(response)
-		# print(response.apparent_encoding)
-		# print(response.content)
-		# print(response.cookies)
-		# print(response.elapsed)
-		# print(response.encoding)
-		# print(response.headers)
-		# print(response.history)
-		# print(response.is_permanent_redirect)
-		# print(response.is_redirect)
-		# print(response.json())
-		# print(response.links)
-		# print(response.next)
-		# print(response.ok)
-		# print(response.reason)
-		# print(response.request)
-		# print(response.status_code)
-		# print(response.text)
-		# print(response.url)
-		# response.raise_for_status()
-		# print(response.text)
+		# Print reason on http failure
+		try:
+			response.raise_for_status()
+		except:
+			print(response.reason)
 
 	def get_board_cards(self):
 		"""Retrieves all cards from the Trello board.
@@ -149,55 +125,6 @@ class TrelloAPI:
 		card_url = f"{self.base_url}/boards/{self.board_id}/cards/?fields=name&customFieldItems=true"
 		plugin_data = self.request_call(url=card_url, have_headers=False)
 		return plugin_data
-
-	def get_card_story_points(self, card_name, card_id):
-		"""Retrieves the story points (size, spent, remaining) for a given card.
-
-		Args:
-			card_name (str): The name of the card.
-			card_id (str): The ID of the card.
-
-			   Returns:
-			dict: A dictionary with 'total', 'spent', and 'remaining' story points.
-		"""
-		card_url = f"{self.base_url}/cards/{card_id}/pluginData"
-		plugin_data = self.request_call(url=card_url, have_headers=False)
-
-		# If the card size module has not been filled out, set everything to
-		# zero
-		if not plugin_data:
-			print(
-				f"This card, '{card_name}', has not been estimated. Assigned values of 0.")
-			card_size = {
-				"total": 0,
-				"spent": 0,
-				"remaining": 0
-			}
-		else:
-			# Parse plugin data for card size
-			match = re.search(
-				r'"size":(\d+),\s*"spent":(\d+)',
-				plugin_data[0]['value']
-			)
-			if match:
-				total = int(match.group(1))
-				spent = int(match.group(2))
-				remaining = max(total - spent, 0)
-				card_size = {
-					"total": total,
-					"spent": spent,
-					"remaining": remaining
-				}
-			else:
-				print(f"Could not parse story points for card '\
-					  {card_name}'. Assigned values of 0.")
-				card_size = {
-					"total": 0,
-					"spent": 0,
-					"remaining": 0
-				}
-
-		return card_size
 
 	def delete_card(self, card_id):
 		"""Deletes a card from the Trello board.

@@ -124,3 +124,26 @@ def test_calculate_story_points(trello_api):
     assert results is not None
     assert len(results) > 0
     assert results == expected
+
+def test_get_card_story_points(trello_api, board_config):
+    """
+    Tests the get_card_story_points method of the TrelloAPI class.
+
+    Args:
+        trello_api (TrelloAPI): The TrelloAPI instance fixture.
+        board_config (dict): The board configuration fixture.
+    """
+    # Arrange: Get test card ID and name
+    test_card_id = board_config['slack_card']
+    # Replace with the actual card name if different
+    test_card_name = "Slack Channel Assignments"
+
+    # Act: Call get_card_story_points method
+    story_points = trello_api.get_card_story_points(
+        test_card_name, test_card_id)
+
+    # Assert: Verify that the response data matches expected values
+    assert story_points is not None
+    assert story_points['total'] == 1
+    assert story_points['spent'] == 1
+    assert story_points['remaining'] == 0

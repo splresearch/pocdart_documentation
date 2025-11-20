@@ -86,26 +86,17 @@ def test_get_board_lists(trello_api):
     assert sprint_lists is not None
     assert len(sprint_lists) > 0
 
-
-def test_get_card_story_points(trello_api, board_config):
+def test_get_custom_fields_data(trello_api):
     """
-    Tests the get_card_story_points method of the TrelloAPI class.
+    Tests the get_custom_fields_data method of the TrelloAPI class.
 
     Args:
         trello_api (TrelloAPI): The TrelloAPI instance fixture.
-        board_config (dict): The board configuration fixture.
     """
-    # Arrange: Get test card ID and name
-    test_card_id = board_config['slack_card']
-    # Replace with the actual card name if different
-    test_card_name = "Slack Channel Assignments"
-
-    # Act: Call get_card_story_points method
-    story_points = trello_api.get_card_story_points(
-        test_card_name, test_card_id)
+    # Act: Call get_board_lists method
+    custom_fields_data = trello_api.get_custom_fields_data()
 
     # Assert: Verify that the response data matches expected values
-    assert story_points is not None
-    assert story_points['total'] == 1
-    assert story_points['spent'] == 1
-    assert story_points['remaining'] == 0
+    assert custom_fields_data is not None
+    assert len(custom_fields_data) > 0
+    assert 'customFieldItems' in custom_fields_data[0].keys()
