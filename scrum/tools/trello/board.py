@@ -212,7 +212,6 @@ class Board:
 		"""
 		# Request custom_fields data from Trello
 		board_story_points = self.api.get_custom_fields_data()
-
 		# Iterate trello cards
 		for card in self.cards:
 			# Extract story points from custom_fields object

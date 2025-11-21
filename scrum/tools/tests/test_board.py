@@ -125,25 +125,61 @@ def test_calculate_story_points(trello_api):
     assert len(results) > 0
     assert results == expected
 
-def test_get_card_story_points(trello_api, board_config):
+def test_assign_story_points(monkeypatch, trello_api):
     """
-    Tests the get_card_story_points method of the TrelloAPI class.
+    Tests the assign_story_points method of the TrelloAPI class.
 
     Args:
         trello_api (TrelloAPI): The TrelloAPI instance fixture.
-        board_config (dict): The board configuration fixture.
     """
-    # Arrange: Get test card ID and name
-    test_card_id = board_config['slack_card']
-    # Replace with the actual card name if different
-    test_card_name = "Slack Channel Assignments"
+    # Mock TrelloAPI.get_custom_fields_data dependency to standardize behavior for testing
+    test_board_data = load_test_board_data(
+        parent_path / "card_json_archive/test_board_data.json")
+    custom_fields_data = load_test_board_data(
+        parent_path / "card_json_archive/custom_fields_data.json")
+    monkeypatch.setattr(
+        TrelloAPI,
+        "get_custom_fields_data",
+        lambda self: custom_fields_data
+    )
+    
+    # Create a Board instance with the test data
+    board = Board(trello_api, test_board_data)
+    board.extract_cards()
 
-    # Act: Call get_card_story_points method
-    story_points = trello_api.get_card_story_points(
-        test_card_name, test_card_id)
-
-    # Assert: Verify that the response data matches expected values
-    assert story_points is not None
-    assert story_points['total'] == 1
-    assert story_points['spent'] == 1
-    assert story_points['remaining'] == 0
+    # missing defaults to zero
+    expected = {
+        "total": 0,
+        "spent": 0,
+        "remaining": 0,
+        "retro": 0
+    }
+    card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f8813']
+    assert card[0].get_story_points() == expected
+    # 1,1 becomes 1,1,0,0
+    expected = {
+        "total": 1,
+        "spent": 1,
+        "remaining": 0,
+        "retro": 0
+    }
+    card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f8816']
+    assert card[0].get_story_points() == expected
+    # 1,0 becomes 1,0,1,0
+    expected = {
+        "total": 1,
+        "spent": 0,
+        "remaining": 1,
+        "retro": 0
+    }
+    card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f85b6']
+    assert card[0].get_story_points() == expected
+    # 1,2 becomes 1,2,0,1
+    expected = {
+        "total": 1,
+        "spent": 2,
+        "remaining": 0,
+        "retro": 1
+    }
+    card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f858b']
+    assert card[0].get_story_points() == expected
