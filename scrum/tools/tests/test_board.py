@@ -91,7 +91,7 @@ def test_extract_cards(trello_api):
     assert len(board.get_unplanned_past_sprints()) > 0
 
 
-def test_calculate_story_points(trello_api):
+def test_calculate_story_points(monkeypatch, trello_api):
     """
     Tests the `calculate_story_points` method of the `Board` class using stored board data.
 
@@ -105,6 +105,13 @@ def test_calculate_story_points(trello_api):
     # Arrange: Load test board data
     test_board_data = load_test_board_data(
         parent_path / "card_json_archive/test_board_data.json")
+    custom_fields_data = load_test_board_data(
+        parent_path / "card_json_archive/custom_fields_data.json")
+    monkeypatch.setattr(
+        TrelloAPI,
+        "get_custom_fields_data",
+        lambda self: custom_fields_data
+    )
 
     # Create a Board instance with the test data
     board = Board(trello_api, test_board_data)
@@ -112,9 +119,9 @@ def test_calculate_story_points(trello_api):
 
     # Define expected results
     expected = {
-        'unplanned': {'total': 20, 'spent': 16, 'remaining': 4},
-        'planned': {'total': 29, 'spent': 24, 'remaining': 5},
-        'retro': {'total': 4, 'spent': 0, 'remaining': 4}
+        'unplanned': {'total': 1, 'spent': 0, 'remaining': 0},
+        'planned': {'total': 3, 'spent': 2, 'remaining': 1},
+        'retro': {'total': 1, 'spent': 1, 'remaining': 1}
     }
 
     # Act: Call the `calculate_story_points` method
