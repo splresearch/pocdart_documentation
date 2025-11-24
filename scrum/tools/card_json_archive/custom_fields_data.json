@@ -14,10 +14,10 @@
 	{"id": "691de1aa170c61def3665d45", "value": {"number": "2"}, "idValue": null, "idCustomField": "6917921e9a1622d59b4ccc45", "idModel": "65a94cda728ee2a7a77f85b9", "modelType": "card"}]},
 {"id": "65a94cda728ee2a7a77f8598", "name": "unplanned_complete", "customFieldItems": [
 	{"id": "691de1aafcd8ce6f65c3d894", "value": {"number": "1"}, "idValue": null, "idCustomField": "6917921e9a1622d59b4ccc48", "idModel": "65a94cda728ee2a7a77f8598", "modelType": "card"},
-	{"id": "691de1aa170c61def3665d45", "value": {"number": "2"}, "idValue": null, "idCustomField": "6917921e9a1622d59b4ccc45", "idModel": "65a94cda728ee2a7a77f8598", "modelType": "card"}]},
+	{"id": "691de1aa170c61def3665d45", "value": {"number": "1"}, "idValue": null, "idCustomField": "6917921e9a1622d59b4ccc45", "idModel": "65a94cda728ee2a7a77f8598", "modelType": "card"}]},
 {"id": "65a94cda728ee2a7a77f8597", "name": "unplanned_left_over", "customFieldItems": [
-	{"id": "691de1aafcd8ce6f65c3d894", "value": {"number": "1"}, "idValue": null, "idCustomField": "6917921e9a1622d59b4ccc48", "idModel": "65a94cda728ee2a7a77f8597", "modelType": "card"},
-	{"id": "691de1aa170c61def3665d45", "value": {"number": "2"}, "idValue": null, "idCustomField": "6917921e9a1622d59b4ccc45", "idModel": "65a94cda728ee2a7a77f8597", "modelType": "card"}]},
+	{"id": "691de1aafcd8ce6f65c3d894", "value": {"number": "2"}, "idValue": null, "idCustomField": "6917921e9a1622d59b4ccc48", "idModel": "65a94cda728ee2a7a77f8597", "modelType": "card"},
+	{"id": "691de1aa170c61def3665d45", "value": {"number": "1"}, "idValue": null, "idCustomField": "6917921e9a1622d59b4ccc45", "idModel": "65a94cda728ee2a7a77f8597", "modelType": "card"}]},
 {"id": "65a94cda728ee2a7a77f8599", "name": "Card0", "customFieldItems": []},
 {"id": "65a94cda728ee2a7a77f85b6", "name": "Card0", "customFieldItems": []},
 {"id": "65a94cda728ee2a7a77f85b3", "name": "Card0", "customFieldItems": []},

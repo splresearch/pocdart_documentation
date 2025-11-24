@@ -119,9 +119,9 @@ def test_calculate_story_points(monkeypatch, trello_api):
 
     # Define expected results
     expected = {
-        'planned': {'total': 4, 'spent': 3, 'remaining': 1},
-        'retro': {'total': 4, 'spent': 4, 'remaining': 0},
-        'unplanned': {'total': 2, 'spent': 2, 'remaining': 0}
+        'planned': {'total': 3, 'spent': 2, 'remaining': 1},
+        'retro': {'total': 2, 'spent': 1, 'remaining': 1},
+        'unplanned': {'total': 3, 'spent': 2, 'remaining': 1}
     }
 
     # Act: Call the `calculate_story_points` method
@@ -159,8 +159,8 @@ def test_assign_story_points(monkeypatch, trello_api):
     expected = {
         "total": 0,
         "spent": 0,
-        "remaining": 0,
-        "retro": 0
+        "remaining": 0
+        # "retro": 0
     }
     card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f8813']
     assert card[0].get_story_points() == expected
@@ -170,8 +170,8 @@ def test_assign_story_points(monkeypatch, trello_api):
     expected = {
         "total": 1,
         "spent": 1,
-        "remaining": 0,
-        "retro": 0
+        "remaining": 0
+        # "retro": 0
     }
     card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f85a7']
     assert card[0].get_story_points() == expected
@@ -181,8 +181,8 @@ def test_assign_story_points(monkeypatch, trello_api):
     expected = {
         "total": 1,
         "spent": 0,
-        "remaining": 1,
-        "retro": 0
+        "remaining": 1
+        # "retro": 0
     }
     card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f858e']
     assert card[0].get_story_points() == expected
@@ -190,10 +190,10 @@ def test_assign_story_points(monkeypatch, trello_api):
     # planned_retro
     # 1,1 with retro tag becomes 1,0,0,1
     expected = {
-        "total": 0,
+        "total": 1,
         "spent": 0,
-        "remaining": 1,
-        "retro": 1
+        "remaining": 1
+        # "retro": 1
     }
     card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f858b']
     assert card[0].get_story_points() == expected
@@ -203,8 +203,8 @@ def test_assign_story_points(monkeypatch, trello_api):
     expected = {
         "total": 1,
         "spent": 2,
-        "remaining": 0,
-        "retro": 1
+        "remaining": 0
+        # "retro": 1
     }
     card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f85b9']
     assert card[0].get_story_points() == expected

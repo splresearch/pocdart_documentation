@@ -105,9 +105,6 @@ class Board:
 		unplanned_pattern = re.compile(r"SP Unplanned:\s*(\d+)\(T\)", re.IGNORECASE)
 		retro_pattern = re.compile(r"SP Retro:\s*(\d+)\(T\)", re.IGNORECASE)
 
-		# Get custom field data
-		custom_fields_data = self.api.get_custom_fields_data()
-
 		# Iterate board data to parse individual cards into Card() objects
 		for card in self.board_data:
 			curr_card_id = card.get("id")
@@ -228,11 +225,11 @@ class Board:
 			story_points = {
 				"total": total_sp,
 				"spent": spent_sp,
-				"remaining": diff_sp if diff_sp >= 0 else 0,
-				"retro": abs(diff_sp if diff_sp < 0 else 0)
+				"remaining": diff_sp if diff_sp >= 0 else 0
+				# "retro": abs(diff_sp if diff_sp < 0 else 0)
 			}
 
-			if "RETRO" in card.get_labels():
-				story_points["total"] = 0
-				story_points["retro"] = total_sp
+			# if "RETRO" in card.get_labels():
+			# 	story_points["total"] = 0
+			# 	story_points["retro"] = total_sp
 			card.set_story_points(story_points)
