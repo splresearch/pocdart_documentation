@@ -56,16 +56,12 @@ class TrelloAPI:
 		return response.json()
 
 	def put_call(self, card_id, custom_field_id, value):
-		"""Makes a GET request to the specified URL using the requests library.
+		"""Makes a PUT request to update a custom_field_id on a card
 
 		Args:
-			url (str): The URL to make the GET request to.
-
-		Returns:
-			dict or list: The JSON response from the API.
-
-		Raises:
-			requests.exceptions.HTTPError: If the HTTP request returned an unsuccessful status code.
+			card_id (str): ID of the target card
+			custom_field_id (str): ID of the target custom field
+			value (int): value to push to the custom field
 		"""
 		# Define api endpoint to update custom field on the given card
 		url = f"https://api.trello.com/1/cards/{card_id}/customField/{custom_field_id}/item"

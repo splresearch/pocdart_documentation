@@ -100,3 +100,7 @@ def test_get_custom_fields_data(trello_api):
     assert custom_fields_data is not None
     assert len(custom_fields_data) > 0
     assert 'customFieldItems' in custom_fields_data[0].keys()
+
+    # Assert at least one populated card has a parsable integer
+    card_field_data = [x['customFieldItems'] for x in custom_fields_data if len(x['customFieldItems']) > 0][0]
+    assert isinstance(int(card_field_data[0]['value']['number']), int)
