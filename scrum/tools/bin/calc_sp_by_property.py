@@ -45,7 +45,12 @@ owner_lookup = {
     '5f03985091b8f77fba676276': 'Lucy',
     '59f20e80fbe83676bd4594c9': 'Matt',
     '61294506a476ee89c9d40c90': 'Duncan',
-    '63866dafc7317a03d5b0c08d': 'Jacqui'
+    '63866dafc7317a03d5b0c08d': 'Jacqui',
+    '596526123b40082ebe745014': 'AlexK',
+    '664cb827f86bb7b271fe12f8': 'Hazel',
+    '677d9db991fcc949febc2b53': 'Nick',
+    '551d9dde6f41314e814727c0': 'Robert',
+    '572778f2ff1f780105746ff0': 'Emily'
 }
 for card in board.get_cards():
     idMembers = card.get_idMembers()
