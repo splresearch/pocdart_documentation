@@ -90,7 +90,8 @@ for card in board.get_cards():
 sorted = dict(sorted(sp_by_owner.items(), key=lambda item: item[1], reverse = True))
 # Print result to console
 print("Story points by owner:")
-pprint.pp(sorted)
+for key, value in sorted.items():
+    print(f'{key:8}{value}')
 # Get list of owners with zero points or not listed
 no_points = [k for k,v in sp_by_owner.items() if v == 0] + [y for x,y in owner_lookup.items() if y not in sp_by_owner.keys()]
 no_points.sort()
