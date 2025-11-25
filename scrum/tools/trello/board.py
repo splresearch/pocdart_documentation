@@ -117,6 +117,7 @@ class Board:
 					"labels",
 					[])]
 			curr_card_list = list_id_to_name.get(card.get('idList'), '')
+			curr_card_idMembers = card.get('idMembers')
 
 			# Skip if card is in 'Monitoring' list
 			if "Monitoring" in curr_card_list:
@@ -150,7 +151,8 @@ class Board:
 					story_points=story_points,
 					title=curr_card_name,
 					labels=curr_card_labels,
-					list_name=curr_card_list
+					list_name=curr_card_list,
+					idMembers=curr_card_idMembers
 				)
 			)
 		# Extract story points
