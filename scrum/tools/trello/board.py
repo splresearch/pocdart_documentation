@@ -233,10 +233,6 @@ class Board:
                 "total": total_sp,
                 "spent": spent_sp,
                 "remaining": diff_sp if diff_sp >= 0 else 0
-                # "retro": abs(diff_sp if diff_sp < 0 else 0)
             }
 
-            # if "RETRO" in card.get_labels():
-            #     story_points["total"] = 0
-            #     story_points["retro"] = total_sp
             card.set_story_points(story_points)
