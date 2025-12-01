@@ -84,7 +84,8 @@ class TrelloAPI:
 			url,
 			data=payload,
 			headers=headers,
-			params=query
+			params=query,
+			timeout=60
 		)
 		# Print reason on http failure
 		try:
