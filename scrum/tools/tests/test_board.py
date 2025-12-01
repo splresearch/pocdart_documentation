@@ -132,12 +132,33 @@ def test_calculate_story_points(monkeypatch, trello_api):
     assert len(results) > 0
     assert results == expected
 
-def test_assign_story_points(monkeypatch, trello_api):
+# Iterate test card ids with expected calculations
+# Note that planned_retro doesn't get counted as retro work by the card but by the board based on
+#   the retro tag when test_calculate_story_points() runs
+@pytest.mark.parametrize(
+    "card_id, expected_seq",
+    [
+        ("65a94cda728ee2a7a77f8813", [0, 0, 0]),
+        ("65a94cda728ee2a7a77f85a7", [1, 1, 0]),
+        ("65a94cda728ee2a7a77f858e", [1, 0, 1]),
+        ("65a94cda728ee2a7a77f858b", [1, 0, 1]),
+        ("65a94cda728ee2a7a77f85b9", [1, 2, 0])
+    ],
+    ids=[
+		"unestimated", "planned_complete", "planned_left_over", "planned_retro",
+		"planned_spent_above_total"
+	]
+)
+
+def test_assign_story_points(monkeypatch, trello_api, card_id, expected_seq):
     """
-    Tests the assign_story_points method of the TrelloAPI class.
+    Test ability of Board.assign_story_points() to instantiate cards with teh correct SP values
 
     Args:
-        trello_api (TrelloAPI): The TrelloAPI instance fixture.
+		monkeypatch (obj): fixture for non-target method polymorhpism
+        trello_api (TrelloAPI): The TrelloAPI instance fixture
+		card_id (str, hex): Target Trello card id
+		expected_seq (list of int): Expected story point values ([total, spent, remaining])
     """
     # Mock TrelloAPI.get_custom_fields_data dependency to standardize behavior for testing
     test_board_data = load_test_board_data(
@@ -154,52 +175,13 @@ def test_assign_story_points(monkeypatch, trello_api):
     board = Board(trello_api, test_board_data)
     board.extract_cards()
 
-    # unestimated defaults to zero
-    # ',' becomes 0,0,0,0
     expected = {
-        "total": 0,
-        "spent": 0,
-        "remaining": 0
+        "total": expected_seq[0],
+        "spent": expected_seq[1],
+        "remaining": expected_seq[2]
     }
-    card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f8813']
+    card = [x for x in board.get_cards() if x.get_card_id() == card_id]
     assert card[0].get_story_points() == expected
 
-    # planned_complete
-    # 1,1 becomes 1,1,0,0
-    expected = {
-        "total": 1,
-        "spent": 1,
-        "remaining": 0
-    }
-    card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f85a7']
-    assert card[0].get_story_points() == expected
-
-    # planned_left_over
-    # 1,0 becomes 1,0,1,0
-    expected = {
-        "total": 1,
-        "spent": 0,
-        "remaining": 1
-    }
-    card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f858e']
-    assert card[0].get_story_points() == expected
-
-    # planned_retro
     # 1,1 with retro tag becomes 1,0,0,1
-    expected = {
-        "total": 1,
-        "spent": 0,
-        "remaining": 1
-    }
-    card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f858b']
-    assert card[0].get_story_points() == expected
-
-    # planned_spent_above_total
     # 1,2 becomes 1,2,0,1
-    expected = {
-        "total": 1,
-        "spent": 2,
-        "remaining": 0
-    }
-    card = [x for x in board.get_cards() if x.get_card_id() == '65a94cda728ee2a7a77f85b9']
-    assert card[0].get_story_points() == expected
