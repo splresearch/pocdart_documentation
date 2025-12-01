@@ -15,15 +15,15 @@ from sprint_utils import load_config
 
 
 class Board:
-    def __init__(self, api, board_data=None):
-        """
-        Initializes a Board instance.
+    """
+    Initializes a Board instance.
 
-        Args:
-            api (TrelloAPI): An instance of the TrelloAPI class.
-            board_data (dict, optional): Initial data for the board.
-                If None, data will be fetched using the API.
-        """
+    Args:
+        api (TrelloAPI): An instance of the TrelloAPI class.
+        board_data (dict, optional): Initial data for the board.
+            If None, data will be fetched using the API.
+    """
+    def __init__(self, api, board_data=None):
         self.api = api
         self.cards = []
         self.unplanned_past_sprints = []
@@ -40,13 +40,9 @@ class Board:
             self.board_data = board_data
 
         # Load board configuration
-        board_config = load_config(
+        self.board_config = load_config(
             Path(__file__).parent.parent /
             "config.json")['board']
-        self.unplanned_template_card = board_config['unplanned_template_card']
-        self.sprint_summary_card = board_config['sprint_calc_card']
-        self.sp_total_id = board_config['sp_total_id']
-        self.sp_spent_id = board_config['sp_spent_id']
 
     def get_data(self):
         """
@@ -124,11 +120,11 @@ class Board:
                 continue
 
             # Skip the unplanned template card
-            if curr_card_id == self.unplanned_template_card:
+            if curr_card_id == self.board_config['unplanned_template_card']:
                 continue
 
             # Process the sprint summary card
-            if curr_card_id == self.sprint_summary_card:
+            if curr_card_id == self.board_config['sprint_calc_card']:
                 desc = card.get("desc", "")
                 self.unplanned_past_sprints = [
                     int(i) for i in unplanned_pattern.findall(desc)]
@@ -214,10 +210,19 @@ class Board:
         # Iterate trello cards
         for card in self.cards:
             # Extract story points from custom_fields object
-            card_story_points = [x['customFieldItems'] for x in board_story_points if x['id'] == card.get_card_id()]
+            card_story_points = [
+                x['customFieldItems'] for x in board_story_points
+                if x['id'] == card.get_card_id()
+            ]
             # Extract story point values and format result
-            total_sp = [int(x["value"]["number"]) for x in card_story_points[0] if x["idCustomField"] == self.sp_total_id]
-            spent_sp = [int(x["value"]["number"]) for x in card_story_points[0] if x["idCustomField"] == self.sp_spent_id]
+            total_sp = [
+                int(x["value"]["number"]) for x in card_story_points[0]
+                if x["idCustomField"] == self.board_config['sp_total_id']
+            ]
+            spent_sp = [
+                int(x["value"]["number"]) for x in card_story_points[0]
+                if x["idCustomField"] == self.board_config['sp_spent_id']
+            ]
             # Extract list and default missing to 0
             total_sp = total_sp[0] if len(total_sp) > 0 else 0
             spent_sp = spent_sp[0] if len(spent_sp) > 0 else 0

@@ -1,3 +1,5 @@
+""" Convert a Trello card ID to the associated shortLink """
+
 ## Get SP from current system
 import os, sys
 os.chdir("/home/pocdart/pocdart_documentation/scrum/tools/")

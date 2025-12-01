@@ -1,6 +1,11 @@
+""" Print stats about story point allocation on the current sprint board
+    By: label, member
+"""
+
 ## Get SP from current system
-import os, sys, pprint
-from colorama import Fore, Back, Style
+import os
+import sys
+from colorama import Fore, Style
 os.chdir("/home/pocdart/pocdart_documentation/scrum/tools/")
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)

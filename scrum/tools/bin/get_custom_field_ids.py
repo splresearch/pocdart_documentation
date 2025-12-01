@@ -1,3 +1,8 @@
+""" Print the custom fields object of the first card with values populated
+  Useful for reviewing structure and determining config values in case of a
+  new board or a new custom field
+"""
+
 ## Get SP from current system
 import os, sys, pprint
 os.chdir("/home/pocdart/pocdart_documentation/scrum/tools/")

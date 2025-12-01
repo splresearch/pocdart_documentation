@@ -8,20 +8,19 @@ Classes:
     - TrelloAPI: Manages API requests to Trello.
 """
 
-import re
-import requests
 import json
+import requests
 
 class TrelloAPI:
-    def __init__(self, board_id, api_key, api_token):
-        """
-        Initializes the TrelloAPI instance with board credentials.
+    """
+    Initializes the TrelloAPI instance with board credentials.
 
-        Args:
-            board_id (str): The ID of the Trello board.
-            api_key (str): Your Trello API key.
-            api_token (str): Your Trello API token.
-        """
+    Args:
+        board_id (str): The ID of the Trello board.
+        api_key (str): Your Trello API key.
+        api_token (str): Your Trello API token.
+    """
+    def __init__(self, board_id, api_key, api_token):
         self.board_id = board_id
         self.api_key = api_key
         self.api_token = api_token
@@ -119,7 +118,10 @@ class TrelloAPI:
         Returns:
             json: All customField data from the board asigned to this class
         """
-        card_url = f"{self.base_url}/boards/{self.board_id}/cards/?fields=name&customFieldItems=true"
+        card_url = (
+            f"{self.base_url}/boards/{self.board_id}"
+            f"/cards/?fields=name&customFieldItems=true"
+        )
         plugin_data = self.request_call(url=card_url, have_headers=False)
         return plugin_data
 

@@ -149,7 +149,7 @@ def test_assign_story_points(monkeypatch, trello_api):
         "get_custom_fields_data",
         lambda self: custom_fields_data
     )
-    
+
     # Create a Board instance with the test data
     board = Board(trello_api, test_board_data)
     board.extract_cards()
