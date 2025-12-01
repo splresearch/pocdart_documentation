@@ -75,11 +75,11 @@ owner_lookup = {
 # Iterate cards
 for card in board.get_cards():
 	# Extract members
-	idMembers = card.get_idMembers()
+	id_members = card.get_id_members()
 	# If members exist
-	if len(idMembers) > 0:
+	if len(id_members) > 0:
 		# Use mapping to get name of first idMember listed
-		name = owner_lookup[idMembers[0]]
+		name = owner_lookup[id_members[0]]
 		# If first card for this name, add
 		if name not in sp_by_owner.keys():
 			sp_by_owner[name] = card.get_total_story_points()

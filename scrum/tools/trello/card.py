@@ -18,7 +18,7 @@ class Card:
 			title='',
 			labels=[],
 			list_name='',
-			idMembers=[]):
+			id_members=[]):
 		"""
 		Initializes a Card instance.
 
@@ -38,7 +38,7 @@ class Card:
 		self.title = title
 		self.labels = labels
 		self.list_name = list_name
-		self.idMembers = idMembers
+		self.id_members = id_members
 
 	# Getters
 	def get_card_id(self):
@@ -122,14 +122,14 @@ class Card:
 		"""
 		return self.list_name
 
-	def get_idMembers(self):
+	def get_id_members(self):
 		"""
 		Returns the list of trello users assigned to the card.
 
 		Returns:
 			str: list of trello user IDs.
 		"""
-		return self.idMembers
+		return self.id_members
 
 	# Setters
 	def set_card_id(self, card_id):
