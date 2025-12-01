@@ -13,9 +13,9 @@ from trello.api import TrelloAPI
 board_config = load_config("config.json")['board']
 # Initialize database manager and Trello API
 trello_api = TrelloAPI(
-    board_id=board_config['board_id'],
-    api_key=board_config['api_key'],
-        api_token=board_config['api_token']
+	board_id=board_config['board_id'],
+	api_key=board_config['api_key'],
+		api_token=board_config['api_token']
 )
 
 custom_fields_data = trello_api.get_custom_fields_data()

@@ -21,7 +21,7 @@ class Board:
 
 		Args:
 			api (TrelloAPI): An instance of the TrelloAPI class.
-			board_data (dict, optional): Initial data for the board. 
+			board_data (dict, optional): Initial data for the board.
 				If None, data will be fetched using the API.
 		"""
 		self.api = api
@@ -31,7 +31,7 @@ class Board:
 		self.calcs = {
 			"unplanned": {"total": 0, "spent": 0, "remaining": 0},
 			"planned": {"total": 0, "spent": 0, "remaining": 0},
-			"retro": {"total": 0, "spent": 0, "remaining": 0},
+			"retro": {"total": 0, "spent": 0, "remaining": 0}
 		}
 		self.lists = api.get_board_lists()
 		if board_data is None:
@@ -164,7 +164,7 @@ class Board:
 		Calculates story points for the board.
 
 		Returns:
-			dict: A dictionary with calculated story points for 
+			dict: A dictionary with calculated story points for
 				'planned', 'unplanned', and 'retro' categories.
 		"""
 		for card in self.cards:
