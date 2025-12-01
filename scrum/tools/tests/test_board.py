@@ -96,6 +96,7 @@ def test_calculate_story_points(monkeypatch, trello_api):
     Tests the `calculate_story_points` method of the `Board` class using stored board data.
 
     Args:
+        monkeypatch (obj): fixture for non-target method polymorhpism
         trello_api (TrelloAPI): Fixture providing a `TrelloAPI` instance.
 
     Notes:
@@ -145,9 +146,9 @@ def test_calculate_story_points(monkeypatch, trello_api):
         ("65a94cda728ee2a7a77f85b9", [1, 2, 0])
     ],
     ids=[
-		"unestimated", "planned_complete", "planned_left_over", "planned_retro",
-		"planned_spent_above_total"
-	]
+        "unestimated", "planned_complete", "planned_left_over", "planned_retro",
+        "planned_spent_above_total"
+    ]
 )
 
 def test_assign_story_points(monkeypatch, trello_api, card_id, expected_seq):
@@ -155,10 +156,10 @@ def test_assign_story_points(monkeypatch, trello_api, card_id, expected_seq):
     Test ability of Board.assign_story_points() to instantiate cards with teh correct SP values
 
     Args:
-		monkeypatch (obj): fixture for non-target method polymorhpism
+        monkeypatch (obj): fixture for non-target method polymorhpism
         trello_api (TrelloAPI): The TrelloAPI instance fixture
-		card_id (str, hex): Target Trello card id
-		expected_seq (list of int): Expected story point values ([total, spent, remaining])
+        card_id (str, hex): Target Trello card id
+        expected_seq (list of int): Expected story point values ([total, spent, remaining])
     """
     # Mock TrelloAPI.get_custom_fields_data dependency to standardize behavior for testing
     test_board_data = load_test_board_data(
@@ -175,13 +176,12 @@ def test_assign_story_points(monkeypatch, trello_api, card_id, expected_seq):
     board = Board(trello_api, test_board_data)
     board.extract_cards()
 
+    # Load parametrized expected_seq into dictionary to match expected output of get_story_points()
     expected = {
         "total": expected_seq[0],
         "spent": expected_seq[1],
         "remaining": expected_seq[2]
     }
-    card = [x for x in board.get_cards() if x.get_card_id() == card_id]
-    assert card[0].get_story_points() == expected
-
-    # 1,1 with retro tag becomes 1,0,0,1
-    # 1,2 becomes 1,2,0,1
+    # Extract story points from target card_id
+    sp_values = [x.get_story_points() for x in board.get_cards() if x.get_card_id() == card_id]
+    assert sp_values[0] == expected
