@@ -2,7 +2,7 @@
     By: label, member
 """
 
-## Get SP from current system
+# Set working directry for module imports
 import os
 import sys
 from colorama import Fore, Style

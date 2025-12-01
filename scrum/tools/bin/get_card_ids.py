@@ -1,4 +1,13 @@
 """ Print a pipe-deliimeted list of card short_links for all cards on the board """
+
+# Set working directry for module imports
+import os
+import sys
+os.chdir("/home/pocdart/pocdart_documentation/scrum/tools/")
+current = os.path.dirname(os.path.realpath(__file__))
+parent = os.path.dirname(current)
+sys.path.append(parent)
+
 # Import local modules
 from sprint_utils import load_config
 from trello.api import TrelloAPI
