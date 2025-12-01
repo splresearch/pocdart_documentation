@@ -15,9 +15,9 @@ from trello.board import Board
 board_config = load_config("config.json")['board']
 # Initialize database manager and Trello API
 trello_api = TrelloAPI(
-	board_id=board_config['board_id'],
-	api_key=board_config['api_key'],
-		api_token=board_config['api_token']
+    board_id=board_config['board_id'],
+    api_key=board_config['api_key'],
+        api_token=board_config['api_token']
 )
 # Get board data
 board_data = trello_api.get_board_cards()
