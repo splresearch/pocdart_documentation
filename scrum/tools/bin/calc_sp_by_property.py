@@ -47,7 +47,8 @@ def main():
     # Convert to percentage
     iw_percentage = round(iw_ratio * 100, 0)
     # Print result to console
-
+    #   Ideal workload releases more new features than internal improvements (<40% is best)
+    #   These thresholds and colors are set to encourage majority User Story / Change work
     if iw_percentage > 50:
         iw_color = Fore.RED
     elif iw_percentage > 40:
