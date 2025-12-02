@@ -4,7 +4,9 @@
 """
 
 ## Get SP from current system
-import os, sys, pprint
+import os
+import sys
+import pprint
 os.chdir("/home/pocdart/pocdart_documentation/scrum/tools/")
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
