@@ -13,11 +13,11 @@ from trello.api import TrelloAPI
 from trello.board import Board
 
 def main(card_id):
-	""" Print card short link given card_id
-	
-	Args:
-		card_id (str, hex): Trello card ID
-	"""
+    """ Print card short link given card_id
+
+    Args:
+        card_id (str, hex): Trello card ID
+    """
     # Load configuration
     board_config = load_config("config.json")['board']
     # Initialize database manager and Trello API

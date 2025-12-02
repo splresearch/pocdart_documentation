@@ -182,8 +182,8 @@ class TrelloAPI:
         return members
 
     def get_member_details(self, member_id):
-        """ Request member details from Trello 
-        
+        """ Request member details from Trello
+
         Args:
             member_id (str, hex): The trello member id
 

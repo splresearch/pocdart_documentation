@@ -17,7 +17,7 @@ from sprint_utils import load_config
 from trello.api import TrelloAPI
 
 def main():
-	""" Print custom fields json object from first card with custom fields data populated """
+    """ Print custom fields json object from first card with custom fields data populated """
     # Load configuration
     board_config = load_config("config.json")['board']
     # Initialize database manager and Trello API

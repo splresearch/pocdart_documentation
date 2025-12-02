@@ -14,7 +14,7 @@ from trello.api import TrelloAPI
 from trello.board import Board
 
 def main():
-	""" Print pipe-delimited list of card short links """
+    """ Print pipe-delimited list of card short links """
     # Load configuration
     board_config = load_config("config.json")['board']
     # Initialize database manager and Trello API
