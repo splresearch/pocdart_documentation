@@ -16,6 +16,7 @@ from sprint_utils import load_config
 from trello.api import TrelloAPI
 from trello.board import Board
 def main():
+    """ Generate report on Trello board stats including work type and SP totals by owner """
     # Load configuration
     board_config = load_config("config.json")['board']
     # Initialize database manager and Trello API
@@ -55,29 +56,16 @@ def main():
         iw_color = Fore.YELLOW
     else:
         iw_color = Fore.GREEN
-
+    # Print report to console
     print("Internal work percentage: " + iw_color + str(iw_percentage) + "%")
     print(Style.RESET_ALL)
 
-    # By owner
+    # SP totals stratified by owner
     # Initialize result object
     sp_by_owner = {}
-    # Define owner id-name mapping
-    owner_lookup = {
-        '4f19bc8abb8de80d1c02ef62': 'Andrew',
-        '62b5e317e63365744d39d516': 'Allen',
-        '56f2b2493ac46542079684d0': 'AlexM',
-        '5d24c03c4813671044432ba3': 'Amber',
-        '5f03985091b8f77fba676276': 'Lucy',
-        '59f20e80fbe83676bd4594c9': 'Matt',
-        '61294506a476ee89c9d40c90': 'Duncan',
-        '63866dafc7317a03d5b0c08d': 'Jacqui',
-        '596526123b40082ebe745014': 'AlexK',
-        '664cb827f86bb7b271fe12f8': 'Hazel',
-        '677d9db991fcc949febc2b53': 'Nick',
-        '551d9dde6f41314e814727c0': 'Robert',
-        '572778f2ff1f780105746ff0': 'Emily'
-    }
+    # Create owner id-name mapping
+    members = trello_api.get_board_member_ids()
+    owner_lookup = {value: trello_api.get_member_details(value)["fullName"] for value in members}
     # Iterate cards
     for card in board.get_cards():
         # Extract members
@@ -97,7 +85,7 @@ def main():
     # Print result to console
     print("Story points by owner:")
     for key, value in sp_sorted.items():
-        print(f'{key:8}{value}')
+        print(f'{key:20}{value}')
     # Get list of owners with zero points or not listed
     no_points = [
             k for k,v in sp_by_owner.items() if v == 0
@@ -110,4 +98,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

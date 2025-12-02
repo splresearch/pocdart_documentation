@@ -8,6 +8,10 @@ Tests:
     - test_get_board_cards: Tests the get_board_cards method.
     - test_get_board_lists: Tests the get_board_lists method.
     - test_get_card_story_points: Tests the get_card_story_points method.
+    - test_get_custom_fields_data: Tests the get_custom_fields_data method.
+    - test_get_member_details: Tests the get_member_details method.
+    - test_get_board_member_ids: Tests the get_board_member_ids method.
+
 """
 
 import sys
@@ -104,3 +108,13 @@ def test_get_custom_fields_data(trello_api):
     # Assert at least one populated card has a parsable integer
     card_field_data = [x['customFieldItems'] for x in custom_fields_data if len(x['customFieldItems']) > 0][0]
     assert isinstance(int(card_field_data[0]['value']['number']), int)
+
+def test_get_member_details(trello_api):
+    """ Verify the full name value given by get_member_details() for a given trello member id """
+    name = trello_api.get_member_details('56f2b2493ac46542079684d0')["fullName"]
+    assert name == "Alexander Maclay"
+
+def test_get_board_member_ids(trello_api):
+    """ Verify a member id exists in the output of get_board_member_ids() """
+    member_ids = trello_api.get_board_member_ids()
+    assert "56f2b2493ac46542079684d0" in member_ids

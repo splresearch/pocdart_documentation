@@ -149,3 +149,63 @@ class TrelloAPI:
         response = requests.delete(url, params=query, timeout=60)
         response.raise_for_status()
         return response.text
+
+    def get_board_member_ids(self):
+        """ Request members for the given trello board
+
+        Returns:
+            list of trello member IDs
+        """
+        # Set connection parameters
+        url = f"https://api.trello.com/1/boards/{self.board_id}/memberships"
+
+        headers = {
+            "Accept": "application/json"
+        }
+        query = {
+            'key': self.api_key,
+            'token': self.api_token
+        }
+        response = requests.request(
+            "GET",
+            url,
+            headers=headers,
+            params=query,
+            timeout=60
+        )
+        # Parse results to extract ID and drop inactive members
+        members = [
+            member["idMember"] for member in json.loads(response.text)
+            if not member["deactivated"]
+        ]
+        # Return results
+        return members
+
+    def get_member_details(self, member_id):
+        """ Request member details from Trello 
+        
+        Args:
+            member_id (str, hex): The trello member id
+
+        Returns:
+            json object containing member details
+        """
+        # Set connection parameters
+        url = f"https://api.trello.com/1/members/{member_id}"
+        headers = {
+            "Accept": "application/json"
+        }
+        query = {
+            'key': self.api_key,
+            'token': self.api_token
+        }
+        # Execute request
+        response = requests.request(
+            "GET",
+            url,
+            headers=headers,
+            params=query,
+            timeout=60
+        )
+        # Return result
+        return json.loads(response.text)

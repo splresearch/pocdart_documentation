@@ -8,6 +8,7 @@ Test Cases:
     - `test_extract_cards`: Tests the `extract_cards` method of the `Board` class.
     - `test_calculate_story_points`: Tests the `calculate_story_points`
         method of the `Board` class using stored board data.
+    - `test_assign_story_points`: Tests that Board can parse and assign story points to its cards
 """
 
 import sys
