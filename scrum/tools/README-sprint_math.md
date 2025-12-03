@@ -1,8 +1,8 @@
 # What is the `sprint_math.py` script?
-`Sprint_math.py` is a script designed to simplify the process of calculating Sprint targets. It uses data from previous Sprints, along with some additional historical information, to recommend a story pointtarget for the upcoming Sprint.
+`Sprint_math.py` is a script designed to simplify the process of calculating Sprint targets. It uses data from previous Sprints, along with some additional historical information, to recommend a story point target for the upcoming Sprint.
 # What is needed beforehand to run the script?
 ## JSON Config
-There is a `config.json` file located in `/home/pocdart/config/sprint_math`. This file must be copied into the same directory as `sprint_math.py` for it get the information it requires.
+There is a `config.json` file located in `/home/pocdart/config/sprint_math`. This file must be copied into the same directory as `sprint_math.py`.
 Inside of the config file, there are a few things:
 1. The "SPRINT-NOW" board ID for pulling cards and other information from the dashboard
 2. The Trello API key used to authenticate and access the board
