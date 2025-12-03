@@ -7,7 +7,6 @@ Unit tests for the python script. Asserts output contains expected text
 import sys
 import re
 from pathlib import Path
-import pytest
 
 # Add the parent directory to the Python path
 parent_path = Path(__file__).parent.parent

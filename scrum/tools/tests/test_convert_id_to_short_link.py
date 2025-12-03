@@ -6,7 +6,6 @@ This module contains unit tests for the ad-hoc script to validate the output
 
 import sys
 from pathlib import Path
-import pytest
 
 # Add the parent directory to the Python path
 parent_path = Path(__file__).parent.parent
