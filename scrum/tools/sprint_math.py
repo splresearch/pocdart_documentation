@@ -63,7 +63,7 @@ def prompt_for_sprint_controls():
         "missed_next_sprint": "total days planned missed next Sprint",
         "members": "members working this coming Sprint"
     }
-    defaults = [15, 15, 0, 0, 8]
+    defaults = [10, 10, 0, 0, 8]
 
     sprint_controls = {}
 
