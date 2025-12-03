@@ -19,8 +19,8 @@ Inside of the [power-up admin panel](https://trello.com/power-ups/admin), there 
 Once the `config.json` has been placed in the same directory as the script, run it with `python sprint_math.py`.
 The script will pull and extract most of the numbers it needs to complete its calculations. The only bits of information that are still needed must be user provided, and they are as follows:
 1. `sp_planned_total` - The number of planned Story Points (SP) for past Sprint
-2. `sprint_days_last` - The number of days in the past Sprint (default to 15)
-3. `sprint_days_next` - The number of days in the upcoming Sprint (default to 15)
+2. `sprint_days_last` - The number of days in the past Sprint (default to 10)
+3. `sprint_days_next` - The number of days in the upcoming Sprint (default to 10)
 4. `total_days_missed_last` - The total days missed in the last Sprint (default to 0)
 5. `total_days_to_be_missed` - The total days missed in the upcoming Sprint (default to 0)
 6. `n_members` - The number of members to be present in the upcoming Sprint (default to 8)

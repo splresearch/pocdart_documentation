@@ -66,7 +66,7 @@ def sprint_summary_data():
     data = {
         'board_id': 'J117',
         'start_date': date.today().strftime('%Y-%m-%d'),
-        'length_days': 15,
+        'length_days': 10,
         'members': 8,
         'vacation_days': 0,
         'planned_total': 20,
