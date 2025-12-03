@@ -1,7 +1,6 @@
 .RData
 .Rhistory
-scrum/tools/config.json
-scrum/tools/card_json_archive/*
-!scrum/tools/card_json_archive/.gitkeep
+scrum/tools/config*.json
 .ipynb_checkpoints
 **/__pycache__/
+**/.vscode/

@@ -15,15 +15,15 @@ from sprint_utils import load_config
 
 
 class Board:
-    def __init__(self, api, board_data=None):
-        """
-        Initializes a Board instance.
+    """
+    Initializes a Board instance.
 
-        Args:
-            api (TrelloAPI): An instance of the TrelloAPI class.
-            board_data (dict, optional): Initial data for the board. 
-                If None, data will be fetched using the API.
-        """
+    Args:
+        api (TrelloAPI): An instance of the TrelloAPI class.
+        board_data (dict, optional): Initial data for the board.
+            If None, data will be fetched using the API.
+    """
+    def __init__(self, api, board_data=None):
         self.api = api
         self.cards = []
         self.unplanned_past_sprints = []
@@ -31,7 +31,7 @@ class Board:
         self.calcs = {
             "unplanned": {"total": 0, "spent": 0, "remaining": 0},
             "planned": {"total": 0, "spent": 0, "remaining": 0},
-            "retro": {"total": 0, "spent": 0, "remaining": 0},
+            "retro": {"total": 0, "spent": 0, "remaining": 0}
         }
         self.lists = api.get_board_lists()
         if board_data is None:
@@ -40,11 +40,9 @@ class Board:
             self.board_data = board_data
 
         # Load board configuration
-        board_config = load_config(
+        self.board_config = load_config(
             Path(__file__).parent.parent /
             "config.json")['board']
-        self.unplanned_template_card = board_config['unplanned_template_card']
-        self.sprint_summary_card = board_config['sprint_calc_card']
 
     def get_data(self):
         """
@@ -115,17 +113,18 @@ class Board:
                     "labels",
                     [])]
             curr_card_list = list_id_to_name.get(card.get('idList'), '')
+            curr_card_id_members = card.get('idMembers')
 
             # Skip if card is in 'Monitoring' list
             if "Monitoring" in curr_card_list:
                 continue
 
             # Skip the unplanned template card
-            if curr_card_id == self.unplanned_template_card:
+            if curr_card_id == self.board_config['unplanned_template_card']:
                 continue
 
             # Process the sprint summary card
-            if curr_card_id == self.sprint_summary_card:
+            if curr_card_id == self.board_config['sprint_calc_card']:
                 desc = card.get("desc", "")
                 self.unplanned_past_sprints = [
                     int(i) for i in unplanned_pattern.findall(desc)]
@@ -133,12 +132,12 @@ class Board:
                     int(i) for i in retro_pattern.findall(desc)]
                 continue
 
-            # Extract story points
-            if calc_sp:
-                story_points = self.api.get_card_story_points(
-                    curr_card_name, curr_card_id)
-            else:
-                story_points = {}
+            # Default SP to zero
+            story_points = {
+                "total": 0,
+                "spent": 0,
+                "remaining": 0
+            }
 
             # Create and append the Card object
             self.cards.append(
@@ -148,16 +147,20 @@ class Board:
                     story_points=story_points,
                     title=curr_card_name,
                     labels=curr_card_labels,
-                    list_name=curr_card_list
+                    list_name=curr_card_list,
+                    id_members=curr_card_id_members
                 )
             )
+        # Extract story points
+        if calc_sp:
+            self.assign_story_points()
 
     def calculate_story_points(self):
         """
         Calculates story points for the board.
 
         Returns:
-            dict: A dictionary with calculated story points for 
+            dict: A dictionary with calculated story points for
                 'planned', 'unplanned', and 'retro' categories.
         """
         for card in self.cards:
@@ -198,3 +201,38 @@ class Board:
                 self.calcs[category]['remaining'] += remaining_points
 
         return self.calcs
+
+    def assign_story_points(self):
+        """Sets story points on each card using Trello custom field data
+        """
+        # Request custom_fields data from Trello
+        board_story_points = self.api.get_custom_fields_data()
+        # Iterate trello cards
+        for card in self.cards:
+            # Extract story points from custom_fields object
+            card_story_points = [
+                x['customFieldItems'] for x in board_story_points
+                if x['id'] == card.get_card_id()
+            ]
+            # Extract story point values and format result
+            total_sp = [
+                int(x["value"]["number"]) for x in card_story_points[0]
+                if x["idCustomField"] == self.board_config['sp_total_id']
+            ]
+            spent_sp = [
+                int(x["value"]["number"]) for x in card_story_points[0]
+                if x["idCustomField"] == self.board_config['sp_spent_id']
+            ]
+            # Extract list and default missing to 0
+            total_sp = total_sp[0] if len(total_sp) > 0 else 0
+            spent_sp = spent_sp[0] if len(spent_sp) > 0 else 0
+            # Calculate difference for remaining and retro
+            #  Positive indicates remaining, negative indicates retro
+            diff_sp = total_sp - spent_sp
+            story_points = {
+                "total": total_sp,
+                "spent": spent_sp,
+                "remaining": diff_sp if diff_sp >= 0 else 0
+            }
+
+            card.set_story_points(story_points)

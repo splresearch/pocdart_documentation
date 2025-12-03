@@ -25,7 +25,7 @@ def load_test_board_data(file_path, return_str = False):
 
     Args:
         file_path (str): The path to the configuration file.
-        return_str (str): Flag for if the JSON should be returned as a string 
+        return_str (str): Flag for if the JSON should be returned as a string
             or as native Python object
 
     Returns:

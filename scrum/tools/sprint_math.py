@@ -187,6 +187,7 @@ def prompt_for_board_insert():
 
 
 def main():
+    """ Extract story points from trello and summarize the results """
     # Load configuration
     config = load_config("config.json")
     mysql_config = config['mysql']

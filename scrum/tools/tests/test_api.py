@@ -8,6 +8,10 @@ Tests:
     - test_get_board_cards: Tests the get_board_cards method.
     - test_get_board_lists: Tests the get_board_lists method.
     - test_get_card_story_points: Tests the get_card_story_points method.
+    - test_get_custom_fields_data: Tests the get_custom_fields_data method.
+    - test_get_member_details: Tests the get_member_details method.
+    - test_get_board_member_ids: Tests the get_board_member_ids method.
+
 """
 
 import sys
@@ -86,26 +90,31 @@ def test_get_board_lists(trello_api):
     assert sprint_lists is not None
     assert len(sprint_lists) > 0
 
-
-def test_get_card_story_points(trello_api, board_config):
+def test_get_custom_fields_data(trello_api):
     """
-    Tests the get_card_story_points method of the TrelloAPI class.
+    Tests the get_custom_fields_data method of the TrelloAPI class.
 
     Args:
         trello_api (TrelloAPI): The TrelloAPI instance fixture.
-        board_config (dict): The board configuration fixture.
     """
-    # Arrange: Get test card ID and name
-    test_card_id = board_config['slack_card']
-    # Replace with the actual card name if different
-    test_card_name = "Slack Channel Assignments"
-
-    # Act: Call get_card_story_points method
-    story_points = trello_api.get_card_story_points(
-        test_card_name, test_card_id)
+    # Act: Call get_board_lists method
+    custom_fields_data = trello_api.get_custom_fields_data()
 
     # Assert: Verify that the response data matches expected values
-    assert story_points is not None
-    assert story_points['total'] == 1
-    assert story_points['spent'] == 1
-    assert story_points['remaining'] == 0
+    assert custom_fields_data is not None
+    assert len(custom_fields_data) > 0
+    assert 'customFieldItems' in custom_fields_data[0].keys()
+
+    # Assert at least one populated card has a parsable integer
+    card_field_data = [x['customFieldItems'] for x in custom_fields_data if len(x['customFieldItems']) > 0][0]
+    assert isinstance(int(card_field_data[0]['value']['number']), int)
+
+def test_get_member_details(trello_api):
+    """ Verify the full name value given by get_member_details() for a given trello member id """
+    name = trello_api.get_member_details('56f2b2493ac46542079684d0')["fullName"]
+    assert name == "Alexander Maclay"
+
+def test_get_board_member_ids(trello_api):
+    """ Verify a member id exists in the output of get_board_member_ids() """
+    member_ids = trello_api.get_board_member_ids()
+    assert "56f2b2493ac46542079684d0" in member_ids

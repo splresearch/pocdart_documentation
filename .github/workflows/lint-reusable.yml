@@ -18,12 +18,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.13.7'
+          python-version: '3.13.10'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pylint requests pytest mysql-connector-python jinja2 phonenumbers pandas numpy bs4
+          pip install pylint requests pytest mysql-connector-python jinja2 phonenumbers pandas numpy bs4 colorama
 
       - name: Analyse changed code with pylint
         run: |

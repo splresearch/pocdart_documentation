@@ -1,7 +1,7 @@
 """
 db.py
 
-This module contains the `SprintDBManager` class for interacting 
+This module contains the `SprintDBManager` class for interacting
     with the MySQL database to store and retrieve
     Trello board and story points data.
 
@@ -20,6 +20,7 @@ import mysql.connector
 
 
 class SprintDBManager:
+    """ Provides interactions with the scoring database """
     def __init__(self, config):
         """
         Initializes a SprintDBManager instance with MySQL configuration.
@@ -34,7 +35,7 @@ class SprintDBManager:
         Establishes a connection to the MySQL database.
 
         Args:
-            database (str, optional): Target database name. 
+            database (str, optional): Target database name.
                 Defaults to the one specified in the config.
 
         Returns:
