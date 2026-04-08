@@ -151,7 +151,7 @@ class SprintDBManager:
 
         try:
             select_statement = """
-                SELECT * FROM sprint_summary WHERE board_id = %s ORDER BY created_at ASC;
+                SELECT * FROM sprint_summary WHERE board_id = %s ORDER BY start_date ASC;
             """
             cursor.execute(select_statement, (board_id,))
 
