@@ -217,9 +217,15 @@ def main():
     show_sp_calculations(story_points)
     story_points = prompt_for_manual_corrections(story_points)
 
+    # Gather past sprints
+    sprint_summaries = sprint_db_manager.get_sprint_summary_from_db(
+        board_config['board_id']
+    )
+
     # Compute recommendation
-    recommendation = compute_recommendation(
-        board, story_points, sprint_controls)
+    breakdown = compute_recommendation(
+        sprint_summaries, sprint_controls)
+    recommendation = breakdown['recommendation']
 
     # Insert sprint summary data into the database
     insert_sprint_summary(
@@ -296,6 +302,9 @@ def compute_recommendation(sprint_summaries, sprint_controls):
 
     # Calculate per-sprint rates, skipping sprints with no available days
     sprint_rates = []
+    unplanned_remainders = []
+    retro_remainders = []
+
     for sprint in recent:
         available_days = (sprint['length_days'] * sprint['members']) - sprint['vacation_days']
         if available_days <= 0:
@@ -312,6 +321,8 @@ def compute_recommendation(sprint_summaries, sprint_controls):
             "available_days": available_days,
             "rate": rate,
         })
+        unplanned_remainders.append(sprint['unplanned_remaining'])
+        retro_remainders.append(sprint['retro_remaining'])
 
     if not sprint_rates:
         raise ValueError(
@@ -334,13 +345,19 @@ def compute_recommendation(sprint_summaries, sprint_controls):
 
     # Recommendation calculation
     raw_capacity = median_rate * next_available
-    recommendation = max(0, math.ceil(raw_capacity))
+    median_unplanned_remaining = statistics.median(unplanned_remainders)
+    median_retro_remaining = statistics.median(retro_remainders)
+    recommendation = max(0, math.ceil(
+        raw_capacity - median_retro_remaining - median_unplanned_remaining
+    ))
 
     return {
         "recommendation": recommendation,
         "median_rate": median_rate,
         "next_available_member_days": next_available,
         "raw_capacity": raw_capacity,
+        "median_unplanned_remaining": median_unplanned_remaining,
+        "median_retro_remaining": median_retro_remaining,
         "sprint_rates": sprint_rates,
     }
 
