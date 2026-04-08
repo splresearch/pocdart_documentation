@@ -286,44 +286,63 @@ def get_board_data(sprint_db_manager, trello_api, board_source):
     return board_data
 
 
-def compute_recommendation(board, story_points, sprint_controls):
+def compute_recommendation(sprint_summaries, sprint_controls):
     """
-    Compute the recommended number of story points for the next sprint.
-
-    Args:
-        board (Board): The Board instance containing card data.
-        story_points (dict): Dictionary containing calculated story points.
-        sprint_controls (dict): Dictionary containing sprint control data.
-
-    Returns:
-        int: The recommended number of story points.
+    Compute the recommended number of story points for the next sprint
+    using a rate-based approach sourced from DB.
     """
-    # Calculate average unplanned and retro leftover points from the past six
-    # sprints
-    avg_unplanned = statistics.median(board.get_unplanned_past_sprints()[-6:])
-    avg_retro_leftover = statistics.median(board.get_retro_past_sprints()[-6:])
+    # Use the last 6 sprints
+    recent = sprint_summaries[-6:]
 
-    # Adjustments based on sprint length and team availability
-    length_adjustment = sprint_controls['last_sprint_days'] / \
-        sprint_controls['next_sprint_days']
-    pto_adjustment = (
-        sprint_controls['missed_next_sprint'] -
-        sprint_controls['missed_last_sprint']
-    ) / sprint_controls['members']
-
-    # Calculate the recommendation
-    recommendation = math.ceil(
-        (
-            story_points['planned']['spent']
-            + story_points['unplanned']['spent']
-            + story_points['retro']['spent']
-            - avg_unplanned
-            - avg_retro_leftover
+    # Calculate per-sprint rates, skipping sprints with no available days
+    sprint_rates = []
+    for sprint in recent:
+        available_days = (sprint['length_days'] * sprint['members']) - sprint['vacation_days']
+        if available_days <= 0:
+            continue
+        total_completed = (
+            sprint['planned_completed']
+            + sprint['unplanned_completed']
+            + sprint['retro_completed']
         )
-        / length_adjustment
-        - pto_adjustment
+        rate = total_completed / available_days
+        sprint_rates.append({
+            "start_date": str(sprint['start_date']),
+            "total_completed": total_completed,
+            "available_days": available_days,
+            "rate": rate,
+        })
+
+    if not sprint_rates:
+        raise ValueError(
+            "No valid sprint data found - cannot compute recommendation."
+        )
+
+    # Median rate across historical sprints
+    median_rate = statistics.median([r['rate'] for r in sprint_rates])
+
+    # Next sprint's available member-days
+    next_available = (
+        sprint_controls['next_sprint_days'] * sprint_controls['members']
+        - sprint_controls['missed_next_sprint']
     )
-    return recommendation
+    if next_available <= 0:
+        raise ValueError(
+            f"Next sprint has {next_available} available member-days - "
+            "PTO exceeds capacity. Check sprint control inputs."
+        )
+
+    # Recommendation calculation
+    raw_capacity = median_rate * next_available
+    recommendation = max(0, math.ceil(raw_capacity))
+
+    return {
+        "recommendation": recommendation,
+        "median_rate": median_rate,
+        "next_available_member_days": next_available,
+        "raw_capacity": raw_capacity,
+        "sprint_rates": sprint_rates,
+    }
 
 
 def insert_sprint_summary(sprint_db_manager, board_id,
