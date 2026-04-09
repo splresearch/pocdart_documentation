@@ -264,6 +264,7 @@ def main():
     # Print final results
     print("\nFINAL RESULTS:")
     show_sp_calculations(story_points, recommendation)
+    show_recommendation_breakdown(breakdown)
 
     # Optionally save board data to database
     if prompt_for_board_insert() == 0:
