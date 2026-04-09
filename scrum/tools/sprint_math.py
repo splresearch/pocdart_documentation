@@ -165,6 +165,33 @@ def show_sp_calculations(story_points, recommendation=None):
         )
     print(results)
 
+def show_recommendation_breakdown(breakdown):
+    """
+    Displays the step-by-step breakdown of how the recommendation was computed.
+
+    Args:
+        breakdown (dict): The breakdown dict returned by compute_recommendation.
+    """
+    print("\n=== Recommendation Breakdown ===")
+    print("Historical sprint rates (last 6):")
+    for sr in breakdown['sprint_rates']:
+        print(
+            f"  Sprint {sr['start_date']}: "
+            f"{sr['total_completed']} pts / {sr['available_days']} member-days "
+            f"= {sr['rate']:.3f} pts/day"
+        )
+    print(f"Median rate: {breakdown['median_rate']:.3f} pts/member-day")
+    print(f"Next sprint available member-days: {breakdown['next_available_member_days']}")
+    print(
+        f"Raw capacity: {breakdown['median_rate']:.3f} "
+        f"* {breakdown['next_available_member_days']} "
+        f"= {breakdown['raw_capacity']:.2f}"
+    )
+    print(f"Median unplanned leftover: -{breakdown['median_unplanned_remaining']:.1f}")
+    print(f"Median retro leftover: -{breakdown['median_retro_remaining']:.1f}")
+    print("---------------------------------")
+    print(f"Recommended planned SP: {breakdown['recommendation']}\n")
+
 
 def prompt_for_board_insert():
     """
