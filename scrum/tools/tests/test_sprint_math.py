@@ -40,7 +40,7 @@ def make_sprint_summary(
     retro_remaining=1,
     **kwargs,
 ):
-    """Class to generate a sprint_summary dict with controllable values"""
+    """Generate a sprint_summary dict with controllable values"""
     return {
         "start_date": start_date,
         "length_days": length_days,

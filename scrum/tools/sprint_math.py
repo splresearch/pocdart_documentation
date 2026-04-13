@@ -12,6 +12,7 @@ Functions:
     - prompt_for_board_source: Determines the source of the board data.
     - prompt_for_manual_corrections: Allows manual corrections to story points.
     - show_sp_calculations: Displays the calculated story points.
+    - show_recommendation_breakdown: Displays the step-by-step breakdown of the recommendation.
     - prompt_for_board_insert: Determines whether to insert board data into the database.
     - get_board_data: Retrieve board data either from the database or from the live Trello board.
     - compute_recommendation: Compute the recommended number of story points for the next sprint.
@@ -324,6 +325,22 @@ def compute_recommendation(sprint_summaries, sprint_controls):
     """
     Compute the recommended number of story points for the next sprint
     using a rate-based approach sourced from DB.
+
+    Args:
+        sprint_summaries (list[dict]): Sprint summary rows from the DB,
+            ordered by start_date ASC.
+        sprint_controls (dict): Dictionary containing sprint control data
+            with keys: next_sprint_days, members, missed_next_sprint.
+
+    Returns:
+        dict: Breakdown of the recommendation with keys:
+            recommendation, median_rate, next_available_member_days,
+            raw_capacity, median_unplanned_remaining,
+            median_retro_remaining, sprint_rates.
+
+    Raises:
+        ValueError: If no valid sprint data exists or if next sprint
+            PTO exceeds capacity.
     """
     # Use the last 6 sprints
     recent = sprint_summaries[-6:]
