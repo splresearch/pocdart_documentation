@@ -194,9 +194,9 @@ def show_recommendation_breakdown(breakdown):
     note = " (floored to zero)" if raw_pre_ceil < 0 else ""
 
     print(
-        f"\nRecommendation = projected SP for next sprint ({breakdown['raw_capacity']:.1f})"
-        f" - median unplanned leftover ({breakdown['median_unplanned_remaining']:.1f})"
-        f" - median retro leftover ({breakdown['median_retro_remaining']:.1f})"
+        f"\nRecommendation = SP capacity ({breakdown['raw_capacity']:.1f})"
+        f" - unplanned LO median ({breakdown['median_unplanned_remaining']:.1f})"
+        f" - retro LO median ({breakdown['median_retro_remaining']:.1f})"
         f" = {raw_pre_ceil:.1f}"
     )
     print(f"Recommended planned SP: {breakdown['recommendation']}{note}\n")
