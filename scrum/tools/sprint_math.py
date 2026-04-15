@@ -12,6 +12,7 @@ Functions:
     - prompt_for_board_source: Determines the source of the board data.
     - prompt_for_manual_corrections: Allows manual corrections to story points.
     - show_sp_calculations: Displays the calculated story points.
+    - show_recommendation_breakdown: Displays the step-by-step breakdown of the recommendation.
     - prompt_for_board_insert: Determines whether to insert board data into the database.
     - get_board_data: Retrieve board data either from the database or from the live Trello board.
     - compute_recommendation: Compute the recommended number of story points for the next sprint.
@@ -165,6 +166,41 @@ def show_sp_calculations(story_points, recommendation=None):
         )
     print(results)
 
+def show_recommendation_breakdown(breakdown):
+    """
+    Displays the step-by-step breakdown of how the recommendation was computed.
+
+    Args:
+        breakdown (dict): The breakdown dict returned by compute_recommendation.
+    """
+    print("\n=== Recommendation Breakdown ===")
+    print("Historical SP completion per sprint:")
+    for sr in breakdown['sprint_rates']:
+        print(
+            f"  {sr['start_date']}: "
+            f"{sr['total_completed']} SP (over {sr['available_days']} member-days)"
+        )
+    unplanned_history = ", ".join(str(x) for x in breakdown['unplanned_remainders'])
+    retro_history = ", ".join(str(x) for x in breakdown['retro_remainders'])
+    print(f"Unplanned leftover history: {unplanned_history}")
+    print(f"Retro leftover history: {retro_history}")
+    print(f"Next sprint capacity: {breakdown['next_available_member_days']} member-days")
+
+    raw_pre_ceil = (
+        breakdown['raw_capacity']
+        - breakdown['median_unplanned_remaining']
+        - breakdown['median_retro_remaining']
+    )
+    note = " (floored to zero)" if raw_pre_ceil < 0 else ""
+
+    print(
+        f"\nRecommendation = SP capacity ({breakdown['raw_capacity']:.1f})"
+        f" - unplanned LO median ({breakdown['median_unplanned_remaining']:.1f})"
+        f" - retro LO median ({breakdown['median_retro_remaining']:.1f})"
+        f" = {raw_pre_ceil:.1f}"
+    )
+    print(f"Recommended planned SP: {breakdown['recommendation']}{note}\n")
+
 
 def prompt_for_board_insert():
     """
@@ -217,9 +253,15 @@ def main():
     show_sp_calculations(story_points)
     story_points = prompt_for_manual_corrections(story_points)
 
+    # Gather past sprints
+    sprint_summaries = sprint_db_manager.get_sprint_summary_from_db(
+        board_config['board_id']
+    )
+
     # Compute recommendation
-    recommendation = compute_recommendation(
-        board, story_points, sprint_controls)
+    breakdown = compute_recommendation(
+        sprint_summaries, sprint_controls)
+    recommendation = breakdown['recommendation']
 
     # Insert sprint summary data into the database
     insert_sprint_summary(
@@ -231,6 +273,7 @@ def main():
     # Print final results
     print("\nFINAL RESULTS:")
     show_sp_calculations(story_points, recommendation)
+    show_recommendation_breakdown(breakdown)
 
     # Optionally save board data to database
     if prompt_for_board_insert() == 0:
@@ -286,44 +329,92 @@ def get_board_data(sprint_db_manager, trello_api, board_source):
     return board_data
 
 
-def compute_recommendation(board, story_points, sprint_controls):
+def compute_recommendation(sprint_summaries, sprint_controls):
     """
-    Compute the recommended number of story points for the next sprint.
+    Compute the recommended number of story points for the next sprint
+    using a rate-based approach sourced from DB.
 
     Args:
-        board (Board): The Board instance containing card data.
-        story_points (dict): Dictionary containing calculated story points.
-        sprint_controls (dict): Dictionary containing sprint control data.
+        sprint_summaries (list[dict]): Sprint summary rows from the DB,
+            ordered by start_date ASC.
+        sprint_controls (dict): Dictionary containing sprint control data
+            with keys: next_sprint_days, members, missed_next_sprint.
 
     Returns:
-        int: The recommended number of story points.
+        dict: Breakdown of the recommendation with keys:
+            recommendation, median_rate, next_available_member_days,
+            raw_capacity, median_unplanned_remaining,
+            median_retro_remaining, sprint_rates.
+
+    Raises:
+        ValueError: If no valid sprint data exists or if next sprint
+            PTO exceeds capacity.
     """
-    # Calculate average unplanned and retro leftover points from the past six
-    # sprints
-    avg_unplanned = statistics.median(board.get_unplanned_past_sprints()[-6:])
-    avg_retro_leftover = statistics.median(board.get_retro_past_sprints()[-6:])
+    # Use the last 6 sprints
+    recent = sprint_summaries[-6:]
 
-    # Adjustments based on sprint length and team availability
-    length_adjustment = sprint_controls['last_sprint_days'] / \
-        sprint_controls['next_sprint_days']
-    pto_adjustment = (
-        sprint_controls['missed_next_sprint'] -
-        sprint_controls['missed_last_sprint']
-    ) / sprint_controls['members']
+    # Calculate per-sprint rates, skipping sprints with no available days
+    sprint_rates = []
+    unplanned_remainders = []
+    retro_remainders = []
 
-    # Calculate the recommendation
-    recommendation = math.ceil(
-        (
-            story_points['planned']['spent']
-            + story_points['unplanned']['spent']
-            + story_points['retro']['spent']
-            - avg_unplanned
-            - avg_retro_leftover
+    for sprint in recent:
+        available_days = (sprint['length_days'] * sprint['members']) - sprint['vacation_days']
+        if available_days <= 0:
+            continue
+        total_completed = (
+            sprint['planned_completed']
+            + sprint['unplanned_completed']
+            + sprint['retro_completed']
         )
-        / length_adjustment
-        - pto_adjustment
+        rate = total_completed / available_days
+        sprint_rates.append({
+            "start_date": str(sprint['start_date']),
+            "total_completed": total_completed,
+            "available_days": available_days,
+            "rate": rate,
+        })
+        unplanned_remainders.append(sprint['unplanned_remaining'])
+        retro_remainders.append(sprint['retro_remaining'])
+
+    if not sprint_rates:
+        raise ValueError(
+            "No valid sprint data found - cannot compute recommendation."
+        )
+
+    # Median rate across historical sprints
+    median_rate = statistics.median([r['rate'] for r in sprint_rates])
+
+    # Next sprint's available member-days
+    next_available = (
+        sprint_controls['next_sprint_days'] * sprint_controls['members']
+        - sprint_controls['missed_next_sprint']
     )
-    return recommendation
+    if next_available <= 0:
+        raise ValueError(
+            f"Next sprint has {next_available} available member-days - "
+            "PTO exceeds capacity. Check sprint control inputs."
+        )
+
+    # Recommendation calculation
+    raw_capacity = median_rate * next_available
+    median_unplanned_remaining = statistics.median(unplanned_remainders)
+    median_retro_remaining = statistics.median(retro_remainders)
+    recommendation = max(0, math.ceil(
+        raw_capacity - median_retro_remaining - median_unplanned_remaining
+    ))
+
+    return {
+        "recommendation": recommendation,
+        "median_rate": median_rate,
+        "next_available_member_days": next_available,
+        "raw_capacity": raw_capacity,
+        "median_unplanned_remaining": median_unplanned_remaining,
+        "median_retro_remaining": median_retro_remaining,
+        "unplanned_remainders": unplanned_remainders,
+        "retro_remainders": retro_remainders,
+        "sprint_rates": sprint_rates,
+    }
 
 
 def insert_sprint_summary(sprint_db_manager, board_id,
