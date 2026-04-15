@@ -174,24 +174,32 @@ def show_recommendation_breakdown(breakdown):
         breakdown (dict): The breakdown dict returned by compute_recommendation.
     """
     print("\n=== Recommendation Breakdown ===")
-    print("Historical sprint rates (last 6):")
+    print("Historical SP completion per sprint:")
     for sr in breakdown['sprint_rates']:
         print(
-            f"  Sprint {sr['start_date']}: "
-            f"{sr['total_completed']} pts / {sr['available_days']} member-days "
-            f"= {sr['rate']:.3f} pts/day"
+            f"  {sr['start_date']}: "
+            f"{sr['total_completed']} SP (over {sr['available_days']} member-days)"
         )
-    print(f"Median rate: {breakdown['median_rate']:.3f} pts/member-day")
-    print(f"Next sprint available member-days: {breakdown['next_available_member_days']}")
-    print(
-        f"Raw capacity: {breakdown['median_rate']:.3f} "
-        f"* {breakdown['next_available_member_days']} "
-        f"= {breakdown['raw_capacity']:.2f}"
+    unplanned_history = ", ".join(str(x) for x in breakdown['unplanned_remainders'])
+    retro_history = ", ".join(str(x) for x in breakdown['retro_remainders'])
+    print(f"Unplanned leftover history: {unplanned_history}")
+    print(f"Retro leftover history: {retro_history}")
+    print(f"Next sprint capacity: {breakdown['next_available_member_days']} member-days")
+
+    raw_pre_ceil = (
+        breakdown['raw_capacity']
+        - breakdown['median_unplanned_remaining']
+        - breakdown['median_retro_remaining']
     )
-    print(f"Median unplanned leftover: -{breakdown['median_unplanned_remaining']:.1f}")
-    print(f"Median retro leftover: -{breakdown['median_retro_remaining']:.1f}")
-    print("---------------------------------")
-    print(f"Recommended planned SP: {breakdown['recommendation']}\n")
+    note = " (floored to zero)" if raw_pre_ceil < 0 else ""
+
+    print(
+        f"\nRecommendation = projected SP for next sprint ({breakdown['raw_capacity']:.1f})"
+        f" - median unplanned leftover ({breakdown['median_unplanned_remaining']:.1f})"
+        f" - median retro leftover ({breakdown['median_retro_remaining']:.1f})"
+        f" = {raw_pre_ceil:.1f}"
+    )
+    print(f"Recommended planned SP: {breakdown['recommendation']}{note}\n")
 
 
 def prompt_for_board_insert():
@@ -403,6 +411,8 @@ def compute_recommendation(sprint_summaries, sprint_controls):
         "raw_capacity": raw_capacity,
         "median_unplanned_remaining": median_unplanned_remaining,
         "median_retro_remaining": median_retro_remaining,
+        "unplanned_remainders": unplanned_remainders,
+        "retro_remainders": retro_remainders,
         "sprint_rates": sprint_rates,
     }
 

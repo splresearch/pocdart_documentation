@@ -162,6 +162,8 @@ class TestComputeRecommendation:
             "raw_capacity",
             "median_unplanned_remaining",
             "median_retro_remaining",
+            "unplanned_remainders",
+            "retro_remainders",
             "sprint_rates",
         }
         assert set(result.keys()) == expected_keys
