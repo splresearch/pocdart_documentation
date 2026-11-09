@@ -16,7 +16,7 @@ pipeline {
             steps {
                 sh '''
                     # clone in target repository
-                    cd /home/pocdart && git clone https://github.com/splresearch/pocdart_documentation.git
+                    cd /home/pocdart && git clone https://github.com/sp-dmar/pocdart_documentation.git
                     cd /home/pocdart/pocdart_documentation && git checkout $BRANCH_NAME
                 ''' 
                 sshagent(credentials: ['jenkins_host_user']) {

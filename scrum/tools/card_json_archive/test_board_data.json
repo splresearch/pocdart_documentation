@@ -1793,7 +1793,7 @@
         "closed": false,
         "dueComplete": false,
         "dateLastActivity": "2024-01-18T16:07:57.033Z",
-        "desc": "Waiting on: [https://trello.com/c/lmS8KKPN/2371-internal-work-update-survey-id-generation-to-include-additional-information-for-seeds](https://trello.com/c/lmS8KKPN/2371-internal-work-update-survey-id-generation-to-include-additional-information-for-seeds \"smartCard-inline\") as both require similar changes to the survey_generation workflow\n\n0 patients have received an incorrect PROM due to survey sendout workflow  failing before the email is scheduled. 83 REDCap records that are currently compromised - send\\_adm\\_prom has been disable until the issue is resolved\n\nREDCap fields `visit_number_backup` and `survey_id` currently corrupted. Data in these fields propagate to other systems if a patient has completed a survey.\n\nOnly 1 record ([record 15](https://sphsoutcomes.net/redcap/redcap_v14.0.1/DataExport/index.php?pid=349&report_id=1534 \"\u200c\")) has completed PROM data that needs to be cleaned up across the system due to the propagation errors.\n\nSteps to resolve are:\n\n1. fix redcap\n2. re-enable send\\_adm\\_prom and omit from job_processor\n3. clean up records in system (record 15)\n\n\u200c\n\nBreakdown of the 83 affected records:\n\\- 46 were created in REDCap but failed before they were sent out\n\\- 37 were sent, of which:\n\\--- 10 expired\n\\--- 27 still open, of which:\n\\------ 1 was taken\n\n\u200c\n\n[https://github.com/splresearch/pocdart\\_cron\\_scripts/pull/18/files](https://github.com/splresearch/pocdart_cron_scripts/pull/18/files \"\u200c\")",
+        "desc": "Waiting on: [https://trello.com/c/lmS8KKPN/2371-internal-work-update-survey-id-generation-to-include-additional-information-for-seeds](https://trello.com/c/lmS8KKPN/2371-internal-work-update-survey-id-generation-to-include-additional-information-for-seeds \"smartCard-inline\") as both require similar changes to the survey_generation workflow\n\n0 patients have received an incorrect PROM due to survey sendout workflow  failing before the email is scheduled. 83 REDCap records that are currently compromised - send\\_adm\\_prom has been disable until the issue is resolved\n\nREDCap fields `visit_number_backup` and `survey_id` currently corrupted. Data in these fields propagate to other systems if a patient has completed a survey.\n\nOnly 1 record ([record 15](https://sphsoutcomes.net/redcap/redcap_v14.0.1/DataExport/index.php?pid=349&report_id=1534 \"\u200c\")) has completed PROM data that needs to be cleaned up across the system due to the propagation errors.\n\nSteps to resolve are:\n\n1. fix redcap\n2. re-enable send\\_adm\\_prom and omit from job_processor\n3. clean up records in system (record 15)\n\n\u200c\n\nBreakdown of the 83 affected records:\n\\- 46 were created in REDCap but failed before they were sent out\n\\- 37 were sent, of which:\n\\--- 10 expired\n\\--- 27 still open, of which:\n\\------ 1 was taken\n\n\u200c\n\n[https://github.com/sp-dmar/pocdart\\_cron\\_scripts/pull/18/files](https://github.com/sp-dmar/pocdart_cron_scripts/pull/18/files \"\u200c\")",
         "descData": {
             "emoji": {}
         },
@@ -2680,7 +2680,7 @@
         "closed": false,
         "dueComplete": false,
         "dateLastActivity": "2024-01-18T16:07:56.536Z",
-        "desc": "[https://splresearch.slack.com/archives/CTA8FEP8B/p1705084137942309](https://splresearch.slack.com/archives/CTA8FEP8B/p1705084137942309 \"smartCard-inline\")\n\n[https://github.com/splresearch/nagios_custom_plugins/pull/49](https://github.com/splresearch/nagios_custom_plugins/pull/49 \"smartCard-inline\")",
+        "desc": "[https://splresearch.slack.com/archives/CTA8FEP8B/p1705084137942309](https://splresearch.slack.com/archives/CTA8FEP8B/p1705084137942309 \"smartCard-inline\")\n\n[https://github.com/sp-dmar/nagios_custom_plugins/pull/49](https://github.com/sp-dmar/nagios_custom_plugins/pull/49 \"smartCard-inline\")",
         "descData": {
             "emoji": {}
         },
@@ -2894,7 +2894,7 @@
         "closed": false,
         "dueComplete": false,
         "dateLastActivity": "2024-01-18T16:07:56.011Z",
-        "desc": "[https://github.com/splresearch/shiny\\_code\\_repo/pull/400/files](https://github.com/splresearch/shiny_code_repo/pull/400/files \"\u200c\")\n\n[https://github.com/splresearch/shiny\\_code\\_repo/pull/404/files](https://github.com/splresearch/shiny_code_repo/pull/404/files \"\u200c\")",
+        "desc": "[https://github.com/sp-dmar/shiny\\_code\\_repo/pull/400/files](https://github.com/sp-dmar/shiny_code_repo/pull/400/files \"\u200c\")\n\n[https://github.com/sp-dmar/shiny\\_code\\_repo/pull/404/files](https://github.com/sp-dmar/shiny_code_repo/pull/404/files \"\u200c\")",
         "descData": {
             "emoji": {}
         },
@@ -3010,7 +3010,7 @@
         "closed": false,
         "dueComplete": false,
         "dateLastActivity": "2024-01-18T16:07:56.031Z",
-        "desc": "[https://github.com/splresearch/shiny\\_code\\_repo/pull/401/files](https://github.com/splresearch/shiny_code_repo/pull/401/files \"\u200c\")",
+        "desc": "[https://github.com/sp-dmar/shiny\\_code\\_repo/pull/401/files](https://github.com/sp-dmar/shiny_code_repo/pull/401/files \"\u200c\")",
         "descData": {
             "emoji": {}
         },
@@ -3131,7 +3131,7 @@
         "closed": false,
         "dueComplete": false,
         "dateLastActivity": "2024-01-18T16:07:56.255Z",
-        "desc": "VN 969519\n\non 1/2 emily reported that customized instruments were not sent event though last send out occurred >28 days ago (which was customized to have these instruments send out every 28 days\n\na week later on 1/8, emily met with the same pt. Program level proms were sent out as expected but customized assessments were not sent out\n\n[https://github.com/splresearch/shiny_code_repo/pull/412](https://github.com/splresearch/shiny_code_repo/pull/412 \"smartCard-inline\")",
+        "desc": "VN 969519\n\non 1/2 emily reported that customized instruments were not sent event though last send out occurred >28 days ago (which was customized to have these instruments send out every 28 days\n\na week later on 1/8, emily met with the same pt. Program level proms were sent out as expected but customized assessments were not sent out\n\n[https://github.com/sp-dmar/shiny_code_repo/pull/412](https://github.com/sp-dmar/shiny_code_repo/pull/412 \"smartCard-inline\")",
         "descData": {
             "emoji": {}
         },
@@ -3713,7 +3713,7 @@
         "closed": false,
         "dueComplete": false,
         "dateLastActivity": "2024-01-18T16:07:56.128Z",
-        "desc": "[https://github.com/splresearch/shiny\\_code\\_repo/pull/407](https://github.com/splresearch/shiny_code_repo/pull/407 \"\u200c\")",
+        "desc": "[https://github.com/sp-dmar/shiny\\_code\\_repo/pull/407](https://github.com/sp-dmar/shiny_code_repo/pull/407 \"\u200c\")",
         "descData": {
             "emoji": {}
         },
@@ -5036,7 +5036,7 @@
         "closed": false,
         "dueComplete": false,
         "dateLastActivity": "2024-01-18T16:07:55.960Z",
-        "desc": "PROMs are sometimes generated but not sent out. Reported by @emilyberich on 2024-01-03, some by @amberbailey16 .\n\nIssue 1: `1054168` is due, but not sent (has email). Resolved by `https://github.com/splresearch/pocdart_dashboard/pull/268`\n\nIssue 2: `938437` as a proxy PROM is due, but not sent. Resolved by `https://github.com/splresearch/zoom_api/pull/191`\n\nIssue 3: VNs in CADH are not being generated correctly. After some review, this was due to an error in the `age_lgl` field processed during survey generation. Resolved by `https://github.com/splresearch/shiny_code_repo/pull/410`\n\nIssue 4: Emails from R (from dashboard, from send_adm) were not correctly populating the BCC emails. Resolved by `https://github.com/splresearch/pocdart_dashboard/pull/270` [https://github.com/splresearch/shiny\\_code\\_repo/pull/411](https://github.com/splresearch/shiny_code_repo/pull/411%60 \"\u200c\")",
+        "desc": "PROMs are sometimes generated but not sent out. Reported by @emilyberich on 2024-01-03, some by @amberbailey16 .\n\nIssue 1: `1054168` is due, but not sent (has email). Resolved by `https://github.com/sp-dmar/pocdart_dashboard/pull/268`\n\nIssue 2: `938437` as a proxy PROM is due, but not sent. Resolved by `https://github.com/sp-dmar/zoom_api/pull/191`\n\nIssue 3: VNs in CADH are not being generated correctly. After some review, this was due to an error in the `age_lgl` field processed during survey generation. Resolved by `https://github.com/sp-dmar/shiny_code_repo/pull/410`\n\nIssue 4: Emails from R (from dashboard, from send_adm) were not correctly populating the BCC emails. Resolved by `https://github.com/sp-dmar/pocdart_dashboard/pull/270` [https://github.com/sp-dmar/shiny\\_code\\_repo/pull/411](https://github.com/sp-dmar/shiny_code_repo/pull/411%60 \"\u200c\")",
         "descData": {
             "emoji": {}
         },
@@ -5734,7 +5734,7 @@
         "closed": false,
         "dueComplete": false,
         "dateLastActivity": "2024-01-18T16:07:56.066Z",
-        "desc": "[https://github.com/splresearch/shiny_code_repo/pull/403](https://github.com/splresearch/shiny_code_repo/pull/403 \"smartCard-inline\")",
+        "desc": "[https://github.com/sp-dmar/shiny_code_repo/pull/403](https://github.com/sp-dmar/shiny_code_repo/pull/403 \"smartCard-inline\")",
         "descData": {
             "emoji": {}
         },
@@ -6757,7 +6757,7 @@
         "closed": false,
         "dueComplete": false,
         "dateLastActivity": "2024-01-18T16:07:56.048Z",
-        "desc": "[https://github.com/splresearch/pocdart_dashboard/pull/264](https://github.com/splresearch/pocdart_dashboard/pull/264 \"smartCard-inline\")\n\nR code was supposed to send out a PROM email to a patient that had an `'` in their name, which caused issues with string concatenation (based on this [Slack conversation](https://splresearch.slack.com/archives/GAYCKKUUC/p1703100666429869 \"\u200c\"))",
+        "desc": "[https://github.com/sp-dmar/pocdart_dashboard/pull/264](https://github.com/sp-dmar/pocdart_dashboard/pull/264 \"smartCard-inline\")\n\nR code was supposed to send out a PROM email to a patient that had an `'` in their name, which caused issues with string concatenation (based on this [Slack conversation](https://splresearch.slack.com/archives/GAYCKKUUC/p1703100666429869 \"\u200c\"))",
         "descData": {
             "emoji": {}
         },
@@ -7824,7 +7824,7 @@
         "closed": false,
         "dueComplete": false,
         "dateLastActivity": "2024-01-18T16:07:57.233Z",
-        "desc": "0 patients have received an incorrect PROM due to survey sendout workflow  failing before the email is scheduled. 83 REDCap records that are currently compromised - send\\_adm\\_prom has been disable until the issue is resolved\n\nREDCap fields `visit_number_backup` and `survey_id` currently corrupted. Data in these fields propagate to other systems if a patient has completed a survey.\n\nOnly 1 record ([record 15](https://sphsoutcomes.net/redcap/redcap_v14.0.1/DataExport/index.php?pid=349&report_id=1534 \"\u200c\")) has completed PROM data that needs to be cleaned up across the system due to the propagation errors.\n\nSteps to resolve are:\n\n1. fix redcap\n2. re-enable send\\_adm\\_prom and omit from job_processor\n3. clean up records in system (record 15)\n\n\u200c\n\nBreakdown of the 83 affected records:\n\\- 46 were created in REDCap but failed before they were sent out\n\\- 37 were sent, of which:\n\\--- 10 expired\n\\--- 27 still open, of which:\n\\------ 1 was taken\n\n\u200c\n\n[https://github.com/splresearch/pocdart\\_cron\\_scripts/pull/18/files](https://github.com/splresearch/pocdart_cron_scripts/pull/18/files \"\u200c\")",
+        "desc": "0 patients have received an incorrect PROM due to survey sendout workflow  failing before the email is scheduled. 83 REDCap records that are currently compromised - send\\_adm\\_prom has been disable until the issue is resolved\n\nREDCap fields `visit_number_backup` and `survey_id` currently corrupted. Data in these fields propagate to other systems if a patient has completed a survey.\n\nOnly 1 record ([record 15](https://sphsoutcomes.net/redcap/redcap_v14.0.1/DataExport/index.php?pid=349&report_id=1534 \"\u200c\")) has completed PROM data that needs to be cleaned up across the system due to the propagation errors.\n\nSteps to resolve are:\n\n1. fix redcap\n2. re-enable send\\_adm\\_prom and omit from job_processor\n3. clean up records in system (record 15)\n\n\u200c\n\nBreakdown of the 83 affected records:\n\\- 46 were created in REDCap but failed before they were sent out\n\\- 37 were sent, of which:\n\\--- 10 expired\n\\--- 27 still open, of which:\n\\------ 1 was taken\n\n\u200c\n\n[https://github.com/sp-dmar/pocdart\\_cron\\_scripts/pull/18/files](https://github.com/sp-dmar/pocdart_cron_scripts/pull/18/files \"\u200c\")",
         "descData": {
             "emoji": {}
         },
@@ -8872,7 +8872,7 @@
         "closed": false,
         "dueComplete": true,
         "dateLastActivity": "2024-01-18T16:07:56.921Z",
-        "desc": "In the next phase of the `pocdart2` database migration for handling surveys, we need to migrate the `hl7-receiver_adt container` to run off the `kwrA7Alx-next-gen-redcap` branch on [hl7-receiver](https://github.com/splresearch/hl7-receiver/tree/kwrA7Alx-next-gen-redcap \"\u200c\").\n\n**DoD:** ADT runs off the `kwrA7Alx-next-gen-redcap` branch of [hl7-receiver](https://github.com/splresearch/hl7-receiver/tree/kwrA7Alx-next-gen-redcap \"\u200c\") repo.",
+        "desc": "In the next phase of the `pocdart2` database migration for handling surveys, we need to migrate the `hl7-receiver_adt container` to run off the `kwrA7Alx-next-gen-redcap` branch on [hl7-receiver](https://github.com/sp-dmar/hl7-receiver/tree/kwrA7Alx-next-gen-redcap \"\u200c\").\n\n**DoD:** ADT runs off the `kwrA7Alx-next-gen-redcap` branch of [hl7-receiver](https://github.com/sp-dmar/hl7-receiver/tree/kwrA7Alx-next-gen-redcap \"\u200c\") repo.",
         "descData": {
             "emoji": {}
         },
